@@ -1,38 +1,90 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
+import { _getQuestions } from '../server/_DATA';
 
-interface Poll {
+interface PollOption {
+  votes: string[];
+  text: string;
+}
+
+export interface Poll {
   id: string;
+  author: string;
   question: string;
-  options: { optionOne: string; optionTwo: string };
-  answers: Record<string, string>; // userId -> answer
+  optionOne: PollOption;
+  optionTwo: PollOption;
 }
 
-interface PollState {
+interface PollsState {
   polls: Record<string, Poll>;
+  status: 'idle' | 'loading' | 'succeeded' | 'failed';
+  error: string | undefined;
 }
 
-const initialState: PollState = {
-  polls: {},
+type VoteActionPayload = {
+  pollId: string;
+  option: keyof Poll; // Ensures option is only "optionOne" or "optionTwo"
+  userId: string;
 };
 
-export const pollSlice = createSlice({
+const initialState: PollsState = {
+  polls: {},
+  status: 'idle',
+  error: undefined,
+};
+
+export const fetchPolls = createAsyncThunk('poll/fetchPolls', async () => {
+  try {
+    const response = await _getQuestions(); // Ensure this is calling the correct function and returning data
+    return response;
+  } catch (error) {
+    console.error('Failed to fetch polls:', error);
+    throw error;
+  }
+});
+
+function isValidOptionKey(key: string): key is 'optionOne' | 'optionTwo' {
+  return key === 'optionOne' || key === 'optionTwo';
+}
+
+const pollSlice = createSlice({
   name: 'poll',
   initialState,
   reducers: {
-    addPoll: (state, action) => {
+    addPoll: (state, action: PayloadAction<Poll>) => {
       const poll = action.payload;
       state.polls[poll.id] = poll;
     },
-    answerPoll: (state, action) => {
-      const { userId, pollId, answer } = action.payload;
-      state.polls[pollId].answers[userId] = answer;
+    voteOnPoll: (state, action: PayloadAction<VoteActionPayload>) => {
+      const { pollId, option, userId } = action.payload;
+      const poll = state.polls[pollId];
+
+      if (isValidOptionKey(option)) {
+        const voteOption = poll[option];
+        if (!voteOption.votes.includes(userId)) {
+          voteOption.votes.push(userId);
+        }
+      }
     },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(fetchPolls.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(fetchPolls.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        state.polls = action.payload; // Assuming the payload is an object with poll IDs as keys
+      })
+      .addCase(fetchPolls.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.error.message;
+      });
   },
 });
 
-export const { addPoll, answerPoll } = pollSlice.actions;
+export const { addPoll, voteOnPoll } = pollSlice.actions;
 
-export const selectPolls = (state: RootState) => state.poll.polls;
+export const selectAllPolls = (state: RootState) => state.poll.polls;
 
 export default pollSlice.reducer;

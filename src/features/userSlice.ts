@@ -21,7 +21,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const user = await validateUser(username, password);
-      return user.name; // Assuming validateUser returns user object on success
+      return user.id; // Assuming validateUser returns user object on success
     } catch (error) {
       return rejectWithValue(error);
     }

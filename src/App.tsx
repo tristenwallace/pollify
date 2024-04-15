@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
-// TODO import Home from './components/Home';
+import Home from './components/Home';
 import Login from './components/Login';
 // TODO import Leaderboard from './components/Leaderboard';
 // TODO import Poll from './components/Poll';
@@ -10,6 +10,7 @@ const App: React.FC = () => {
     <div className="app">
       {/* Application routing setup */}
       <Routes>
+        <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
       </Routes>
     </div>
