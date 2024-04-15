@@ -1,18 +1,23 @@
 import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
-import { login } from '../features/userSlice';
-import { useNavigate } from 'react-router-dom'; // Import useNavigate instead of useHistory
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { loginUser } from '../features/userSlice';
+import { AppDispatch, RootState } from '../app/store';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
-  const dispatch = useDispatch();
-  const navigate = useNavigate(); // useNavigate instead of useHistory
+  const [password, setPassword] = useState('');
+  const error = useSelector((state: RootState) => state.user.error);
+  const dispatch: AppDispatch = useDispatch();
+  const navigate = useNavigate();
 
-  const handleSubmit = (event: React.FormEvent) => {
+  const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    if (username) {
-      dispatch(login(username));
-      navigate('/');
+    if (username && password) {
+      dispatch(loginUser({ username, password }))
+        .unwrap()
+        .then(() => navigate('/'))
+        .catch((error: Error) => console.error('Failed to login:', error));
     }
   };
 
@@ -27,7 +32,15 @@ const Login: React.FC = () => {
           placeholder="Enter your username"
           required
         />
+        <input
+          type="password"
+          value={password}
+          onChange={e => setPassword(e.target.value)}
+          placeholder="Enter your password"
+          required
+        />
         <button type="submit">Login</button>
+        {error && <p className="error">{error}</p>}
       </form>
     </div>
   );

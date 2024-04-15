@@ -1,37 +1,55 @@
-import { createSlice, PayloadAction } from '@reduxjs/toolkit';
-import { RootState } from '../app/store';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
+import { validateUser } from '../server/_DATA'; // Import the getUser function
 
 interface UserState {
-  value: {
-    isAuthenticated: boolean;
-    user: string | null;
-  };
+  isAuthenticated: boolean;
+  user: string | null;
+  error: string | null;
 }
 
 const initialState: UserState = {
-  value: {
-    isAuthenticated: false,
-    user: null,
-  },
+  isAuthenticated: false,
+  user: null,
+  error: null,
 };
+
+export const loginUser = createAsyncThunk(
+  'user/login',
+  async (
+    { username, password }: { username: string; password: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const user = await validateUser(username, password);
+      return user.name; // Assuming validateUser returns user object on success
+    } catch (error) {
+      return rejectWithValue(error);
+    }
+  },
+);
 
 export const userSlice = createSlice({
   name: 'user',
   initialState,
   reducers: {
-    login: (state, action: PayloadAction<string>) => {
-      state.value.isAuthenticated = true;
-      state.value.user = action.payload;
-    },
     logout: state => {
-      state.value.isAuthenticated = false;
-      state.value.user = null;
+      state.isAuthenticated = false;
+      state.user = null;
     },
+  },
+  extraReducers: builder => {
+    builder
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.isAuthenticated = true;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.error = action.payload as string;
+      });
   },
 });
 
-export const { login, logout } = userSlice.actions;
-
-export const selectUser = (state: RootState) => state.user.value;
+export const { logout } = userSlice.actions;
 
 export default userSlice.reducer;
