@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
 import { AppDispatch, RootState } from '../app/store';
+import Login from './Login';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -18,7 +19,12 @@ const Home = () => {
   }, [pollStatus, dispatch]);
 
   if (!user) {
-    return <div>Please log in to see the polls.</div>; // Or handle this case appropriately
+    return (
+      <div>
+        <h3>Please log in to see the polls.</h3>
+        <Login />
+      </div>
+    ); // Or handle this case appropriately
   }
 
   if (pollStatus === 'loading') return <div>Loading...</div>;
