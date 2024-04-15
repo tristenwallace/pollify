@@ -10,7 +10,7 @@ const App: React.FC = () => {
     <div className="app">
       {/* Application routing setup */}
       <Routes>
-        <Route path="/login" component={Login} />
+        <Route path="/login" element={<Login />} />
       </Routes>
     </div>
   );
