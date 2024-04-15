@@ -1,23 +1,19 @@
-import './App.css';
+import React from 'react';
+import { Route, Routes } from 'react-router-dom';
+// TODO import Home from './components/Home';
+import Login from './components/Login';
+// TODO import Leaderboard from './components/Leaderboard';
+// TODO import Poll from './components/Poll';
 
-function App() {
+const App: React.FC = () => {
   return (
-    <div className="App">
-      <header className="App-header">
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      {/* Application routing setup */}
+      <Routes>
+        <Route path="/login" element={<Login />} />
+      </Routes>
     </div>
   );
-}
+};
 
 export default App;
