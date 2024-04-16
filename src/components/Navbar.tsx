@@ -34,6 +34,11 @@ const Navbar = () => {
             Logout
           </Button>
         )}
+        {!isAuthenticated && (
+          <Button color="inherit" component={RouterLink} to="/login">
+            Login
+          </Button>
+        )}
       </Toolbar>
     </AppBar>
   );
