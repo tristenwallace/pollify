@@ -1,13 +1,14 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
 import { AppDispatch, RootState } from '../app/store';
 import Login from './Login';
-import CreatePollForm from './CreatePollForm';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
+  const [showAnswered, setShowAnswered] = useState(false);
   const polls = useSelector((state: RootState) => state.poll.polls);
   const pollStatus = useSelector((state: RootState) => state.poll.status);
   const error = useSelector((state: RootState) => state.poll.error);
@@ -33,18 +34,32 @@ const Home = () => {
   if (pollStatus === 'succeeded' && !Object.keys(polls).length)
     return <div>No polls available.</div>;
 
-  // Convert polls object to array if stored as an object in Redux
-  const pollsArray = Object.values(polls);
+  // Filter polls based on whether they have been answered by the user
+  const answeredPolls = Object.values(polls).filter(
+    poll =>
+      poll.optionOne.votes.includes(user) ||
+      poll.optionTwo.votes.includes(user),
+  );
+  const unansweredPolls = Object.values(polls).filter(
+    poll =>
+      !poll.optionOne.votes.includes(user) &&
+      !poll.optionTwo.votes.includes(user),
+  );
 
   return (
     <div>
+      <h1>Welcome, {user}!</h1>
+      <button onClick={() => setShowAnswered(!showAnswered)}>
+        Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
+      </button>
       <div>
-        <h1>Polls</h1>
-        <PollList polls={pollsArray} />
+        {showAnswered ? (
+          <PollList polls={answeredPolls} />
+        ) : (
+          <PollList polls={unansweredPolls} />
+        )}
       </div>
-      <div>
-        <CreatePollForm />
-      </div>
+      <Link to="/create">Create New Poll</Link>
     </div>
   );
 };
