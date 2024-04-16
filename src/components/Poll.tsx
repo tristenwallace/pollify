@@ -1,78 +1,49 @@
-import React from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import {
-  voteOnPoll,
-  Poll as PollType,
-  PollOptionKey,
-} from '../features/pollSlice'; // Make sure the import path is correct
-import { AppDispatch, RootState } from '../app/store';
+import React, { useEffect } from 'react';
+import { Link } from 'react-router-dom';
+import { useSelector, useDispatch } from 'react-redux';
+import { RootState, AppDispatch } from '../app/store';
+import { fetchPolls } from '../features/pollSlice';
+import { fetchUsers } from '../features/usersSlice';
 
 interface PollProps {
-  poll: PollType;
+  pollId: string;
 }
 
-const Poll: React.FC<PollProps> = ({ poll }) => {
+const Poll: React.FC<PollProps> = ({ pollId }) => {
   const dispatch: AppDispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.users.currentUser);
-  const existingPoll = useSelector(
-    (state: RootState) => state.poll.polls[poll.id],
+  const pollStatus = useSelector((state: RootState) => state.poll.status);
+  const usersStatus = useSelector((state: RootState) => state.users.status);
+
+  const poll = useSelector((state: RootState) => state.poll.polls[pollId]);
+  const author = useSelector(
+    (state: RootState) => state.users.users[poll.author],
   );
 
-  // Guard clause
-  if (!user) {
-    return <div>Please log in to vote.</div>;
-  }
-
-  const totalVotesOptionOne = poll.optionOne.votes.length;
-  const totalVotesOptionTwo = poll.optionTwo.votes.length;
-  const totalVotes = totalVotesOptionOne + totalVotesOptionTwo;
-
-  const optionOnePercentage =
-    totalVotes > 0
-      ? ((totalVotesOptionOne / totalVotes) * 100).toFixed(1)
-      : '0';
-  const optionTwoPercentage =
-    totalVotes > 0
-      ? ((totalVotesOptionTwo / totalVotes) * 100).toFixed(1)
-      : '0';
-
-  const hasVoted =
-    poll.optionOne.votes.includes(user.id!) ||
-    poll.optionTwo.votes.includes(user.id!);
-
-  const userVote = poll.optionOne.votes.includes(user.id!)
-    ? 'optionOne'
-    : poll.optionTwo.votes.includes(user.id!)
-      ? 'optionTwo'
-      : null;
-
-  const handleVote = (option: PollOptionKey) => {
-    if (!hasVoted && user) {
-      dispatch(
-        voteOnPoll({
-          pollId: poll.id,
-          option,
-          userId: user.id,
-          existingPoll: existingPoll,
-        }),
-      );
+  useEffect(() => {
+    if (pollStatus === 'idle') {
+      dispatch(fetchPolls());
     }
-  };
+  }, [pollStatus, dispatch]);
+
+  useEffect(() => {
+    if (usersStatus === 'idle') {
+      dispatch(fetchUsers());
+    }
+  }, [usersStatus, dispatch]);
+
+  if (!poll || !author) {
+    return <div>Loading...</div>; // or handle missing poll or author more gracefully
+  }
 
   return (
     <li>
-      <h4>Which would you choose?</h4>
+      <h4>{author.name} asks:</h4>
       <div>
-        <button onClick={() => handleVote('optionOne')} disabled={hasVoted}>
-          {poll.optionOne.text} {userVote === 'optionOne' ? '(Your vote)' : ''}-{' '}
-          {totalVotesOptionOne} votes ({optionOnePercentage}%)
-        </button>
-        <button onClick={() => handleVote('optionTwo')} disabled={hasVoted}>
-          {poll.optionTwo.text} {userVote === 'optionTwo' ? '(Your vote)' : ''}-{' '}
-          {totalVotesOptionTwo} votes ({optionTwoPercentage}%)
-        </button>
+        <p>
+          Would you rather {poll.optionOne.text} or {poll.optionTwo.text}?
+        </p>
+        <Link to={`/questions/${poll.id}`}>View Poll</Link>
       </div>
-      {hasVoted && <p>You have voted on this poll.</p>}
     </li>
   );
 };
