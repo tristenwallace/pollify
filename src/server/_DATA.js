@@ -179,16 +179,20 @@ function formatQuestion({ optionOneText, optionTwoText, author }) {
 
 export function _saveQuestion(question) {
   return new Promise((resolve, reject) => {
+    console.log('Received for saving:', question); // Log received question
     if (
       !question.optionOneText ||
       !question.optionTwoText ||
       !question.author
     ) {
+      console.error('Missing fields in question', question);
       reject('Please provide optionOneText, optionTwoText, and author');
     }
 
     const formattedQuestion = formatQuestion(question);
     setTimeout(() => {
+      // Simulate saving and log the question
+      console.log('Saving question:', formattedQuestion);
       questions = {
         ...questions,
         [formattedQuestion.id]: formattedQuestion,

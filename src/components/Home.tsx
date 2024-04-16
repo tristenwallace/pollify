@@ -4,6 +4,7 @@ import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
 import { AppDispatch, RootState } from '../app/store';
 import Login from './Login';
+import CreatePollForm from './CreatePollForm';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -37,8 +38,13 @@ const Home = () => {
 
   return (
     <div>
-      <h1>Polls</h1>
-      <PollList polls={pollsArray} />
+      <div>
+        <h1>Polls</h1>
+        <PollList polls={pollsArray} />
+      </div>
+      <div>
+        <CreatePollForm />
+      </div>
     </div>
   );
 };

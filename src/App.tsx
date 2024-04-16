@@ -2,8 +2,8 @@ import React from 'react';
 import { Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
 import Login from './components/Login';
+import CreatePollForm from './components/CreatePollForm';
 // TODO import Leaderboard from './components/Leaderboard';
-// TODO import Poll from './components/Poll';
 
 const App: React.FC = () => {
   return (
@@ -12,6 +12,7 @@ const App: React.FC = () => {
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
+        <Route path="/create" element={<CreatePollForm />} />
       </Routes>
     </div>
   );
