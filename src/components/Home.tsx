@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
@@ -12,7 +12,7 @@ const Home = () => {
   const polls = useSelector((state: RootState) => state.poll.polls);
   const pollStatus = useSelector((state: RootState) => state.poll.status);
   const error = useSelector((state: RootState) => state.poll.error);
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.users.currentUser);
 
   useEffect(() => {
     if (pollStatus === 'idle') {
@@ -60,6 +60,7 @@ const Home = () => {
         )}
       </div>
       <Link to="/create">Create New Poll</Link>
+      <Link to="/leaderboard">Go to Leaderboard</Link>
     </div>
   );
 };

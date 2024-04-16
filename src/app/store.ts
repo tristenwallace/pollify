@@ -1,10 +1,10 @@
 import { configureStore } from '@reduxjs/toolkit';
-import userReducer from '../features/userSlice';
+import usersReducer from '../features/usersSlice';
 import pollReducer from '../features/pollSlice';
 
 export const store = configureStore({
   reducer: {
-    user: userReducer,
+    users: usersReducer,
     poll: pollReducer,
   },
 });

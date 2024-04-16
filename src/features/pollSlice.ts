@@ -1,6 +1,15 @@
-import { createSlice, PayloadAction, createAsyncThunk } from '@reduxjs/toolkit';
+import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
-import { _getQuestions, _saveQuestion } from '../server/_DATA';
+import {
+  _getQuestions,
+  _saveQuestion,
+  _saveQuestionAnswer,
+} from '../server/_DATA';
+
+interface MyThunkAPI {
+  state: RootState;
+  rejectValue: string;
+}
 
 interface PollOption {
   votes: string[];
@@ -20,11 +29,8 @@ interface PollsState {
   error: string | undefined;
 }
 
-type VoteActionPayload = {
-  pollId: string;
-  option: keyof Poll;
-  userId: string;
-};
+// Correctly defining the type for options
+export type PollOptionKey = 'optionOne' | 'optionTwo';
 
 const initialState: PollsState = {
   polls: {},
@@ -47,7 +53,11 @@ export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
 );
 
 // Add new poll
-export const addNewPoll = createAsyncThunk(
+export const addNewPoll = createAsyncThunk<
+  Poll,
+  { optionOneText: string; optionTwoText: string; author: string },
+  MyThunkAPI
+>(
   'poll/addNewPoll',
   async (pollData: {
     optionOneText: string;
@@ -75,22 +85,68 @@ export const addNewPoll = createAsyncThunk(
   },
 );
 
-function isValidOptionKey(key: string): key is 'optionOne' | 'optionTwo' {
-  return key === 'optionOne' || key === 'optionTwo';
-}
+// Thunk for handling voting
+export const voteOnPoll = createAsyncThunk<
+  {
+    pollId: string;
+    option: PollOptionKey;
+    userId: string;
+  },
+  {
+    pollId: string;
+    option: PollOptionKey;
+    userId: string;
+    existingPoll: Poll;
+  },
+  MyThunkAPI
+>(
+  'poll/voteOnPoll',
+  async (
+    {
+      pollId,
+      option,
+      userId,
+      existingPoll,
+    }: {
+      pollId: string;
+      option: PollOptionKey;
+      userId: string;
+      existingPoll: Poll;
+    },
+    { rejectWithValue },
+  ) => {
+    try {
+      if (!existingPoll) {
+        return rejectWithValue('Poll not found');
+      }
+      if (existingPoll[option].votes.includes(userId)) {
+        return rejectWithValue('User has already voted');
+      }
+      // Simulating backend operation
+      await _saveQuestionAnswer({
+        authedUser: userId,
+        qid: pollId,
+        answer: option,
+      });
+      fetchPolls();
+      console.log('vote saved successfully');
+      return { pollId, option, userId };
+    } catch (error) {
+      if (error instanceof Error) {
+        return rejectWithValue(error.message);
+      } else {
+        return rejectWithValue(
+          'Failed to save the vote due to an unknown error',
+        );
+      }
+    }
+  },
+);
 
 const pollSlice = createSlice({
   name: 'poll',
   initialState,
-  reducers: {
-    voteOnPoll: (state, action: PayloadAction<VoteActionPayload>) => {
-      const { pollId, option, userId } = action.payload;
-      const poll = state.polls[pollId];
-      if (isValidOptionKey(option) && !poll[option].votes.includes(userId)) {
-        poll[option].votes.push(userId);
-      }
-    },
-  },
+  reducers: {},
   extraReducers: builder => {
     builder
       .addCase(fetchPolls.pending, state => {
@@ -125,10 +181,25 @@ const pollSlice = createSlice({
       .addCase(addNewPoll.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(voteOnPoll.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        if (action.payload) {
+          const { pollId, option, userId } = action.payload;
+          // Update the specific poll with new vote
+          const pollToUpdate = state.polls[pollId];
+          if (pollToUpdate && option) {
+            pollToUpdate[option].votes.push(userId); // Add the user's vote
+            state.polls[pollId] = { ...pollToUpdate }; // Ensure we create a new object to help with re-rendering in React components
+          }
+        }
+      })
+      .addCase(voteOnPoll.rejected, (state, action) => {
+        console.error('Failed to vote:', action.payload);
+        state.status = 'failed';
       });
   },
 });
 
-export const { voteOnPoll } = pollSlice.actions;
 export const selectAllPolls = (state: RootState) => state.poll.polls;
 export default pollSlice.reducer;

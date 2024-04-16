@@ -1,6 +1,10 @@
 import React from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { voteOnPoll, Poll as PollType } from '../features/pollSlice'; // Make sure the import path is correct
+import {
+  voteOnPoll,
+  Poll as PollType,
+  PollOptionKey,
+} from '../features/pollSlice'; // Make sure the import path is correct
 import { AppDispatch, RootState } from '../app/store';
 
 interface PollProps {
@@ -9,7 +13,10 @@ interface PollProps {
 
 const Poll: React.FC<PollProps> = ({ poll }) => {
   const dispatch: AppDispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.users.currentUser);
+  const existingPoll = useSelector(
+    (state: RootState) => state.poll.polls[poll.id],
+  );
 
   // Guard clause
   if (!user) {
@@ -39,9 +46,16 @@ const Poll: React.FC<PollProps> = ({ poll }) => {
       ? 'optionTwo'
       : null;
 
-  const handleVote = (option: 'optionOne' | 'optionTwo') => {
+  const handleVote = (option: PollOptionKey) => {
     if (!hasVoted && user) {
-      dispatch(voteOnPoll({ pollId: poll.id, option, userId: user.id }));
+      dispatch(
+        voteOnPoll({
+          pollId: poll.id,
+          option,
+          userId: user.id,
+          existingPoll: existingPoll,
+        }),
+      );
     }
   };
 
