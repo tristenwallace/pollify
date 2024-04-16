@@ -37,18 +37,18 @@ const Home = () => {
   // Filter polls based on whether they have been answered by the user
   const answeredPolls = Object.values(polls).filter(
     poll =>
-      poll.optionOne.votes.includes(user) ||
-      poll.optionTwo.votes.includes(user),
+      poll.optionOne.votes.includes(user.id) ||
+      poll.optionTwo.votes.includes(user.id),
   );
   const unansweredPolls = Object.values(polls).filter(
     poll =>
-      !poll.optionOne.votes.includes(user) &&
-      !poll.optionTwo.votes.includes(user),
+      !poll.optionOne.votes.includes(user.id) &&
+      !poll.optionTwo.votes.includes(user.id),
   );
 
   return (
     <div>
-      <h1>Welcome, {user}!</h1>
+      <h1>Welcome, {user.name}!</h1>
       <button onClick={() => setShowAnswered(!showAnswered)}>
         Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
       </button>

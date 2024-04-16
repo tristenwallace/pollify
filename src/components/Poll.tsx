@@ -9,7 +9,12 @@ interface PollProps {
 
 const Poll: React.FC<PollProps> = ({ poll }) => {
   const dispatch: AppDispatch = useDispatch();
-  const userId = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.user.user);
+
+  // Guard clause
+  if (!user) {
+    return <div>Please log in to vote.</div>;
+  }
 
   const totalVotesOptionOne = poll.optionOne.votes.length;
   const totalVotesOptionTwo = poll.optionTwo.votes.length;
@@ -25,24 +30,24 @@ const Poll: React.FC<PollProps> = ({ poll }) => {
       : '0';
 
   const hasVoted =
-    poll.optionOne.votes.includes(userId!) ||
-    poll.optionTwo.votes.includes(userId!);
+    poll.optionOne.votes.includes(user.id!) ||
+    poll.optionTwo.votes.includes(user.id!);
 
-  const userVote = poll.optionOne.votes.includes(userId!)
+  const userVote = poll.optionOne.votes.includes(user.id!)
     ? 'optionOne'
-    : poll.optionTwo.votes.includes(userId!)
+    : poll.optionTwo.votes.includes(user.id!)
       ? 'optionTwo'
       : null;
 
   const handleVote = (option: 'optionOne' | 'optionTwo') => {
-    if (!hasVoted && userId) {
-      dispatch(voteOnPoll({ pollId: poll.id, option, userId }));
+    if (!hasVoted && user) {
+      dispatch(voteOnPoll({ pollId: poll.id, option, userId: user.id }));
     }
   };
 
   return (
     <li>
-      <h4>{poll.question}</h4>
+      <h4>Which would you choose?</h4>
       <div>
         <button onClick={() => handleVote('optionOne')} disabled={hasVoted}>
           {poll.optionOne.text} {userVote === 'optionOne' ? '(Your vote)' : ''}-{' '}

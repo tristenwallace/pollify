@@ -10,7 +10,6 @@ interface PollOption {
 export interface Poll {
   id: string;
   author: string;
-  question: string;
   optionOne: PollOption;
   optionTwo: PollOption;
 }
