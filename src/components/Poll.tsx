@@ -9,33 +9,48 @@ interface PollProps {
 
 const Poll: React.FC<PollProps> = ({ poll }) => {
   const dispatch: AppDispatch = useDispatch();
-  const userId = useSelector((state: RootState) => state.user.user); // Assuming user might be undefined
+  const userId = useSelector((state: RootState) => state.user.user);
+
+  const totalVotesOptionOne = poll.optionOne.votes.length;
+  const totalVotesOptionTwo = poll.optionTwo.votes.length;
+  const totalVotes = totalVotesOptionOne + totalVotesOptionTwo;
+
+  const optionOnePercentage =
+    totalVotes > 0
+      ? ((totalVotesOptionOne / totalVotes) * 100).toFixed(1)
+      : '0';
+  const optionTwoPercentage =
+    totalVotes > 0
+      ? ((totalVotesOptionTwo / totalVotes) * 100).toFixed(1)
+      : '0';
 
   const hasVoted =
-    poll.optionOne.votes.includes(userId ?? '') ||
-    poll.optionTwo.votes.includes(userId ?? '');
-  const userVote = poll.optionOne.votes.includes(userId ?? '')
+    poll.optionOne.votes.includes(userId!) ||
+    poll.optionTwo.votes.includes(userId!);
+
+  const userVote = poll.optionOne.votes.includes(userId!)
     ? 'optionOne'
-    : poll.optionTwo.votes.includes(userId ?? '')
+    : poll.optionTwo.votes.includes(userId!)
       ? 'optionTwo'
       : null;
 
   const handleVote = (option: 'optionOne' | 'optionTwo') => {
-    console.log(`Voting on ${option} by user ${userId}`);
-    if (userId && !hasVoted) {
+    if (!hasVoted && userId) {
       dispatch(voteOnPoll({ pollId: poll.id, option, userId }));
     }
   };
 
   return (
     <li>
-      <h4>Which would you rather?</h4>
+      <h4>{poll.question}</h4>
       <div>
         <button onClick={() => handleVote('optionOne')} disabled={hasVoted}>
-          {poll.optionOne.text} {userVote === 'optionOne' ? '(Your vote)' : ''}
+          {poll.optionOne.text} {userVote === 'optionOne' ? '(Your vote)' : ''}-{' '}
+          {totalVotesOptionOne} votes ({optionOnePercentage}%)
         </button>
         <button onClick={() => handleVote('optionTwo')} disabled={hasVoted}>
-          {poll.optionTwo.text} {userVote === 'optionTwo' ? '(Your vote)' : ''}
+          {poll.optionTwo.text} {userVote === 'optionTwo' ? '(Your vote)' : ''}-{' '}
+          {totalVotesOptionTwo} votes ({optionTwoPercentage}%)
         </button>
       </div>
       {hasVoted && <p>You have voted on this poll.</p>}
