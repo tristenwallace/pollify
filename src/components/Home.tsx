@@ -60,6 +60,7 @@ const Home = () => {
         )}
       </div>
       <Link to="/create">Create New Poll</Link>
+      <Link to="/leaderboard">Go to Leaderboard</Link>
     </div>
   );
 };
