@@ -1,9 +1,18 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { validateUser } from '../server/_DATA'; // Import the getUser function
+import { validateUser } from '../server/_DATA';
+
+interface User {
+  id: string;
+  password: string;
+  name: string;
+  avatarURL: string | null;
+  answers: Record<string, string>;
+  questions: string[];
+}
 
 interface UserState {
   isAuthenticated: boolean;
-  user: string | null;
+  user: User | null;
   error: string | null;
 }
 
@@ -21,7 +30,7 @@ export const loginUser = createAsyncThunk(
   ) => {
     try {
       const user = await validateUser(username, password);
-      return user.name; // Assuming validateUser returns user object on success
+      return user; // Assuming validateUser returns user object on success
     } catch (error) {
       return rejectWithValue(error);
     }
