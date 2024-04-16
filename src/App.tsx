@@ -1,5 +1,6 @@
 import React from 'react';
 import { Route, Routes } from 'react-router-dom';
+import Navbar from './components/Navbar';
 import Home from './components/Home';
 import Login from './components/Login';
 import CreatePollForm from './components/CreatePollForm';
@@ -9,7 +10,7 @@ import PollDetails from './components/PollDetails';
 const App: React.FC = () => {
   return (
     <div className="app">
-      {/* Application routing setup */}
+      <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<Login />} />
