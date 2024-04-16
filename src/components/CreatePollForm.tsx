@@ -1,14 +1,25 @@
-import React, { useState, FormEvent } from 'react';
-import { useDispatch } from 'react-redux';
+import { useState, FormEvent } from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addNewPoll } from '../features/pollSlice';
-import { AppDispatch } from '../app/store';
+import { AppDispatch, RootState } from '../app/store';
+import Login from './Login';
 
 const CreatePollForm = () => {
   const [optionOneText, setOptionOneText] = useState('');
   const [optionTwoText, setOptionTwoText] = useState('');
+  const user = useSelector((state: RootState) => state.users.currentUser);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+
+  if (!user) {
+    return (
+      <div>
+        <h3>Please log in to see the polls.</h3>
+        <Login />
+      </div>
+    ); // Or handle this case appropriately
+  }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -16,7 +27,7 @@ const CreatePollForm = () => {
       addNewPoll({
         optionOneText: optionOneText,
         optionTwoText: optionTwoText,
-        author: 'username',
+        author: user.id,
       }),
     );
     navigate('/'); // Navigate to home after submitting the form

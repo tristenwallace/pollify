@@ -1,6 +1,7 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { validateUser, _getUsers } from '../server/_DATA';
 import { RootState } from '../app/store';
+import { voteOnPoll, addNewPoll } from './pollSlice';
 
 interface User {
   id: string;
@@ -65,15 +66,6 @@ export const loginUser = createAsyncThunk<
   },
 );
 
-export const selectUsersForLeaderboard = (state: RootState): User[] => {
-  return Object.values(state.users.users).sort(
-    (a, b) =>
-      b.questions.length +
-      Object.keys(b.answers).length -
-      (a.questions.length + Object.keys(a.answers).length),
-  );
-};
-
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -108,6 +100,23 @@ export const usersSlice = createSlice({
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
+      })
+      .addCase(addNewPoll.fulfilled, (state, action) => {
+        // Assuming the new poll data includes the author's ID
+        const { author, id } = action.payload;
+        if (state.currentUser) {
+          state.currentUser.questions.push(id);
+        } else {
+          console.error('Author not found in users state:', author); // Log an error if the author doesn't exist
+        }
+      })
+      .addCase(voteOnPoll.fulfilled, (state, action) => {
+        const { userId, pollId, option } = action.payload;
+        if (state.currentUser) {
+          state.currentUser.answers[pollId] = option;
+        } else {
+          console.error('Current User not found in users state:', userId); // Log an error if the user doesn't exist
+        }
       });
   },
 });
