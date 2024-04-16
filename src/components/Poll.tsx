@@ -9,7 +9,7 @@ interface PollProps {
 
 const Poll: React.FC<PollProps> = ({ poll }) => {
   const dispatch: AppDispatch = useDispatch();
-  const user = useSelector((state: RootState) => state.user.user);
+  const user = useSelector((state: RootState) => state.users.currentUser);
 
   // Guard clause
   if (!user) {

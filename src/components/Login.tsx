@@ -1,13 +1,13 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
-import { loginUser } from '../features/userSlice';
+import { loginUser } from '../features/usersSlice';
 import { AppDispatch, RootState } from '../app/store';
 
 const Login: React.FC = () => {
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
-  const error = useSelector((state: RootState) => state.user.error);
+  const error = useSelector((state: RootState) => state.users.error);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
