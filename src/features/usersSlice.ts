@@ -106,6 +106,7 @@ export const usersSlice = createSlice({
         const { author, id } = action.payload;
         if (state.currentUser) {
           state.currentUser.questions.push(id);
+          state.users[author].questions.push(id);
         } else {
           console.error('Author not found in users state:', author); // Log an error if the author doesn't exist
         }
@@ -114,6 +115,7 @@ export const usersSlice = createSlice({
         const { userId, pollId, option } = action.payload;
         if (state.currentUser) {
           state.currentUser.answers[pollId] = option;
+          state.users[userId].answers[pollId] = option;
         } else {
           console.error('Current User not found in users state:', userId); // Log an error if the user doesn't exist
         }
