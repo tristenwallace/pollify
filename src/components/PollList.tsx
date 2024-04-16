@@ -1,21 +1,16 @@
 import React from 'react';
-import { Poll } from '../features/pollSlice';
+import Poll from './Poll'; // Make sure this path is correct
+import { Poll as PollType } from '../features/pollSlice';
 
 interface PollListProps {
-  polls: Poll[];
+  polls: PollType[];
 }
 
 const PollList: React.FC<PollListProps> = ({ polls }) => {
   return (
     <ul>
       {polls.map(poll => (
-        <li key={poll.id}>
-          <h4>Would you rather?</h4>
-          <div>
-            <button>{poll.optionOne.text}</button>
-            <button>{poll.optionTwo.text}</button>
-          </div>
-        </li>
+        <Poll key={poll.id} poll={poll} /> // Using the Poll component for each poll
       ))}
     </ul>
   );

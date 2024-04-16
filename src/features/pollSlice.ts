@@ -59,7 +59,11 @@ const pollSlice = createSlice({
       const { pollId, option, userId } = action.payload;
       const poll = state.polls[pollId];
 
-      if (isValidOptionKey(option)) {
+      const hasVoted =
+        poll.optionOne.votes.includes(userId) ||
+        poll.optionTwo.votes.includes(userId);
+
+      if (isValidOptionKey(option) && !hasVoted) {
         const voteOption = poll[option];
         if (!voteOption.votes.includes(userId)) {
           voteOption.votes.push(userId);
