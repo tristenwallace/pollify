@@ -5,6 +5,13 @@ import { addNewPoll } from '../features/pollSlice';
 import { AppDispatch, RootState } from '../app/store';
 import { fetchUsers } from '../features/usersSlice';
 import Login from './Login';
+import {
+  Card,
+  CardContent,
+  TextField,
+  Button,
+  Typography,
+} from '@mui/material';
 
 const CreatePollForm = () => {
   const [optionOneText, setOptionOneText] = useState('');
@@ -43,30 +50,43 @@ const CreatePollForm = () => {
   };
 
   return (
-    <form onSubmit={handleSubmit}>
-      <h1>Create a New Poll</h1>
-      <div>
-        <label htmlFor="optionOneText">Option One</label>
-        <input
-          id="optionOneText"
-          type="text"
-          value={optionOneText}
-          onChange={e => setOptionOneText(e.target.value)}
-          required
-        />
-      </div>
-      <div>
-        <label htmlFor="optionTwoText">Option Two</label>
-        <input
-          id="optionTwoText"
-          type="text"
-          value={optionTwoText}
-          onChange={e => setOptionTwoText(e.target.value)}
-          required
-        />
-      </div>
-      <button type="submit">Create Poll</button>
-    </form>
+    <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3 }}>
+      <CardContent>
+        <Typography variant="h4" gutterBottom>
+          Create a New Poll
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            id="optionOneText"
+            label="Option One"
+            variant="outlined"
+            value={optionOneText}
+            onChange={e => setOptionOneText(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            id="optionTwoText"
+            label="Option Two"
+            variant="outlined"
+            value={optionTwoText}
+            onChange={e => setOptionTwoText(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
+            Create Poll
+          </Button>
+        </form>
+      </CardContent>
+    </Card>
   );
 };
 

@@ -1,6 +1,7 @@
 import React from 'react';
 import Poll from './Poll';
 import { Poll as PollType } from '../features/pollSlice';
+import List from '@mui/material/List';
 
 interface PollListProps {
   polls: PollType[];
@@ -8,11 +9,11 @@ interface PollListProps {
 
 const PollList: React.FC<PollListProps> = ({ polls }) => {
   return (
-    <ul>
+    <List>
       {polls.map(poll => (
         <Poll key={poll.id} pollId={poll.id} />
       ))}
-    </ul>
+    </List>
   );
 };
 

@@ -3,6 +3,17 @@ import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../features/usersSlice';
 import { AppDispatch, RootState } from '../app/store';
 import { Link } from 'react-router-dom';
+import {
+  List,
+  ListItem,
+  ListItemAvatar,
+  Avatar,
+  ListItemText,
+  Typography,
+  Paper,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 
 const Leaderboard = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -25,36 +36,47 @@ const Leaderboard = () => {
   }, [dispatch, userStatus]);
 
   if (userStatus === 'loading') {
-    return <p>Loading...</p>;
+    return <CircularProgress color="secondary" />;
   }
 
   if (userError) {
-    return <p>Error loading users: {userError}</p>;
+    return (
+      <Typography
+        variant="h6"
+        color="error"
+      >{`Error loading users: ${userError}`}</Typography>
+    );
   }
 
   if (!users.length) {
-    return <p>No users to display.</p>;
+    return <Typography variant="h6">No users to display.</Typography>;
   }
 
   return (
-    <div>
-      <h1>Leaderboard</h1>
-      <Link to="/">Back to Home</Link>
-      <ul>
+    <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 2 }}>
+      <Typography variant="h4" gutterBottom>
+        Leaderboard
+      </Typography>
+      <Button component={Link} to="/" variant="outlined" sx={{ mb: 2 }}>
+        Back to Home
+      </Button>
+      <List>
         {users.map(user => (
-          <li key={user.id}>
-            <img
-              src={user.avatarURL || '/default-avatar.png'}
-              alt={`${user.name}'s avatar`}
-              style={{ width: 50, height: 50 }}
+          <ListItem key={user.id}>
+            <ListItemAvatar>
+              <Avatar
+                src={user.avatarURL || '/default-avatar.png'}
+                alt={`${user.name}'s avatar`}
+              />
+            </ListItemAvatar>
+            <ListItemText
+              primary={user.name}
+              secondary={`Questions Asked: ${user.questions.length} - Answers Given: ${Object.keys(user.answers).length}`}
             />
-            <h3>{user.name}</h3>
-            <p>Questions Asked: {user.questions.length}</p>
-            <p>Answers Given: {Object.keys(user.answers).length}</p>
-          </li>
+          </ListItem>
         ))}
-      </ul>
-    </div>
+      </List>
+    </Paper>
   );
 };
 

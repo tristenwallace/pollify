@@ -1,10 +1,17 @@
 import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
 import { AppDispatch, RootState } from '../app/store';
-import Login from './Login';
+import {
+  Container,
+  Typography,
+  Button,
+  Box,
+  Grid,
+  CircularProgress,
+} from '@mui/material';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -22,17 +29,18 @@ const Home = () => {
 
   if (!user) {
     return (
-      <div>
-        <h3>Please log in to see the polls.</h3>
-        <Login />
-      </div>
-    ); // Or handle this case appropriately
+      <Container>
+        <Typography variant="h5" sx={{ mt: 2 }}>
+          Please log in to see the polls.
+        </Typography>
+      </Container>
+    );
   }
 
-  if (pollStatus === 'loading') return <div>Loading...</div>;
-  if (error) return <div>Error: {error}</div>;
+  if (pollStatus === 'loading') return <CircularProgress />;
+  if (error) return <Typography>Error: {error}</Typography>;
   if (pollStatus === 'succeeded' && !Object.keys(polls).length)
-    return <div>No polls available.</div>;
+    return <Typography>No polls available.</Typography>;
 
   // Filter polls based on whether they have been answered by the user
   const answeredPolls = Object.values(polls).filter(
@@ -47,21 +55,43 @@ const Home = () => {
   );
 
   return (
-    <div>
-      <h1>Welcome, {user.name}!</h1>
-      <button onClick={() => setShowAnswered(!showAnswered)}>
-        Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
-      </button>
-      <div>
+    <Container>
+      <Typography variant="h4" sx={{ my: 4 }}>
+        Welcome, {user.name}!
+      </Typography>
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setShowAnswered(!showAnswered)}
+        >
+          Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
+        </Button>
+        <Button
+          component={RouterLink}
+          to="/create"
+          variant="outlined"
+          color="primary"
+        >
+          Create New Poll
+        </Button>
+        <Button
+          component={RouterLink}
+          to="/leaderboard"
+          variant="outlined"
+          color="primary"
+        >
+          Go to Leaderboard
+        </Button>
+      </Box>
+      <Grid container spacing={2}>
         {showAnswered ? (
           <PollList polls={answeredPolls} />
         ) : (
           <PollList polls={unansweredPolls} />
         )}
-      </div>
-      <Link to="/create">Create New Poll</Link>
-      <Link to="/leaderboard">Go to Leaderboard</Link>
-    </div>
+      </Grid>
+    </Container>
   );
 };
 
