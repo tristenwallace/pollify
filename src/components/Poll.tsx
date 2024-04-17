@@ -1,9 +1,10 @@
 import React, { useEffect } from 'react';
-import { Link } from 'react-router-dom';
+import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../app/store';
 import { fetchPolls } from '../features/pollSlice';
 import { fetchUsers } from '../features/usersSlice';
+import { Card, CardContent, Typography, Button } from '@mui/material';
 
 interface PollProps {
   pollId: string;
@@ -32,19 +33,26 @@ const Poll: React.FC<PollProps> = ({ pollId }) => {
   }, [usersStatus, dispatch]);
 
   if (!poll || !author) {
-    return <div>Loading...</div>; // or handle missing poll or author more gracefully
+    return <Typography>Loading...</Typography>; // or handle missing poll or author more gracefully
   }
 
   return (
-    <li>
-      <h4>{author.name} asks:</h4>
-      <div>
-        <p>
+    <Card variant="outlined" sx={{ mb: 2 }}>
+      <CardContent>
+        <Typography variant="h6">{author.name} asks:</Typography>
+        <Typography variant="body1">
           Would you rather {poll.optionOne.text} or {poll.optionTwo.text}?
-        </p>
-        <Link to={`/questions/${poll.id}`}>View Poll</Link>
-      </div>
-    </li>
+        </Typography>
+        <Button
+          component={RouterLink}
+          to={`/questions/${poll.id}`}
+          size="small"
+          color="primary"
+        >
+          View Poll
+        </Button>
+      </CardContent>
+    </Card>
   );
 };
 
