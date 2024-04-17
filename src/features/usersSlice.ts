@@ -12,7 +12,7 @@ interface User {
   questions: string[];
 }
 
-interface UsersState {
+export interface UsersState {
   users: Record<string, User>;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   isAuthenticated: boolean;
