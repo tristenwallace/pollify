@@ -15,34 +15,43 @@ import {
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const PollDetail = () => {
+  // Retrieve poll ID from URL parameters
   const { pollId } = useParams<{ pollId: string }>();
+  // Hook to programmatically navigate
   const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
+  // Retrieve the current user from global state
   const user = useSelector((state: RootState) => state.users.currentUser);
 
+  // Redirect to not found page if no poll ID is found
   if (!pollId) {
     return <Navigate to="/404" />;
   }
 
+  // Retrieve poll and author details from the Redux store
   const poll = useSelector((state: RootState) => state.poll.polls[pollId]);
   const author = useSelector(
     (state: RootState) => poll && state.users.users[poll.author],
   );
 
+  // Redirect to not found page if the poll doesn't exist
   useEffect(() => {
     if (!poll) {
       navigate('/404');
     }
   }, [poll, navigate]);
 
+  // Redirect to login if the user is not logged in
   if (!user) {
     return <Navigate to="/login" />;
   }
 
+  // Show a loading indicator while poll or author data is being loaded
   if (!poll || !author) {
     return <CircularProgress />;
   }
 
+  // Calculate the total votes and percentages for each poll option
   const totalVotesOptionOne = poll.optionOne.votes.length;
   const totalVotesOptionTwo = poll.optionTwo.votes.length;
   const totalVotes = totalVotesOptionOne + totalVotesOptionTwo;
@@ -56,12 +65,14 @@ const PollDetail = () => {
       ? ((totalVotesOptionTwo / totalVotes) * 100).toFixed(1)
       : '0';
 
+  // Determine if the current user has voted and on which option
   const userVote = poll.optionOne.votes.includes(user.id)
     ? 'optionOne'
     : poll.optionTwo.votes.includes(user.id)
       ? 'optionTwo'
       : null;
 
+  // Handle voting on a poll option
   const handleVote = (option: PollOptionKey) => {
     if (!userVote && user) {
       dispatch(

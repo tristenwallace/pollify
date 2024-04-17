@@ -14,29 +14,34 @@ import {
 } from '@mui/material';
 
 const CreatePollForm = () => {
+  // Local state to manage form inputs
   const [optionOneText, setOptionOneText] = useState('');
   const [optionTwoText, setOptionTwoText] = useState('');
+
+  // Accessing Redux state and dispatch
   const user = useSelector((state: RootState) => state.users.currentUser);
   const userStatus = useSelector((state: RootState) => state.users.status);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Fetch users on component mount if not already loaded
   useEffect(() => {
     if (userStatus === 'idle') {
-      // Check if the users have not been fetched yet
       dispatch(fetchUsers());
     }
   }, [dispatch, userStatus]);
 
+  // Guard to check if user is logged in before showing form
   if (!user) {
     return (
       <div>
         <h3>Please log in to see the polls.</h3>
         <Login />
       </div>
-    ); // Or handle this case appropriately
+    );
   }
 
+  // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     dispatch(
@@ -46,9 +51,10 @@ const CreatePollForm = () => {
         author: user.id,
       }),
     );
-    navigate('/'); // Navigate to home after submitting the form
+    navigate('/'); // Redirect to home page after form submission
   };
 
+  // Render form for creating a new poll
   return (
     <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3 }}>
       <CardContent>

@@ -6,6 +6,7 @@ import {
   _saveQuestionAnswer,
 } from '../server/_DATA';
 
+// Define interfaces to standardize the structure of data used within the slice.
 interface MyThunkAPI {
   state: RootState;
   rejectValue: string;
@@ -29,16 +30,17 @@ interface PollsState {
   error: string | undefined;
 }
 
-// Correctly defining the type for options
+// Types for poll options to maintain consistency and prevent typos.
 export type PollOptionKey = 'optionOne' | 'optionTwo';
 
+// Initial state setup for the polling feature.
 const initialState: PollsState = {
   polls: {},
   status: 'idle',
   error: undefined,
 };
 
-// Fetch existing polls
+// Async thunk for fetching polls. Handles API interaction and error management.
 export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
   'poll/fetchPolls',
   async () => {
@@ -52,7 +54,7 @@ export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
   },
 );
 
-// Add new poll
+// Async thunk for adding a new poll
 export const addNewPoll = createAsyncThunk<
   Poll,
   { optionOneText: string; optionTwoText: string; author: string },
@@ -85,7 +87,7 @@ export const addNewPoll = createAsyncThunk<
   },
 );
 
-// Thunk for handling voting
+// Async thunk for voting on a poll. Ensures users can't vote more than once per poll.
 export const voteOnPoll = createAsyncThunk<
   {
     pollId: string;
@@ -128,7 +130,7 @@ export const voteOnPoll = createAsyncThunk<
         qid: pollId,
         answer: option,
       });
-      fetchPolls();
+      fetchPolls(); // Refresh poll data post-vote to reflect changes.
       console.log('vote saved successfully');
       return { pollId, option, userId };
     } catch (error) {
@@ -143,6 +145,7 @@ export const voteOnPoll = createAsyncThunk<
   },
 );
 
+// Slice configuration including reducers and extraReducers for handling async actions.
 const pollSlice = createSlice({
   name: 'poll',
   initialState,
