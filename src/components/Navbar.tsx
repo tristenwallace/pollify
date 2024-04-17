@@ -13,7 +13,6 @@ const Navbar = () => {
   const handleLogout = () => {
     dispatch(logout());
   };
-  // TODO An invalid login still sets isAuthenticated to True
   return (
     <AppBar position="static" color="secondary" elevation={0}>
       <Toolbar>
