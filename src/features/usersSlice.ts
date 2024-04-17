@@ -3,6 +3,7 @@ import { validateUser, _getUsers } from '../server/_DATA';
 import { RootState } from '../app/store';
 import { voteOnPoll, addNewPoll } from './pollSlice';
 
+// Define the user interface for the state
 interface User {
   id: string;
   password: string;
@@ -12,6 +13,7 @@ interface User {
   questions: string[];
 }
 
+// Define the state structure for the users slice
 export interface UsersState {
   users: Record<string, User>;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
@@ -20,6 +22,7 @@ export interface UsersState {
   error: string | undefined;
 }
 
+// Initial state for the users slice
 const initialState: UsersState = {
   users: {},
   status: 'idle',
@@ -28,6 +31,7 @@ const initialState: UsersState = {
   error: undefined,
 };
 
+// Asynchronous thunk for fetching users
 export const fetchUsers = createAsyncThunk<User[], void, { state: RootState }>(
   'user/fetchUsers',
   async () => {
@@ -41,6 +45,7 @@ export const fetchUsers = createAsyncThunk<User[], void, { state: RootState }>(
   },
 );
 
+// Asynchronous thunk for user login
 export const loginUser = createAsyncThunk<
   User,
   { username: string; password: string },
@@ -53,13 +58,14 @@ export const loginUser = createAsyncThunk<
   ) => {
     try {
       const user = await validateUser(username, password);
-      return user; // Assuming validateUser returns user object on success
+      return user; // validateUser returns user object on success
     } catch (error) {
       return rejectWithValue('Invalid username or password');
     }
   },
 );
 
+// Users slice containing the reducer logic and actions
 export const usersSlice = createSlice({
   name: 'users',
   initialState,
@@ -96,13 +102,13 @@ export const usersSlice = createSlice({
         state.error = action.error.message;
       })
       .addCase(addNewPoll.fulfilled, (state, action) => {
-        // Assuming the new poll data includes the author's ID
+        // New poll data includes the author's ID
         const { author, id } = action.payload;
         if (state.currentUser) {
           state.currentUser.questions.push(id);
           state.users[author].questions.push(id);
         } else {
-          console.error('Author not found in users state:', author); // Log an error if the author doesn't exist
+          console.error('Author not found in users state:', author); // Logs an error if the author doesn't exist
         }
       })
       .addCase(voteOnPoll.fulfilled, (state, action) => {
@@ -111,7 +117,7 @@ export const usersSlice = createSlice({
           state.currentUser.answers[pollId] = option;
           state.users[userId].answers[pollId] = option;
         } else {
-          console.error('Current User not found in users state:', userId); // Log an error if the user doesn't exist
+          console.error('Current User not found in users state:', userId); // Logs an error if the user doesn't exist
         }
       });
   },

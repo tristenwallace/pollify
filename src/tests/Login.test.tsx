@@ -1,11 +1,10 @@
-import React from 'react';
 import { render, fireEvent, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import { ThemeProvider } from '@mui/material/styles';
-import theme from '../theme'; // Adjust the import path as necessary
+import theme from '../theme';
 import Login from '../components/Login';
-import { store } from '../app/store'; // Adjust the import path as necessary
+import { store } from '../app/store';
 
 describe('Login Component', () => {
   // Function to perform the common setup
@@ -38,7 +37,6 @@ describe('Login Component', () => {
     });
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-    // Adjust the expectation according to how you handle errors
     expect(
       await screen.findByText(/invalid username or password/i),
     ).toBeInTheDocument();

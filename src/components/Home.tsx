@@ -21,12 +21,14 @@ const Home = () => {
   const error = useSelector((state: RootState) => state.poll.error);
   const user = useSelector((state: RootState) => state.users.currentUser);
 
+  // Fetch polls when component mounts or status changes to idle
   useEffect(() => {
     if (pollStatus === 'idle') {
       dispatch(fetchPolls());
     }
   }, [pollStatus, dispatch]);
 
+  // Conditional rendering based on authentication and data loading status
   if (!user) {
     return (
       <Container>
@@ -37,12 +39,15 @@ const Home = () => {
     );
   }
 
+  // Show loading indicator during data fetch
   if (pollStatus === 'loading') return <CircularProgress />;
+  // Display error if data fetch fails
   if (error) return <Typography>Error: {error}</Typography>;
+  // Message if no polls are available
   if (pollStatus === 'succeeded' && !Object.keys(polls).length)
     return <Typography>No polls available.</Typography>;
 
-  // Filter polls based on whether they have been answered by the user
+  // Filter polls into answered and unanswered based on current user's activity
   const answeredPolls = Object.values(polls).filter(
     poll =>
       poll.optionOne.votes.includes(user.id) ||
