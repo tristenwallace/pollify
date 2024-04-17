@@ -55,13 +55,7 @@ export const loginUser = createAsyncThunk<
       const user = await validateUser(username, password);
       return user; // Assuming validateUser returns user object on success
     } catch (error) {
-      console.error('Error logging user', error);
-      if (error instanceof Error) {
-        rejectWithValue('Failed to login user: ' + error.message);
-      } else {
-        // If it's not an Error instance, handle it appropriately
-        rejectWithValue('Failed to login user due to an unknown error');
-      }
+      return rejectWithValue('Invalid username or password');
     }
   },
 );
@@ -86,7 +80,7 @@ export const usersSlice = createSlice({
       .addCase(loginUser.rejected, (state, action) => {
         state.isAuthenticated = false;
         state.currentUser = null;
-        state.error = action.error.message;
+        state.error = action.payload as string;
       })
       .addCase(fetchUsers.pending, state => {
         state.status = 'loading';

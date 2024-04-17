@@ -24,7 +24,9 @@ const Login: React.FC = () => {
       dispatch(loginUser({ username, password }))
         .unwrap()
         .then(() => navigate('/'))
-        .catch((error: Error) => console.error('Failed to login:', error));
+        .catch(error => {
+          console.error('Failed to login:', error.message);
+        });
     }
   };
 
