@@ -4,7 +4,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { RootState, AppDispatch } from '../app/store';
 import { fetchPolls } from '../features/pollSlice';
 import { fetchUsers } from '../features/usersSlice';
-import { Card, CardContent, Typography, Button } from '@mui/material';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CircularProgress,
+} from '@mui/material';
 
 interface PollProps {
   pollId: string;
@@ -33,7 +39,7 @@ const Poll: React.FC<PollProps> = ({ pollId }) => {
   }, [usersStatus, dispatch]);
 
   if (!poll || !author) {
-    return <Typography>Loading...</Typography>; // or handle missing poll or author more gracefully
+    return <CircularProgress />; // or handle missing poll or author more gracefully
   }
 
   return (

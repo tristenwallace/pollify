@@ -4,7 +4,14 @@ import { Link as RouterLink } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
 import { AppDispatch, RootState } from '../app/store';
-import { Container, Typography, Button, Box, Grid } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Button,
+  Box,
+  Grid,
+  CircularProgress,
+} from '@mui/material';
 
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -30,7 +37,7 @@ const Home = () => {
     );
   }
 
-  if (pollStatus === 'loading') return <Typography>Loading...</Typography>;
+  if (pollStatus === 'loading') return <CircularProgress />;
   if (error) return <Typography>Error: {error}</Typography>;
   if (pollStatus === 'succeeded' && !Object.keys(polls).length)
     return <Typography>No polls available.</Typography>;
