@@ -1,8 +1,18 @@
 import { useEffect } from 'react';
-import { useParams, Navigate, useNavigate } from 'react-router-dom';
+import { useParams, Navigate, useNavigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { voteOnPoll, PollOptionKey } from '../features/pollSlice';
 import { RootState, AppDispatch } from '../app/store';
+import {
+  Card,
+  CardContent,
+  Typography,
+  Button,
+  CircularProgress,
+  Avatar,
+  CardHeader,
+} from '@mui/material';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const PollDetail = () => {
   const { pollId } = useParams<{ pollId: string }>();
@@ -30,7 +40,7 @@ const PollDetail = () => {
   }
 
   if (!poll || !author) {
-    return <p>Poll not found or loading...</p>;
+    return <CircularProgress />;
   }
 
   const totalVotesOptionOne = poll.optionOne.votes.length;
@@ -66,36 +76,56 @@ const PollDetail = () => {
   };
 
   return (
-    <div>
-      <h1>Would You Rather</h1>
-      <img
-        src={author.avatarURL || '/default-avatar.png'}
-        alt={`${author.name}'s avatar`}
-        style={{ width: 50, height: 50 }}
+    <Card sx={{ maxWidth: 500, mx: 'auto', mt: 5 }}>
+      <CardHeader
+        avatar={<Avatar src={author.avatarURL || '/default-avatar.png'} />}
+        title={author.name}
+        subheader="asks:"
+        action={
+          <Button component={Link} to="/" startIcon={<ArrowBackIcon />}>
+            Back
+          </Button>
+        }
       />
-      <h2>{author.name}</h2>
-      <div>
-        <p>
+      <CardContent>
+        <Typography variant="h5" gutterBottom>
+          Would You Rather...
+        </Typography>
+        <Typography variant="body1" color="textSecondary">
           {poll.optionOne.text} - {totalVotesOptionOne} votes (
           {optionOnePercentage}%)
-        </p>
-        <p>
+        </Typography>
+        <Typography variant="body1" color="textSecondary">
           {poll.optionTwo.text} - {totalVotesOptionTwo} votes (
           {optionTwoPercentage}%)
-        </p>
+        </Typography>
         <div>
-          <button onClick={() => handleVote('optionOne')} disabled={!!userVote}>
+          <Button
+            variant="contained"
+            onClick={() => handleVote('optionOne')}
+            disabled={!!userVote}
+            sx={{ mr: 2, mt: 2 }}
+          >
             {poll.optionOne.text}{' '}
             {userVote === 'optionOne' ? '(Your vote)' : ''}
-          </button>
-          <button onClick={() => handleVote('optionTwo')} disabled={!!userVote}>
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleVote('optionTwo')}
+            disabled={!!userVote}
+            sx={{ mt: 2 }}
+          >
             {poll.optionTwo.text}{' '}
             {userVote === 'optionTwo' ? '(Your vote)' : ''}
-          </button>
+          </Button>
         </div>
-        {userVote && <p>You voted for: {poll[userVote].text}</p>}
-      </div>
-    </div>
+        {userVote && (
+          <Typography sx={{ mt: 2 }}>
+            You voted for: {poll[userVote].text}
+          </Typography>
+        )}
+      </CardContent>
+    </Card>
   );
 };
 
