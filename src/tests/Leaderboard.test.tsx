@@ -13,7 +13,7 @@ import Leaderboard from '../components/Leaderboard';
 type FullRootState = {
   users: UsersState;
   poll: PollsState;
-}
+};
 
 const rootReducer = combineReducers({
   users: userReducer,
@@ -36,47 +36,47 @@ const initialStateAuthenticated: RootState = {
       password: 'password123',
       avatarURL: '/path/to/avatar.png',
       answers: {},
-      questions: []
+      questions: [],
     },
     users: {
-      'sarahedo': {
+      sarahedo: {
         id: 'sarahedo',
         name: 'Sarah Edo',
         password: 'password123',
         avatarURL: '/path/to/avatar.png',
         answers: {},
-        questions: []
-      }
+        questions: [],
+      },
     },
     status: 'succeeded',
-    error: undefined
+    error: undefined,
   },
   poll: {
     polls: {},
     status: 'idle',
-    error: undefined
-  }
+    error: undefined,
+  },
 };
 
 // Create a custom render function that includes all providers
 const customRender = (
   ui: React.ReactElement,
-  { initialState, store }: CustomRenderOptions = {}
+  { initialState, store }: CustomRenderOptions = {},
 ) => {
   // Create store only if it's not provided
-  store = store || configureStore({
-    reducer: rootReducer,
-    preloadedState: initialState
-  });
+  store =
+    store ||
+    configureStore({
+      reducer: rootReducer,
+      preloadedState: initialState,
+    });
 
   return render(
     <Provider store={store}>
       <Router>
-        <ThemeProvider theme={theme}>
-          {ui}
-        </ThemeProvider>
+        <ThemeProvider theme={theme}>{ui}</ThemeProvider>
       </Router>
-    </Provider>
+    </Provider>,
   );
 };
 
@@ -84,6 +84,8 @@ describe('Leaderboard Component', () => {
   it('should display sorted users by activity', async () => {
     customRender(<Leaderboard />, { initialState: initialStateAuthenticated });
     expect(await screen.findByText(/Sarah Edo/)).toBeInTheDocument();
-    expect(await screen.findByText(/Questions Asked: 0 - Answers Given: 0/)).toBeInTheDocument();
+    expect(
+      await screen.findByText(/Questions Asked: 0 - Answers Given: 0/),
+    ).toBeInTheDocument();
   });
 });
