@@ -24,7 +24,7 @@ export interface Poll {
   optionTwo: PollOption;
 }
 
-interface PollsState {
+export interface PollsState {
   polls: Record<string, Poll>;
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   error: string | undefined;
