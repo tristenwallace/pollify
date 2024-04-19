@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation, Location } from 'react-router-dom';
 import { loginUser } from '../features/usersSlice';
 import { AppDispatch, RootState } from '../app/store';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
@@ -12,6 +12,12 @@ const ErrorTypography = styled(Typography)({
   marginTop: 8,
 });
 
+interface LocationState {
+  from: {
+    pathname: string;
+  };
+}
+
 const Login: React.FC = () => {
   // Local state for handling user input
   const [username, setUsername] = useState('');
@@ -21,6 +27,8 @@ const Login: React.FC = () => {
   const error = useSelector((state: RootState) => state.users.error);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
+  const location = useLocation() as Location & { state: LocationState }; // Attempt to find a redirect path in the location state; default to home page if not found
+  const from = location.state?.from?.pathname || '/';
 
   // Handle form submission
   const handleSubmit = async (event: React.FormEvent) => {
@@ -28,7 +36,7 @@ const Login: React.FC = () => {
     if (username && password) {
       dispatch(loginUser({ username, password }))
         .unwrap() // Ensures promise returns in either fulfilled or rejected state
-        .then(() => navigate('/')) // Navigate to home page on successful login
+        .then(() => navigate(from)) // Navigate to home page on successful login
         .catch(error => {
           console.error('Failed to login:', error.message); // Log error if login fails
         });
