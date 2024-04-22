@@ -2,6 +2,10 @@
   "name": "employee-polls-root",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "server",
+    "frontend"
+  ],
   "scripts": {
     "start:frontend": "cd frontend && npm start",
     "start:server": "cd server && npm start",
@@ -38,6 +42,7 @@
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.1.3",
     "prettier": "^3.2.5",
+    "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
   }
 }

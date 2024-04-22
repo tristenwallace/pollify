@@ -84,11 +84,11 @@ This grants the necessary permissions to execute the database initialization scr
 To run the frontend of the Polling App on your local machine, execute the following command inside the frontend directory:
 
 1.Start the development server: `npm start`
-2.Open http://localhost:3000 in your browser to view the app.
+2.Open <http://localhost:3000> in your browser to view the app.
 
 ### Backend
 
 To start the backend server, execute the following command inside the server directory:
 
 1.Start the development server: `npm run dev`
-2.This will start the backend on http://localhost:5000 by default.
+2.This will start the backend on <http://localhost:5000> by default.

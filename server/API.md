@@ -1,63 +1,100 @@
-# API Overview
+# Polling App API Documentation
 
-## RESTful Routes
+## Base URL
 
-### Users
+All API requests are made to the base URL of the deployed backend. For development, this is `http://localhost:5000/`.
 
-- GET /users: Fetch all users (Admin only)
-- GET /users/:id: Fetch a single user by ID (Admin or same user)
-- POST /users: Register a new user
-- POST /users/login: Authenticate a user and return a token
+## Authentication
 
-### Questions
+- All protected routes require a bearer token to be sent in the `Authorization` header.
+- Tokens are acquired through the login endpoint and must be included in subsequent requests to protected endpoints.
 
-- GET /questions: Fetch all questions
-- GET /questions/:id: Fetch a single question by ID
-- POST /questions: Create a new question (Authenticated users only)
-- DELETE /questions/:id: Delete a question (Admin or question author)
+## Users
 
-### Votes
+### POST /users
 
-- POST /questions/:id/vote: Vote on a question (Authenticated users only)
-- PUT /questions/:id/vote: Update a vote on a question (Authenticated users only)
+- **Description**: Register a new user.
+- **Body**:
+  - `username`: String
+  - `password`: String
+  - `name`: String
+  - `avatarURL`: String (optional)
+- **Response**: User object with details and a JWT token.
+
+### POST /login
+
+- **Description**: Authenticate a user and return a JWT.
+- **Body**:
+  - `username`: String
+  - `password`: String
+- **Response**: JWT token and user details.
+
+### GET /users
+
+- **Description**: Fetch all users.
+- **Response**: Array of all user objects.
+
+### GET /users/:id
+
+- **Description**: Fetch a single user by ID (Admin or the authenticated user).
+- **Response**: User object.
+
+## Polls
+
+### GET /polls
+
+- **Description**: Fetch all polls.
+- **Response**: Array of all poll objects, each including author details and vote counts.
+
+### GET /polls/:id
+
+- **Description**: Fetch a single poll by ID.
+- **Response**: Detailed poll object including author information and options.
+
+### POST /polls
+
+- **Description**: Create a new poll (authenticated users only).
+- **Body**:
+  - `optionOneText`: String
+  - `optionTwoText`: String
+- **Response**: Newly created poll object.
+
+## Votes
+
+### POST /polls/:id/vote
+
+- **Description**: Submit a vote on a poll option (authenticated users only).
+- **Body**:
+  - `option`: String (`optionOne` or `optionTwo`)
+- **Response**: Updated poll object with new vote counts.
 
 ## Database Schema Design
 
 ### Users Table
 
-- id: Primary Key
-- username: Text, Unique
-- password: Text (hashed)
-- name: Text
-- avatarURL: Text (Optional)
+- `id`: Primary Key, UUID
+- `username`: String, Unique
+- `password`: String, Hashed
+- `name`: String
+- `avatarURL`: String, Nullable
 
-### Questions Table
+### Polls Table
 
-- id: Primary Key
-- author_id: Foreign Key to Users
-- timestamp: Timestamp
-- optionOne_text: Text
-- optionOne_votes: Array of user IDs (Text[])
-- optionTwo_text: Text
-- optionTwo_votes: Array of user IDs (Text[])
+- `id`: Primary Key, UUID
+- `authorId`: Foreign Key, References Users
+- `timestamp`: Timestamp
+- `optionOneText`: String
+- `optionOneVotes`: Integer, Default 0
+- `optionTwoText`: String
+- `optionTwoVotes`: Integer, Default 0
 
-## Behavior Overview
+### Votes Table
 
-### User Endpoints:
+- `id`: Primary Key, UUID
+- `userId`: Foreign Key, References Users
+- `pollId`: Foreign Key, References Polls
+- `optionChosen`: Enum ('optionOne', 'optionTwo')
 
-- GET /users: Returns all user profiles. Restricted to admin roles.
-- GET /users/:id: Returns the user profile based on the user ID. Accessible by the user themselves or an admin.
-- POST /users: Allows a new user to register by providing username, password, and optional name and avatar URL. The password is hashed before storing.
-- POST /users/login: Authenticates user credentials and returns a JWT for access control.
+## Error Handling
 
-### Question Endpoints:
-
-- GET /questions: Retrieves all questions available in the database.
-- GET /questions/:id: Retrieves a specific question by its ID including all details such as options and votes.
-- POST /questions: Allows authenticated users to post a new question. Requires an auth token.
-- DELETE /questions/:id: Allows a question to be deleted. This action is restricted to the question author or an admin.
-
-### Vote Endpoints:
-
-- POST /questions/:id/vote: Allows authenticated users to vote on a question. Users must provide their user ID and selected option.
-- PUT /questions/:id/vote: Allows users to change their vote on a specific question. This endpoint checks if the user already voted and updates the vote accordingly.
+- All endpoints should return appropriate HTTP status codes along with descriptive error messages in the case of failures.
