@@ -25,15 +25,34 @@ Before setting up the project, ensure you have the following installed on your s
 
 To install the Polling App, follow these steps:
 
-1. Clone the repository: `git clone git@github.com:tristenwallace/employee_polling_app.git`
+1.Clone the repository: `git clone git@github.com:tristenwallace/employee_polling_app.git`
 
-2. Navigate to the project directory: `cd employee_polling_app`
+2.Navigate to the project directory: `cd employee_polling_app`
 
-3. Install dependencies: `npm install`
+### Setting up the Frontend
+
+`cd frontend`
+
+3.Install dependencies: `npm install`
+
+### Setting up the Frontend
+
+`cd ../server`
+
+4.Install dependencies: `npm install`
 
 ## Running the Application
 
-To run the Polling App on your local machine, execute the following commands:
+### Frontend
 
-1. Start the development server: `npm start`
-2. Open http://localhost:3000 in your browser to view the app.
+To run the frontend of the Polling App on your local machine, execute the following command inside the frontend directory:
+
+1.Start the development server: `npm start`
+2.Open http://localhost:3000 in your browser to view the app.
+
+### Backend
+
+To start the backend server, execute the following command inside the server directory:
+
+1.Start the development server: `npm run dev`
+2.This will start the backend on http://localhost:5000 by default.
