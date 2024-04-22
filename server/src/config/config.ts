@@ -1,5 +1,30 @@
 import { Dialect } from 'sequelize/types'; // Importing Dialect type for strict typing
-import dbConfig from '../dbConfig/dbConfig'; // Assuming dbConfig exports a default object
+import dotenv from 'dotenv';
+
+// Determine which .env file to load based on NODE_ENV
+const envFile =
+  process.env.NODE_ENV === 'test'
+    ? './environment/.env.test'
+    : './environment/.env.development';
+
+// Load the environment variables from the specified file
+dotenv.config({ path: envFile });
+
+interface DBConfig {
+  host: string;
+  port: number;
+  database: string;
+  user: string;
+  password: string;
+}
+
+export const dbConfig: DBConfig = {
+  host: process.env.POSTGRES_HOST || '',
+  port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
+  database: process.env.POSTGRES_NAME || '',
+  user: process.env.POSTGRES_USER || '',
+  password: process.env.POSTGRES_PASSWORD || '',
+};
 
 interface SequelizeConfig {
   username: string;
@@ -23,7 +48,7 @@ const sequelizeConfig: Record<string, SequelizeConfig> = {
     database: dbConfig.database,
     host: dbConfig.host,
     port: dbConfig.port,
-    dialect: 'postgres', // Assuming PostgreSQL as the database
+    dialect: 'postgres',
   },
   test: {
     username: dbConfig.user,
@@ -50,3 +75,4 @@ const sequelizeConfig: Record<string, SequelizeConfig> = {
 };
 
 export default sequelizeConfig;
+module.exports = sequelizeConfig;

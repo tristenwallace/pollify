@@ -4,7 +4,11 @@
   "private": true,
   "scripts": {
     "start": "ts-node src/server.ts",
-    "dev": "nodemon --exec ts-node src/server.ts"
+    "dev": "nodemon --exec ts-node src/server.ts",
+    "build": "tsc",
+    "migrate": "sequelize-cli db:migrate",
+    "migrate:undo": "sequelize db:migrate:undo",
+    "migrate:all": "npm run build && sequelize db:migrate"
   },
   "dependencies": {
     "bcryptjs": "^2.4.3",
@@ -12,8 +16,7 @@
     "jsonwebtoken": "^8.5.1",
     "pg": "^8.11.5",
     "pg-hstore": "^2.3.4",
-    "sequelize": "^6.37.3",
-    "sequelize-cli": "^6.6.2"
+    "sequelize": "^6.37.3"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
@@ -26,6 +29,8 @@
     "@types/sequelize": "^4.28.20",
     "dotenv": "^16.4.5",
     "eslint-plugin-node": "^11.1.0",
-    "nodemon": "^2.0.22"
+    "nodemon": "^2.0.22",
+    "sequelize-cli": "^6.6.2",
+    "sequelize-typescript": "^2.1.6"
   }
 }

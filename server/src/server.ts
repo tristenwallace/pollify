@@ -1,28 +1,17 @@
 import express from 'express';
-import { Request, Response } from 'express';
-import { sequelize } from '../models'; // Adjust the path as necessary to point to your Sequelize models index file
+import bodyParser from 'body-parser';
 
-const app = express();
-const PORT = process.env.PORT || 3000;
+const app: express.Application = express();
 
-// Middleware to parse JSON bodies
-app.use(express.json());
+// Set the server port
+const PORT: number = 3000;
+const address: string = '0.0.0.0:3000';
 
-// Test route to ensure server is running
-app.get('/', (req: Request, res: Response) => {
-  res.status(200).send('Server is running!');
+app.use(bodyParser.json());
+
+// Start listening for incoming connections on the specified port
+app.listen(PORT, function () {
+  console.log(`starting app on: ${address}`);
 });
 
-// Sync Sequelize models with the database
-sequelize
-  .sync({ force: true })
-  .then(() => {
-    console.log('Database synced!');
-    // Start the server
-    app.listen(PORT, () => {
-      console.log(`Server running on http://localhost:${PORT}`);
-    });
-  })
-  .catch(error => {
-    console.error('Failed to sync database:', error);
-  });
+export default app;

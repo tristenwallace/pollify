@@ -1,5 +1,5 @@
 import { Pool, types } from 'pg';
-import dbConfig from './dbConfig';
+import { dbConfig } from './config';
 
 // Set up custom type parsing for numeric fields
 types.setTypeParser(types.builtins.NUMERIC, parseFloat);

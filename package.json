@@ -12,8 +12,7 @@
     "install:frontend": "cd frontend && npm install",
     "install:server": "cd server && npm install",
     "lint": "eslint '*/**/*.{ts,tsx,js,jsx}' --ignore-pattern 'node_modules/'",
-    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,css}'",
-    "build": "tsc --noEmit -p tsconfig.json"
+    "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,css}'"
   },
   "eslintConfig": {
     "extends": [
@@ -34,6 +33,7 @@
     ]
   },
   "devDependencies": {
+    "@babel/plugin-proposal-private-property-in-object": "^7.21.11",
     "@typescript-eslint/eslint-plugin": "^7.6.0",
     "@typescript-eslint/parser": "^7.6.0",
     "eslint": "^8.57.0",

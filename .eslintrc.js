@@ -1,5 +1,6 @@
 module.exports = {
   root: true,
+  ignorePatterns: ['node_modules/', 'dist/', '*.min.js', 'build/'],
   overrides: [
     {
       files: ['server/**/*.{js,ts}'],
