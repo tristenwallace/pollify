@@ -1,0 +1,19 @@
+{
+    "name": "employee-polls-backend",
+    "version": "0.1.0",
+    "private": true,
+    "scripts": {
+        "start": "node server.js",
+        "dev": "nodemon server.js"
+    },
+    "dependencies": {
+        "express": "^4.17.1",
+        "jsonwebtoken": "^8.5.1",
+        "bcryptjs": "^2.4.3",
+        "pg": "^8.6.0"
+    },
+    "devDependencies": {
+        "nodemon": "^2.0.15",
+        "eslint-plugin-node": "^11.1.0"
+    }
+}

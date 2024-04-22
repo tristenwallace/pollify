@@ -1,5 +1,4 @@
-import { useEffect } from 'react';
-import { useParams, Navigate, useNavigate, Link } from 'react-router-dom';
+import { useParams, Navigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { voteOnPoll, PollOptionKey } from '../features/pollSlice';
 import { RootState, AppDispatch } from '../app/store';
@@ -16,30 +15,21 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
 const PollDetail = () => {
   // Retrieve poll ID from URL parameters
-  const { pollId } = useParams<{ pollId: string }>();
+  const pollId = useParams<{ pollId: string }>().pollId as string;
   // Hook to programmatically navigate
-  const navigate = useNavigate();
   const dispatch: AppDispatch = useDispatch();
   // Retrieve the current user from global state
   const user = useSelector((state: RootState) => state.users.currentUser);
-
-  // Redirect to not found page if no poll ID is found
-  if (!pollId) {
-    return <Navigate to="/404" />;
-  }
-
   // Retrieve poll and author details from the Redux store
   const poll = useSelector((state: RootState) => state.poll.polls[pollId]);
   const author = useSelector(
     (state: RootState) => poll && state.users.users[poll.author],
   );
 
-  // Redirect to not found page if the poll doesn't exist
-  useEffect(() => {
-    if (!poll) {
-      navigate('/404');
-    }
-  }, [poll, navigate]);
+  // Redirect to not found page if no poll ID is found
+  if (!pollId) {
+    return <Navigate to="/404" />;
+  }
 
   // Redirect to login if the user is not logged in
   if (!user) {
