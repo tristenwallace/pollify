@@ -1,0 +1,26 @@
+version: '3.9'
+
+services:
+  dev-db:
+    image: postgres
+    ports:
+      - '5432:5432'
+    env_file:
+      - ./environment/.env.development
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+
+  test-db:
+    image: postgres
+    ports:
+      - '5433:5432'  # Use a different port to avoid conflicts with the dev DB
+    env_file:
+      - ./environment/.env.test
+    volumes:
+      - test-db-data:/var/lib/postgresql/data
+      - ./postgres-init:/docker-entrypoint-initdb.d
+
+volumes:
+  dev-db-data:
+  test-db-data:

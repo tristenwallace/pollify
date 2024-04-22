@@ -1,19 +1,27 @@
 {
-    "name": "employee-polls-backend",
-    "version": "0.1.0",
-    "private": true,
-    "scripts": {
-        "start": "node server.js",
-        "dev": "nodemon server.js"
-    },
-    "dependencies": {
-        "express": "^4.17.1",
-        "jsonwebtoken": "^8.5.1",
-        "bcryptjs": "^2.4.3",
-        "pg": "^8.6.0"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.15",
-        "eslint-plugin-node": "^11.1.0"
-    }
+  "name": "employee-polls-backend",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "start": "node server.js",
+    "dev": "nodemon server.js"
+  },
+  "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "express": "^4.17.1",
+    "jsonwebtoken": "^8.5.1",
+    "pg": "^8.11.5"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/dotenv": "^8.2.0",
+    "@types/express": "^4.17.21",
+    "@types/jasmine": "^3.10.18",
+    "@types/jsonwebtoken": "^9.0.6",
+    "@types/node": "^20.12.5",
+    "@types/pg": "^7.14.11",
+    "dotenv": "^16.4.5",
+    "eslint-plugin-node": "^11.1.0",
+    "nodemon": "^2.0.15"
+  }
 }
