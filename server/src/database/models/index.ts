@@ -7,7 +7,7 @@ import VoteModel from './vote';
 const env = process.env.NODE_ENV || 'development';
 const config = sequelizeConfig[env];
 
-const sequelize = new Sequelize(
+export const sequelize = new Sequelize(
   config.database,
   config.username,
   config.password,
