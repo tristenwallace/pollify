@@ -13,7 +13,7 @@ export default (sequelize: Sequelize) => {
       userId: {
         type: DataTypes.UUID,
         references: {
-          model: 'users',
+          model: 'Users',
           key: 'id',
         },
         primaryKey: true,
@@ -21,7 +21,7 @@ export default (sequelize: Sequelize) => {
       pollId: {
         type: DataTypes.UUID,
         references: {
-          model: 'polls',
+          model: 'Polls',
           key: 'id',
         },
         primaryKey: true,
@@ -34,7 +34,7 @@ export default (sequelize: Sequelize) => {
     {
       sequelize,
       modelName: 'Vote',
-      tableName: 'votes',
+      tableName: 'Votes',
       timestamps: false,
     },
   );

@@ -9,7 +9,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       defaultValue: DataTypes.UUIDV4,
     },
     authorId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       allowNull: false,
       references: {
         model: 'Users',
@@ -17,11 +17,6 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       },
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
-    },
-    timestamp: {
-      allowNull: false,
-      type: DataTypes.DATE,
-      defaultValue: DataTypes.NOW,
     },
     optionOneText: {
       type: DataTypes.STRING,

@@ -3,12 +3,14 @@ import { Sequelize, DataTypes, Model } from 'sequelize';
 export class Poll extends Model {
   public id!: number;
   public authorId!: number;
-  public readonly createdAt!: Date;
-  public readonly updatedAt!: Date;
   public optionOneText!: string;
   public optionOneVotes!: number;
   public optionTwoText!: string;
   public optionTwoVotes!: number;
+
+  // timestamps!
+  public readonly createdAt!: Date;
+  public readonly updatedAt!: Date;
 }
 
 export default (sequelize: Sequelize) => {
@@ -22,13 +24,9 @@ export default (sequelize: Sequelize) => {
       authorId: {
         type: DataTypes.UUID,
         references: {
-          model: 'users',
+          model: 'Users',
           key: 'id',
         },
-      },
-      timestamp: {
-        type: DataTypes.DATE,
-        defaultValue: DataTypes.NOW,
       },
       optionOneText: {
         type: DataTypes.STRING,
@@ -46,11 +44,21 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.INTEGER,
         defaultValue: 0,
       },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
       modelName: 'Poll',
-      tableName: 'polls',
+      tableName: 'Polls',
     },
   );
 

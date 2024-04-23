@@ -9,7 +9,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       type: DataTypes.INTEGER,
     },
     userId: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.UUID,
       references: {
         model: 'Users',
         key: 'id',

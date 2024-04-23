@@ -25,11 +25,11 @@ export default (sequelize: Sequelize) => {
         allowNull: false,
         unique: true,
       },
-      name: {
+      password: {
         type: DataTypes.STRING,
         allowNull: false,
       },
-      password: {
+      name: {
         type: DataTypes.STRING,
         allowNull: false,
       },
@@ -37,11 +37,21 @@ export default (sequelize: Sequelize) => {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      createdAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
+      updatedAt: {
+        allowNull: false,
+        type: DataTypes.DATE,
+        defaultValue: DataTypes.NOW,
+      },
     },
     {
       sequelize,
       modelName: 'User',
-      tableName: 'users',
+      tableName: 'Users',
     },
   );
 
