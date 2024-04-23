@@ -77,6 +77,16 @@ docker-compose up --build -d
 
 This grants the necessary permissions to execute the database initialization script when the PostgreSQL container starts.
 
+### Handling Migrations
+
+After setting up the database with Docker, you can run migrations to set up your database schema:
+
+1.Navigate to the server directory.
+2.Run migrations to set up your database tables: `npm run migrate:all`
+
+This command will apply all the migrations defined in your project, setting up the database schema as required for the application to function.
+
+
 ## Running the Application
 
 ### Frontend
