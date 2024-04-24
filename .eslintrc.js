@@ -5,6 +5,7 @@ module.exports = {
     {
       files: ['server/**/*.{js,ts}'],
       env: {
+        node: true,
         browser: true,
         es2021: true,
       },

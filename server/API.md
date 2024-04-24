@@ -9,9 +9,7 @@ All API requests are made to the base URL of the deployed backend. For developme
 - All protected routes require a bearer token to be sent in the `Authorization` header.
 - Tokens are acquired through the login endpoint and must be included in subsequent requests to protected endpoints.
 
-## Users
-
-### POST /users
+### POST /register
 
 - **Description**: Register a new user.
 - **Body**:
@@ -19,7 +17,7 @@ All API requests are made to the base URL of the deployed backend. For developme
   - `password`: String
   - `name`: String
   - `avatarURL`: String (optional)
-- **Response**: User object with details and a JWT token.
+- **Response**: JWT token with user details.
 
 ### POST /login
 
@@ -27,7 +25,9 @@ All API requests are made to the base URL of the deployed backend. For developme
 - **Body**:
   - `username`: String
   - `password`: String
-- **Response**: JWT token and user details.
+- **Response**: JWT token with user details.
+
+## Users
 
 ### GET /users
 

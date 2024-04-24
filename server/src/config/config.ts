@@ -1,32 +1,20 @@
-import { Dialect } from 'sequelize/types'; // Importing Dialect type for strict typing
+import { Dialect } from 'sequelize/types';
 import dotenv from 'dotenv';
+import path from 'path';
 
-// Determine which .env file to load based on NODE_ENV
-const envFile =
-  process.env.NODE_ENV === 'test'
-    ? './environment/.env.test'
-    : './environment/.env.development';
+// Determine the environment and configure the .env file path
+const env = process.env.NODE_ENV || 'development';
 
-// Load the environment variables from the specified file
-dotenv.config({ path: envFile });
+const envPath =
+  env === 'test'
+    ? path.resolve(__dirname, '../../environment/.env.test')
+    : path.resolve(__dirname, '../../environment/.env.development');
 
-interface DBConfig {
-  host: string;
-  port: number;
-  database: string;
-  user: string;
-  password: string;
-}
+// Load the .env file
+dotenv.config({ path: envPath });
 
-export const dbConfig: DBConfig = {
-  host: process.env.POSTGRES_HOST || '',
-  port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
-  database: process.env.POSTGRES_NAME || '',
-  user: process.env.POSTGRES_USER || '',
-  password: process.env.POSTGRES_PASSWORD || '',
-};
-
-interface SequelizeConfig {
+// Define a base configuration that applies to both Sequelize and Pool
+interface Config {
   username: string;
   password: string;
   database: string;
@@ -41,29 +29,30 @@ interface SequelizeConfig {
   };
 }
 
-const sequelizeConfig: Record<string, SequelizeConfig> = {
+// Configuration for all environments
+const Config: Record<string, Config> = {
   development: {
-    username: dbConfig.user,
-    password: dbConfig.password,
-    database: dbConfig.database,
-    host: dbConfig.host,
-    port: dbConfig.port,
+    username: process.env.POSTGRES_USER || '',
+    password: process.env.POSTGRES_PASSWORD || '',
+    database: process.env.POSTGRES_NAME || '',
+    host: process.env.POSTGRES_HOST || '',
+    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
     dialect: 'postgres',
   },
   test: {
-    username: dbConfig.user,
-    password: dbConfig.password,
-    database: dbConfig.database,
-    host: dbConfig.host,
-    port: dbConfig.port,
+    username: process.env.POSTGRES_USER || '',
+    password: process.env.POSTGRES_PASSWORD || '',
+    database: process.env.POSTGRES_NAME || '',
+    host: process.env.POSTGRES_HOST || '',
+    port: parseInt(process.env.POSTGRES_PORT || '5433', 10),
     dialect: 'postgres',
   },
   production: {
-    username: dbConfig.user,
-    password: dbConfig.password,
-    database: dbConfig.database,
-    host: dbConfig.host,
-    port: dbConfig.port,
+    username: process.env.POSTGRES_USER || '',
+    password: process.env.POSTGRES_PASSWORD || '',
+    database: process.env.POSTGRES_NAME || '',
+    host: process.env.POSTGRES_HOST || '',
+    port: parseInt(process.env.POSTGRES_PORT || '5432', 10),
     dialect: 'postgres',
     dialectOptions: {
       ssl: {
@@ -74,5 +63,5 @@ const sequelizeConfig: Record<string, SequelizeConfig> = {
   },
 };
 
-export default sequelizeConfig;
-module.exports = sequelizeConfig;
+export default Config;
+module.exports = Config;
