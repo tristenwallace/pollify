@@ -1,7 +1,7 @@
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export const up = async (queryInterface: QueryInterface): Promise<void> => {
-  await queryInterface.createTable('Polls', {
+  await queryInterface.createTable('polls', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -12,7 +12,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       type: DataTypes.UUID,
       allowNull: false,
       references: {
-        model: 'Users',
+        model: 'users',
         key: 'id',
       },
       onUpdate: 'CASCADE',
@@ -50,5 +50,5 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
 };
 
 export const down = async (queryInterface: QueryInterface): Promise<void> => {
-  await queryInterface.dropTable('Polls');
+  await queryInterface.dropTable('polls');
 };

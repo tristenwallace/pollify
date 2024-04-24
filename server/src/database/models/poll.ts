@@ -56,7 +56,7 @@ Poll.init(
   {
     sequelize,
     modelName: 'Poll',
-    tableName: 'Polls',
+    tableName: 'polls',
   },
 );
 

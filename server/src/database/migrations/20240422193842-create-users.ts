@@ -1,7 +1,7 @@
 import { QueryInterface, DataTypes } from 'sequelize';
 
 export const up = async (queryInterface: QueryInterface): Promise<void> => {
-  await queryInterface.createTable('Users', {
+  await queryInterface.createTable('users', {
     id: {
       allowNull: false,
       primaryKey: true,
@@ -21,7 +21,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    avatarURL: {
+    avatar_url: {
       type: DataTypes.STRING,
     },
     createdAt: {
@@ -38,5 +38,5 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
 };
 
 export const down = async (queryInterface: QueryInterface): Promise<void> => {
-  await queryInterface.dropTable('Users');
+  await queryInterface.dropTable('users');
 };

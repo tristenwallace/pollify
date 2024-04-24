@@ -14,9 +14,10 @@ export class User extends Model {
 User.init(
   {
     id: {
+      allowNull: false,
+      primaryKey: true,
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
-      primaryKey: true,
     },
     username: {
       type: DataTypes.STRING,
@@ -31,9 +32,8 @@ User.init(
       type: DataTypes.STRING,
       allowNull: false,
     },
-    avatarURL: {
+    avatar_url: {
       type: DataTypes.STRING,
-      allowNull: true,
     },
     createdAt: {
       allowNull: false,
@@ -49,7 +49,7 @@ User.init(
   {
     sequelize,
     modelName: 'User',
-    tableName: 'Users',
+    tableName: 'users',
   },
 );
 
