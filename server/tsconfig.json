@@ -4,9 +4,13 @@
     "outDir": "./dist",
     "lib": ["esnext"],
     "rootDir": "./src",
-    "typeRoots": ["./node_modules/@types"],
     "moduleResolution": "node",
-    "resolveJsonModule": true
+    "resolveJsonModule": true,
+    "paths": {
+      "*": ["node_modules/*", "src/types/*"]
+    },
+    "typeRoots": ["./node_modules/@types", "../node_modules/@types"],
+    "types": ["jest", "node"]
   },
   "include": ["src/**/*"],
   "exclude": ["node_modules", "dist"]
