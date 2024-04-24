@@ -1,26 +1,6 @@
-import { Sequelize } from 'sequelize';
-import sequelizeConfig from '../../config/config'; // adjust the path as necessary
-import UserModel from './user';
-import PollModel from './poll';
-import VoteModel from './vote';
-
-const env = process.env.NODE_ENV || 'development';
-const config = sequelizeConfig[env];
-
-export const sequelize = new Sequelize(
-  config.database,
-  config.username,
-  config.password,
-  {
-    host: config.host,
-    dialect: config.dialect,
-  },
-);
-
-// Import models
-const User = UserModel(sequelize);
-const Poll = PollModel(sequelize);
-const Vote = VoteModel(sequelize);
+import User from './user';
+import Poll from './poll';
+import Vote from './vote';
 
 // Set up relationships
 User.belongsToMany(Poll, {

@@ -1,7 +1,7 @@
 import express from 'express';
 import { routes } from './router/router';
 import bodyParser from 'body-parser';
-import { sequelize } from './database/models/index';
+import sequelize from './config/sequelize';
 const app: express.Application = express();
 
 // Set the server port
@@ -22,8 +22,10 @@ sequelize
   );
 
 // Start listening for incoming connections on the specified port
-app.listen(PORT, function () {
-  console.log(`starting app on: ${address}`);
+sequelize.sync().then(() => {
+  app.listen(PORT, () => {
+    console.log(`starting app on: ${address}`);
+  });
 });
 
 export default app;
