@@ -14,12 +14,6 @@ export const validateRegistration = [
   // Validate the 'name' field: it should be a non-empty string
   body('name').isString().withMessage('Name must be a string.'),
 
-  // Validate the 'avatarURL' field: if it exists, it should be a url
-  body('avatarURL')
-    .optional()
-    .isURL()
-    .withMessage('Avatar URL must be a valid URL.'),
-
   // Custom middleware to check the result of the validations above
   (req: Request, res: Response, next: NextFunction) => {
     const errors = validationResult(req); // Collect errors from prior validations
