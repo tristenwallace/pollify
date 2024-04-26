@@ -1,6 +1,6 @@
 import express from 'express';
 import authRoutes from './routes/authRoutes';
-//TODO import pollsRoutes from './routes/pollRoutes';
+import pollRoutes from './routes/pollRoutes';
 //TODO import usersRoutes from './routes/userRoutes';
 
 export const routes = express.Router();
@@ -13,5 +13,5 @@ routes.get('/', (req, res) => {
 
 // Use the defined routes
 routes.use('/auth', authRoutes);
-//TODO routes.use('/polls', pollsRoutes);
+routes.use('/polls', pollRoutes);
 //TODO routes.use('/users', usersRoutes);

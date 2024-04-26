@@ -2,8 +2,8 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize';
 
 export class Poll extends Model {
-  public id!: number;
-  public authorId!: number;
+  public id!: string;
+  public authorId!: string;
   public optionOneText!: string;
   public optionOneVotes!: number;
   public optionTwoText!: string;
