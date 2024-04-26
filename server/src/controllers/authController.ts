@@ -2,6 +2,9 @@ import { Request, Response } from 'express';
 import bcrypt from 'bcrypt';
 import jwt from 'jsonwebtoken';
 import { User } from '../database/models/user';
+import { Poll } from '../database/models/poll';
+import { Vote } from '../database/models/vote';
+
 
 // Default JWT secret key; consider using a more secure way to manage secrets.
 const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -11,13 +14,17 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
  * @param user The user object for which to create the token.
  * @returns The JWT token as a string.
  */
-function createToken(user: User): string {
+function createToken(user: User, pollsCreated: number, pollsVotedOn: number): string {
   const payload = {
     user: {
       id: user.id,
       username: user.username,
       name: user.name,
       avatarURL: user.avatarURL,
+    },
+    stats: {
+      pollsCreated: pollsCreated,
+      pollsVotedOn: pollsVotedOn
     },
   };
 
@@ -49,12 +56,13 @@ export const register = async (req: Request, res: Response) => {
     const user = await User.create(userData);
 
     // Generate a token for the new user
-    const token = createToken(user);
+    const token = createToken(user, 0, 0);
 
     // Respond with success message and the user token
     res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
     // Handle errors and send a 500 Internal Server Error response
+    console.error('Registration failed:', error);
     res.status(500).json({ error: 'User registration failed' });
   }
 };
@@ -77,8 +85,13 @@ export const login = async (req: Request, res: Response) => {
       return res.status(401).json({ error: 'Invalid credentials' });
     }
 
+    // Fetch additional user stats data for token
+    const pollsCreated = await Poll.count({ where: { authorId: user.id } });
+    const pollsVotedOn = await Vote.count({ where: { userId: user.id } });
+
+
     // Generate a token for the logged-in user
-    const token = createToken(user);
+    const token = createToken(user, pollsCreated, pollsVotedOn);
 
     // Respond with success message and the token
     res.json({ message: 'User logged in successfully', token });
