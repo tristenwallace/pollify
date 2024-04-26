@@ -1,31 +1,59 @@
-import express from 'express';
-import { routes } from './router/router';
-import bodyParser from 'body-parser';
+import app from './app'
 import sequelize from './config/sequelize';
-const app: express.Application = express();
+import type { Server } from 'http';
 
 // Set the server port
-const PORT: number = 5000;
-const address: string = '0.0.0.0:5000';
+const PORT: number = parseInt(process.env.PORT || '5000');
 
-app.use(bodyParser.json());
+// Database connection with retry logic
+const connectWithRetry = async () => {
+  try {
+    await sequelize.authenticate();
+    console.log('Database connected.');
+    await sequelize.sync(); // You might want to remove this in production or manage it differently
+  } catch (err) {
+    console.error('Database connection failed, retrying in 5 seconds...', err);
+    setTimeout(connectWithRetry, 5000);
+  }
+};
 
-// Register the main router with the application to handle all incoming requests
-app.use('/', routes);
+// Function to start the server
+export const startServer = async (): Promise<{ server: Server, port: number }> => {
+  try {
+      await connectWithRetry(); // Ensure database is connected before starting the server
+      return new Promise((resolve, reject) => {
+          const server = app.listen(PORT, () => {
+              console.log(`Server running on port ${PORT}`);
+              resolve({ server, port: PORT });
+          }).on('error', reject);
+      });
+  } catch (err) {
+      console.error('Failed to start server:', err);
+      throw err;
+  }
+};
 
-// Confirm that database is connected
-sequelize
-  .authenticate()
-  .then(() => console.log('Database connected.'))
-  .catch((err: Error) =>
-    console.error('Unable to connect to the database:', err),
-  );
-
-// Start listening for incoming connections on the specified port
-sequelize.sync().then(() => {
-  app.listen(PORT, () => {
-    console.log(`starting app on: ${address}`);
+// Graceful shutdown
+const gracefulShutdown = (server: Server) => {
+  process.on('SIGTERM', () => {
+      console.log('SIGTERM signal received: closing HTTP server');
+      server.close(() => {
+          console.log('HTTP server closed');
+          sequelize.close().then(() => {
+              console.log('Database connection closed');
+              process.exit(0);
+          });
+      });
   });
-});
+};
 
-export default app;
+// Start the server if this file is run directly (not when imported for tests)
+if (require.main === module) {
+  startServer().then(({ server, port }) => {
+      console.log(`Server started on port ${port}`);
+      gracefulShutdown(server);
+  }).catch(err => {
+      console.error('Server failed to start:', err);
+      process.exit(1);
+  });
+}
