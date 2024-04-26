@@ -28,10 +28,11 @@ describe('Authentication API', () => {
 
   describe('POST /register', () => {
     it('should register a new user and return a token', async () => {
+      const uniqueUsername = `newuser_${Date.now()}`;
       const res = await request(app)
         .post('/auth/register')
         .send({
-          username: 'newuser',
+          username: uniqueUsername,
           password: 'password123',
           name: 'New User',
           avatarURL: null,
@@ -44,6 +45,9 @@ describe('Authentication API', () => {
           token: expect.any(String),
         }),
       );
+
+      // Cleanup
+      await User.destroy({ where: { username: uniqueUsername } });
     });
 
     it('should handle missing username and return a 400 status', async () => {
