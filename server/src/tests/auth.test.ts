@@ -1,11 +1,17 @@
 import request from 'supertest';
-import app from '../server';
+import { startServer } from '../server';
 import sequelize from '../config/sequelize';
 import User from '../database/models/user';
 
 describe('Authentication API', () => {
+  let serverInstance: { server: import('http').Server, port: number };
+  let app: string;
+
   beforeAll(async () => {
     try {
+      serverInstance = await startServer();
+      app = `http://localhost:${serverInstance.port}`;
+
       await User.create({
         username: 'testuser',
         password:
@@ -21,6 +27,7 @@ describe('Authentication API', () => {
   afterAll(async () => {
     try {
       await sequelize.query("DELETE FROM users WHERE username = 'testuser'");
+      await serverInstance.server.close();
     } catch (error) {
       console.error('Error cleaning up test user:', error);
     }
