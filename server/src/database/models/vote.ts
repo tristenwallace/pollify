@@ -5,7 +5,7 @@ import sequelize from '../../config/sequelize';
 export class Vote extends Model {
   declare userId: string;
   declare pollId: string;
-  declare optionChosen: string;
+  declare optionChosen: number;
 }
 
 Vote.init(
@@ -27,7 +27,7 @@ Vote.init(
       primaryKey: true,
     },
     optionChosen: {
-      type: DataTypes.ENUM('optionOne', 'optionTwo'),
+      type: DataTypes.ENUM(1, 2),
       allowNull: false,
     },
   },

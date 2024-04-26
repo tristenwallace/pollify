@@ -27,7 +27,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       onDelete: 'CASCADE',
     },
     optionChosen: {
-      type: DataTypes.STRING,
+      type: DataTypes.INTEGER,
       allowNull: false,
     },
     createdAt: {
