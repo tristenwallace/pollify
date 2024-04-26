@@ -22,19 +22,9 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    optionOneVotes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
     optionTwoText: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    optionTwoVotes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,
