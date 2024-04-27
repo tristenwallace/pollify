@@ -6,7 +6,7 @@ export class User extends Model {
   public username!: string;
   public name!: string;
   public password!: string;
-  public avatarURL!: string | null;
+  public avatar_url!: string | null;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }

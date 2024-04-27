@@ -3,7 +3,7 @@ import { startServer } from '../server';
 import sequelize from '../config/sequelize';
 import User from '../database/models/user';
 
-describe('Authentication API', () => {
+describe('User API', () => {
   let serverInstance: { server: import('http').Server, port: number };
   let app: string;
 
@@ -17,7 +17,7 @@ describe('Authentication API', () => {
         password:
           '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2',
         name: 'Test User',
-        avatarURL: null,
+        avatar_url: null,
       });
     } catch (error) {
       console.error('Error inserting test user:', error);
@@ -42,7 +42,7 @@ describe('Authentication API', () => {
           username: uniqueUsername,
           password: 'password123',
           name: 'New User',
-          avatarURL: null,
+          avatar_url: null,
         })
         .expect(201);
 

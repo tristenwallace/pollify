@@ -21,7 +21,7 @@ function createToken(user: User, pollsCreated: number, pollsVotedOn: number): st
       id: user.id,
       username: user.username,
       name: user.name,
-      avatarURL: user.avatarURL,
+      avatar_url: user.avatar_url,
     },
     stats: {
       pollsCreated: pollsCreated,
@@ -40,7 +40,7 @@ function createToken(user: User, pollsCreated: number, pollsVotedOn: number): st
  */
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, password, name, avatarURL } = req.body;
+    const { username, password, name, avatar_url } = req.body;
 
     // Hash the password with a salt round of 10
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -50,7 +50,7 @@ export const register = async (req: Request, res: Response) => {
       username,
       password: hashedPassword,
       name,
-      avatarURL: avatarURL || null, // Use null as a default value if avatarURL is not provided
+      avatar_url: avatar_url || null, // Use null as a default value if avatar_url is not provided
     };
 
     // Create user record in the database

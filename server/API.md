@@ -16,7 +16,7 @@ All API requests are made to the base URL of the deployed backend. For developme
   - `username`: String
   - `password`: String
   - `name`: String
-  - `avatarURL`: String (optional)
+  - `avatar_url_`: String (optional)
 - **Response**: JWT token with user details.
 
 ### POST /login
@@ -67,7 +67,7 @@ All API requests are made to the base URL of the deployed backend. For developme
 - `username`: String, Unique
 - `password`: String, Hashed
 - `name`: String
-- `avatarURL`: String, Nullable
+- `avatar_url`: String, Nullable
 
 ### Polls Table
 
