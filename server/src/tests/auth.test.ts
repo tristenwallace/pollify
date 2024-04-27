@@ -1,11 +1,17 @@
 import request from 'supertest';
-import app from '../server';
+import { startServer } from '../server';
 import sequelize from '../config/sequelize';
 import User from '../database/models/user';
 
 describe('Authentication API', () => {
+  let serverInstance: { server: import('http').Server, port: number };
+  let app: string;
+
   beforeAll(async () => {
     try {
+      serverInstance = await startServer();
+      app = `http://localhost:${serverInstance.port}`;
+
       await User.create({
         username: 'testuser',
         password:
@@ -21,6 +27,7 @@ describe('Authentication API', () => {
   afterAll(async () => {
     try {
       await sequelize.query("DELETE FROM users WHERE username = 'testuser'");
+      await serverInstance.server.close();
     } catch (error) {
       console.error('Error cleaning up test user:', error);
     }
@@ -28,10 +35,11 @@ describe('Authentication API', () => {
 
   describe('POST /register', () => {
     it('should register a new user and return a token', async () => {
+      const uniqueUsername = `newuser_${Date.now()}`;
       const res = await request(app)
         .post('/auth/register')
         .send({
-          username: 'newuser',
+          username: uniqueUsername,
           password: 'password123',
           name: 'New User',
           avatarURL: null,
@@ -44,6 +52,9 @@ describe('Authentication API', () => {
           token: expect.any(String),
         }),
       );
+
+      // Cleanup
+      await User.destroy({ where: { username: uniqueUsername } });
     });
 
     it('should handle missing username and return a 400 status', async () => {

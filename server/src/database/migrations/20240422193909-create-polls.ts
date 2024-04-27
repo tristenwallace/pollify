@@ -18,23 +18,13 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    optionOneText: {
+    optionOne: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    optionOneVotes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
-    },
-    optionTwoText: {
+    optionTwo: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    optionTwoVotes: {
-      type: DataTypes.INTEGER,
-      allowNull: false,
-      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,

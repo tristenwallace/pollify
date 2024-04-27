@@ -2,12 +2,10 @@ import { DataTypes, Model } from 'sequelize';
 import sequelize from '../../config/sequelize';
 
 export class Poll extends Model {
-  public id!: number;
-  public authorId!: number;
-  public optionOneText!: string;
-  public optionOneVotes!: number;
-  public optionTwoText!: string;
-  public optionTwoVotes!: number;
+  public id!: string;
+  public authorId!: string;
+  public optionOne!: string;
+  public optionTwo!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -26,21 +24,13 @@ Poll.init(
         key: 'id',
       },
     },
-    optionOneText: {
+    optionOne: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    optionOneVotes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
-    },
-    optionTwoText: {
+    optionTwo: {
       type: DataTypes.STRING,
       allowNull: false,
-    },
-    optionTwoVotes: {
-      type: DataTypes.INTEGER,
-      defaultValue: 0,
     },
     createdAt: {
       allowNull: false,
