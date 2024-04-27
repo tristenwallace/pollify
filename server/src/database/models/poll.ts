@@ -4,10 +4,8 @@ import sequelize from '../../config/sequelize';
 export class Poll extends Model {
   public id!: string;
   public authorId!: string;
-  public optionOneText!: string;
-  public optionOneVotes!: number;
-  public optionTwoText!: string;
-  public optionTwoVotes!: number;
+  public optionOne!: string;
+  public optionTwo!: string;
   public readonly createdAt!: Date;
   public readonly updatedAt!: Date;
 }
@@ -26,11 +24,11 @@ Poll.init(
         key: 'id',
       },
     },
-    optionOneText: {
+    optionOne: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    optionTwoText: {
+    optionTwo: {
       type: DataTypes.STRING,
       allowNull: false,
     },

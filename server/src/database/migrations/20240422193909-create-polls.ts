@@ -18,11 +18,11 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       onUpdate: 'CASCADE',
       onDelete: 'CASCADE',
     },
-    optionOneText: {
+    optionOne: {
       type: DataTypes.STRING,
       allowNull: false,
     },
-    optionTwoText: {
+    optionTwo: {
       type: DataTypes.STRING,
       allowNull: false,
     },
