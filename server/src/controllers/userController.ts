@@ -4,6 +4,7 @@ import jwt from 'jsonwebtoken';
 import { User } from '../database/models/user';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
+import sequelize from 'sequelize';
 
 
 // Default JWT secret key; consider using a more secure way to manage secrets.
@@ -98,5 +99,41 @@ export const login = async (req: Request, res: Response) => {
   } catch (error) {
     // Handle errors and send a 500 Internal Server Error response
     res.status(500).json({ error: 'Login failed' });
+  }
+};
+
+export const getUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Fetch all users with their related polls and votes counts
+    const users = await User.findAll({
+      attributes: ['id', 'username', 'name', [sequelize.fn('COUNT', sequelize.col('polls.id')), 'pollCount'], [sequelize.fn('COUNT', sequelize.col('votes.id')), 'voteCount']],
+      include: [
+        {
+          model: Poll,
+          attributes: [],
+        },
+        {
+          model: Vote,
+          attributes: [],
+        }
+      ],
+      group: ['User.id'],
+    });
+
+    // Prepare data to match expected format
+    const userData = users.map(user => {
+      return {
+        id: user.id,
+        username: user.username,
+        name: user.name,
+        voteCount: user.getDataValue('voteCount'),
+        pollCount: user.getDataValue('pollCount'),
+      };
+    });
+
+    res.json(userData);
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    res.status(500).json({ error: 'Error fetching users' });
   }
 };
