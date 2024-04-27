@@ -24,7 +24,7 @@ describe('Poll API', () => {
 
         // Login to get a token
         const loginResponse = await request(app)
-            .post('/auth/login')
+            .post('/user/login')
             .send({
                 username: testUser.username,
                 password: 'password123',

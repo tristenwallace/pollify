@@ -37,7 +37,7 @@ describe('Authentication API', () => {
     it('should register a new user and return a token', async () => {
       const uniqueUsername = `newuser_${Date.now()}`;
       const res = await request(app)
-        .post('/auth/register')
+        .post('/user/register')
         .send({
           username: uniqueUsername,
           password: 'password123',
@@ -59,7 +59,7 @@ describe('Authentication API', () => {
 
     it('should handle missing username and return a 400 status', async () => {
       const res = await request(app)
-        .post('/auth/register')
+        .post('/user/register')
         .send({
           password: 'password123',
           name: 'New User',
@@ -74,7 +74,7 @@ describe('Authentication API', () => {
   describe('POST /login', () => {
     it('should authenticate existing user and return a token', async () => {
       const res = await request(app)
-        .post('/auth/login')
+        .post('/user/login')
         .send({
           username: 'testuser',
           password: 'password123',
@@ -89,7 +89,7 @@ describe('Authentication API', () => {
 
     it('should return error for invalid password', async () => {
       const res = await request(app)
-        .post('/auth/login')
+        .post('/user/login')
         .send({
           username: 'testuser',
           password: 'wrongpassword',
