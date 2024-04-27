@@ -2,9 +2,6 @@ import app from './app'
 import sequelize from './config/sequelize';
 import type { Server } from 'http';
 
-// Set the server port
-const PORT: number = parseInt(process.env.PORT || '5000');
-
 // Database connection with retry logic
 const connectWithRetry = async () => {
   try {
@@ -22,10 +19,16 @@ export const startServer = async (): Promise<{ server: Server, port: number }> =
   try {
       await connectWithRetry(); // Ensure database is connected before starting the server
       return new Promise((resolve, reject) => {
-          const server = app.listen(PORT, () => {
-              console.log(`Server running on port ${PORT}`);
-              resolve({ server, port: PORT });
-          }).on('error', reject);
+          const server = app.listen(0, () => {
+            const address = server.address();
+            if (address && typeof address !== 'string') {
+              const port = address.port;
+              console.log(`Server running on port ${port}`);
+              resolve({ server, port });
+          } else {
+              reject(new Error('Failed to start server on dynamic port'));
+          }
+      }).on('error', reject);
       });
   } catch (err) {
       console.error('Failed to start server:', err);
