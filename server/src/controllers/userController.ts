@@ -4,8 +4,12 @@ import jwt from 'jsonwebtoken';
 import { User } from '../database/models/user';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
-import sequelize from 'sequelize';
+import sequelize from '../config/sequelize';
 
+export interface UserDTO extends User {
+  voteCount: number;
+  pollCount: number;
+}
 
 // Default JWT secret key; consider using a more secure way to manage secrets.
 const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -87,7 +91,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Fetch additional user stats data for token
-    const pollsCreated = await Poll.count({ where: { authorId: user.id } });
+    const pollsCreated = await Poll.count({ where: { userId: user.id } });
     const pollsVotedOn = await Vote.count({ where: { userId: user.id } });
 
 
@@ -102,36 +106,27 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const getUsers = async (req: Request, res: Response): Promise<void> => {
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
   try {
-    // Fetch all users with their related polls and votes counts
+    // Fetch all users
     const users = await User.findAll({
-      attributes: ['id', 'username', 'name', [sequelize.fn('COUNT', sequelize.col('polls.id')), 'pollCount'], [sequelize.fn('COUNT', sequelize.col('votes.id')), 'voteCount']],
-      include: [
-        {
-          model: Poll,
-          attributes: [],
-        },
-        {
-          model: Vote,
-          attributes: [],
-        }
-      ],
-      group: ['User.id'],
+      attributes: ['id', 'username', 'name'],
+      raw: true
     });
 
-    // Prepare data to match expected format
-    const userData = users.map(user => {
+    // Asynchronously fetch poll and vote counts for each user
+    const usersWithCounts = await Promise.all(users.map(async (user) => {
+      const pollCount = await Poll.count({ where: { userId: user.id } });
+      const voteCount = await Vote.count({ where: { userId: user.id } });
+
       return {
-        id: user.id,
-        username: user.username,
-        name: user.name,
-        voteCount: user.getDataValue('voteCount'),
-        pollCount: user.getDataValue('pollCount'),
+        ...user,
+        pollCount,
+        voteCount
       };
-    });
+    }));
 
-    res.json(userData);
+    res.status(200).json(usersWithCounts);
   } catch (error) {
     console.error('Failed to fetch users:', error);
     res.status(500).json({ error: 'Error fetching users' });
