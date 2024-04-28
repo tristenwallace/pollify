@@ -8,7 +8,7 @@ export const up = async (queryInterface: QueryInterface): Promise<void> => {
       type: DataTypes.UUID,
       defaultValue: DataTypes.UUIDV4,
     },
-    authorId: {
+    userId: {
       type: DataTypes.UUID,
       allowNull: false,
       references: {

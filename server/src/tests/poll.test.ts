@@ -57,7 +57,7 @@ describe('Poll API', () => {
                 .send({
                     optionOne: 'Option 1',
                     optionTwo: 'Option 2',
-                    authorId: testUser.id
+                    userId: testUser.id
                 })
                 .expect(201);
 
@@ -65,7 +65,7 @@ describe('Poll API', () => {
                 expect.objectContaining({
                     optionOne: 'Option 1',
                     optionTwo: 'Option 2',
-                    authorId: testUser.id
+                    userId: testUser.id
                 }),
             );
         });
@@ -86,7 +86,7 @@ describe('Poll API', () => {
 
         beforeAll(async () => {
             const poll = await Poll.create({
-                authorId: testUser.id,
+                userId: testUser.id,
                 optionOne: 'Option 1',
                 optionTwo: 'Option 2'
             });

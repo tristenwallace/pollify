@@ -7,7 +7,7 @@ export const getPolls = async (req: Request, res: Response): Promise<void> => {
     const polls = await Poll.findAll({
       include: [{
         model: Vote,
-        as: 'votes',
+        as: 'voters',
         attributes: ['userId', 'chosenOption'], // Include relevant vote details
       }]
     });
@@ -21,7 +21,7 @@ export const getPolls = async (req: Request, res: Response): Promise<void> => {
 
 export const createPoll = async (req: Request, res: Response): Promise<void> => {
     try {
-      const { optionOne, optionTwo, authorId } = req.body; // Destructure the necessary fields from the request body
+      const { optionOne, optionTwo, userId } = req.body; // Destructure the necessary fields from the request body
   
       if (!optionOne || !optionTwo) {
         res.status(400).json({ error: 'Missing required poll details' });
@@ -31,7 +31,7 @@ export const createPoll = async (req: Request, res: Response): Promise<void> => 
       const poll = await Poll.create({
         optionOne,
         optionTwo,
-        authorId
+        userId
       });
   
       res.status(201).json(poll);

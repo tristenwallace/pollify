@@ -7,7 +7,7 @@ const connectWithRetry = async () => {
   try {
     await sequelize.authenticate();
     console.log('Database connected.');
-    await sequelize.sync(); // You might want to remove this in production or manage it differently
+    await sequelize.sync(); // I might want to remove this in production or manage it differently
   } catch (err) {
     console.error('Database connection failed, retrying in 5 seconds...', err);
     setTimeout(connectWithRetry, 5000);
