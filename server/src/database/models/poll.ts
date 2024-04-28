@@ -3,7 +3,7 @@ import sequelize from '../../config/sequelize';
 
 export class Poll extends Model {
   public id!: string;
-  public authorId!: string;
+  public userId!: string;
   public optionOne!: string;
   public optionTwo!: string;
   public readonly createdAt!: Date;
@@ -17,7 +17,7 @@ Poll.init(
       defaultValue: DataTypes.UUIDV4,
       primaryKey: true,
     },
-    authorId: {
+    userId: {
       type: DataTypes.UUID,
       references: {
         model: 'Users',

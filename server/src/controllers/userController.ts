@@ -4,7 +4,12 @@ import jwt from 'jsonwebtoken';
 import { User } from '../database/models/user';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
+import sequelize from '../config/sequelize';
 
+export interface UserDTO extends User {
+  voteCount: number;
+  pollCount: number;
+}
 
 // Default JWT secret key; consider using a more secure way to manage secrets.
 const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
@@ -20,7 +25,7 @@ function createToken(user: User, pollsCreated: number, pollsVotedOn: number): st
       id: user.id,
       username: user.username,
       name: user.name,
-      avatarURL: user.avatarURL,
+      avatar_url: user.avatar_url,
     },
     stats: {
       pollsCreated: pollsCreated,
@@ -39,7 +44,7 @@ function createToken(user: User, pollsCreated: number, pollsVotedOn: number): st
  */
 export const register = async (req: Request, res: Response) => {
   try {
-    const { username, password, name, avatarURL } = req.body;
+    const { username, password, name, avatar_url } = req.body;
 
     // Hash the password with a salt round of 10
     const hashedPassword = await bcrypt.hash(password, 10);
@@ -49,7 +54,7 @@ export const register = async (req: Request, res: Response) => {
       username,
       password: hashedPassword,
       name,
-      avatarURL: avatarURL || null, // Use null as a default value if avatarURL is not provided
+      avatar_url: avatar_url || null, // Use null as a default value if avatar_url is not provided
     };
 
     // Create user record in the database
@@ -86,7 +91,7 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Fetch additional user stats data for token
-    const pollsCreated = await Poll.count({ where: { authorId: user.id } });
+    const pollsCreated = await Poll.count({ where: { userId: user.id } });
     const pollsVotedOn = await Vote.count({ where: { userId: user.id } });
 
 
@@ -98,5 +103,32 @@ export const login = async (req: Request, res: Response) => {
   } catch (error) {
     // Handle errors and send a 500 Internal Server Error response
     res.status(500).json({ error: 'Login failed' });
+  }
+};
+
+export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+  try {
+    // Fetch all users
+    const users = await User.findAll({
+      attributes: ['id', 'username', 'name'],
+      raw: true
+    });
+
+    // Asynchronously fetch poll and vote counts for each user
+    const usersWithCounts = await Promise.all(users.map(async (user) => {
+      const pollCount = await Poll.count({ where: { userId: user.id } });
+      const voteCount = await Vote.count({ where: { userId: user.id } });
+
+      return {
+        ...user,
+        pollCount,
+        voteCount
+      };
+    }));
+
+    res.status(200).json(usersWithCounts);
+  } catch (error) {
+    console.error('Failed to fetch users:', error);
+    res.status(500).json({ error: 'Error fetching users' });
   }
 };

@@ -1,5 +1,5 @@
 import express from 'express';
-import authRoutes from './routes/authRoutes';
+import userRoutes from './routes/userRoutes';
 import pollRoutes from './routes/pollRoutes';
 //TODO import usersRoutes from './routes/userRoutes';
 
@@ -12,6 +12,6 @@ routes.get('/', (req, res) => {
 });
 
 // Use the defined routes
-routes.use('/auth', authRoutes);
+routes.use('/user', userRoutes);
 routes.use('/polls', pollRoutes);
 //TODO routes.use('/users', usersRoutes);
