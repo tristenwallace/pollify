@@ -2,23 +2,39 @@ import request from 'supertest';
 import { startServer } from '../server';
 import sequelize from '../config/sequelize';
 import User from '../database/models/user';
+import Poll from '../database/models/poll';
+import Vote from '../database/models/vote';
+import type { UserDTO } from '../controllers/userController';
 
 describe('User API', () => {
   let serverInstance: { server: import('http').Server, port: number };
   let app: string;
+  const hashedPass = '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2'
 
   beforeAll(async () => {
     try {
       serverInstance = await startServer();
       app = `http://localhost:${serverInstance.port}`;
 
-      await User.create({
-        username: 'testuser',
-        password:
-          '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2',
-        name: 'Test User',
-        avatar_url: null,
-      });
+      await User.bulkCreate([
+        { username: 'user1', password: hashedPass, name: 'User One', avatar_url: null },
+        { username: 'user2', password: hashedPass, name: 'User Two', avatar_url: null }
+      ]);
+      const user1 = await User.findOne({ where: { username: 'user1' } });
+      const user2 = await User.findOne({ where: { username: 'user2' } });
+
+      if (!user1 || !user2) {
+        throw new Error('Test setup failed, required users not found');
+      }
+
+      await Poll.create({ userId: user1.id, optionOne: 'Option One', optionTwo: 'Option Two' });
+      const poll1 = await Poll.findOne({ where: { userId: user1.id } });
+
+      if (!poll1) {
+        throw new Error('Test setup failed, required poll not found');
+      }
+
+      await Vote.create({ pollId: poll1.id, userId: user2.id, chosenOption: 1 });
     } catch (error) {
       console.error('Error inserting test user:', error);
     }
@@ -26,7 +42,10 @@ describe('User API', () => {
 
   afterAll(async () => {
     try {
-      await sequelize.query("DELETE FROM users WHERE username = 'testuser'");
+      await User.destroy({ where: {} });
+      await Poll.destroy({ where: {} });
+      await Vote.destroy({ where: {} });
+
       await serverInstance.server.close();
     } catch (error) {
       console.error('Error cleaning up test user:', error);
@@ -35,11 +54,10 @@ describe('User API', () => {
 
   describe('POST /register', () => {
     it('should register a new user and return a token', async () => {
-      const uniqueUsername = `newuser_${Date.now()}`;
       const res = await request(app)
         .post('/user/register')
         .send({
-          username: uniqueUsername,
+          username: 'user3',
           password: 'password123',
           name: 'New User',
           avatar_url: null,
@@ -52,9 +70,6 @@ describe('User API', () => {
           token: expect.any(String),
         }),
       );
-
-      // Cleanup
-      await User.destroy({ where: { username: uniqueUsername } });
     });
 
     it('should handle missing username and return a 400 status', async () => {
@@ -76,7 +91,7 @@ describe('User API', () => {
       const res = await request(app)
         .post('/user/login')
         .send({
-          username: 'testuser',
+          username: 'user1',
           password: 'password123',
         })
         .expect(200);
@@ -91,13 +106,28 @@ describe('User API', () => {
       const res = await request(app)
         .post('/user/login')
         .send({
-          username: 'testuser',
+          username: 'user1',
           password: 'wrongpassword',
         })
         .expect(401);
 
       expect(res.body).toEqual({
         error: 'Invalid credentials',
+      });
+    });
+  });
+
+  describe('GET /user/all', () => {
+    test('GET /users/all should fetch all users with their details', async () => {
+      const res = await request(app).get('/user/all').expect(200);
+      expect(res.body).toBeInstanceOf(Array);
+      expect(res.body.length).toBeGreaterThan(0);
+      res.body.forEach((user: UserDTO) => {
+        expect(user).toHaveProperty('id');
+        expect(user).toHaveProperty('username');
+        expect(user).toHaveProperty('name');
+        expect(user).toHaveProperty('pollCount');
+        expect(user).toHaveProperty('voteCount');
       });
     });
   });
