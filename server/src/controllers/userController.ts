@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import { User } from '../database/models/user';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
-import sequelize from '../config/sequelize';
 
 export interface UserDTO extends User {
   voteCount: number;
