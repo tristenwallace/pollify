@@ -1,6 +1,6 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { voteOnPoll, PollOptionKey } from '../features/pollSlice';
+import { voteOnPoll } from '../features/pollSlice';
 import { RootState, AppDispatch } from '../app/store';
 import {
   Card,
@@ -23,11 +23,11 @@ const PollDetail = () => {
   // Retrieve poll and author details from the Redux store
   const poll = useSelector((state: RootState) => state.poll.polls[pollId]);
   const author = useSelector(
-    (state: RootState) => poll && state.users.users[poll.author],
+    (state: RootState) => poll && state.users.users[poll.userId],
   );
 
   // Redirect to not found page if no poll ID is found
-  if (!pollId) {
+  if (!pollId || !poll) {
     return <Navigate to="/404" />;
   }
 
@@ -36,41 +36,36 @@ const PollDetail = () => {
     return <Navigate to="/login" />;
   }
 
-  // Show a loading indicator while poll or author data is being loaded
-  if (!poll || !author) {
+  // Show a loading indicator while author data is being loaded
+  if (!author) {
     return <CircularProgress />;
   }
-
   // Calculate the total votes and percentages for each poll option
-  const totalVotesOptionOne = poll.optionOne.votes.length;
-  const totalVotesOptionTwo = poll.optionTwo.votes.length;
-  const totalVotes = totalVotesOptionOne + totalVotesOptionTwo;
+  const optionOneVotes = poll.votes.filter(vote => vote.chosenOption === 1).length;
+  const optionTwoVotes = poll.votes.filter(vote => vote.chosenOption === 2).length;
+  const totalVotes = optionOneVotes + optionTwoVotes;
 
   const optionOnePercentage =
     totalVotes > 0
-      ? ((totalVotesOptionOne / totalVotes) * 100).toFixed(1)
+      ? ((optionOneVotes / totalVotes) * 100).toFixed(1)
       : '0';
   const optionTwoPercentage =
     totalVotes > 0
-      ? ((totalVotesOptionTwo / totalVotes) * 100).toFixed(1)
+      ? ((optionTwoVotes / totalVotes) * 100).toFixed(1)
       : '0';
 
   // Determine if the current user has voted and on which option
-  const userVote = poll.optionOne.votes.includes(user.id)
-    ? 'optionOne'
-    : poll.optionTwo.votes.includes(user.id)
-      ? 'optionTwo'
-      : null;
+  const userVote = poll.votes.find(vote => vote.userId === user.id)?.chosenOption;
+
 
   // Handle voting on a poll option
-  const handleVote = (option: PollOptionKey) => {
-    if (!userVote && user) {
+  const handleVote = (chosenOption: number) => {
+    if (!userVote) {
       dispatch(
         voteOnPoll({
           pollId: poll.id,
-          option: option,
           userId: user.id,
-          existingPoll: poll,
+          chosenOption,
         }),
       );
     }
@@ -79,7 +74,7 @@ const PollDetail = () => {
   return (
     <Card sx={{ maxWidth: 500, mx: 'auto', mt: 5 }}>
       <CardHeader
-        avatar={<Avatar src={author.avatarURL || '/default-avatar.png'} />}
+        avatar={<Avatar src={author.avatar_url || '/default-avatar.png'} />}
         title={author.name}
         subheader="asks:"
         action={
@@ -93,36 +88,36 @@ const PollDetail = () => {
           Would You Rather...
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          {poll.optionOne.text} - {totalVotesOptionOne} votes (
+          {poll.optionOne} - {optionOneVotes} votes (
           {optionOnePercentage}%)
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          {poll.optionTwo.text} - {totalVotesOptionTwo} votes (
+          {poll.optionTwo} - {optionTwoVotes} votes (
           {optionTwoPercentage}%)
         </Typography>
         <div>
           <Button
             variant="contained"
-            onClick={() => handleVote('optionOne')}
+            onClick={() => handleVote(1)}
             disabled={!!userVote}
             sx={{ mr: 2, mt: 2 }}
           >
-            {poll.optionOne.text}{' '}
-            {userVote === 'optionOne' ? '(Your vote)' : ''}
+            {poll.optionOne}{' '}
+            {poll.optionOne} {userVote === 1 ? '(Your vote)' : ''}
           </Button>
           <Button
             variant="contained"
-            onClick={() => handleVote('optionTwo')}
+            onClick={() => handleVote(2)}
             disabled={!!userVote}
             sx={{ mt: 2 }}
           >
-            {poll.optionTwo.text}{' '}
-            {userVote === 'optionTwo' ? '(Your vote)' : ''}
+            {poll.optionTwo}{' '}
+            {poll.optionTwo} {userVote === 2 ? '(Your vote)' : ''}
           </Button>
         </div>
         {userVote && (
           <Typography sx={{ mt: 2 }}>
-            You voted for: {poll[userVote].text}
+            You voted for: {userVote === 1 ? poll.optionOne : poll.optionTwo}
           </Typography>
         )}
       </CardContent>

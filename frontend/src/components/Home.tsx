@@ -16,10 +16,10 @@ import {
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
   const [showAnswered, setShowAnswered] = useState(false);
+  const user = useSelector((state: RootState) => state.users.currentUser);
   const polls = useSelector((state: RootState) => state.poll.polls);
   const pollStatus = useSelector((state: RootState) => state.poll.status);
   const error = useSelector((state: RootState) => state.poll.error);
-  const user = useSelector((state: RootState) => state.users.currentUser);
 
   // Fetch polls when component mounts or status changes to idle
   useEffect(() => {
@@ -48,15 +48,11 @@ const Home = () => {
     return <Typography>No polls available.</Typography>;
 
   // Filter polls into answered and unanswered based on current user's activity
-  const answeredPolls = Object.values(polls).filter(
-    poll =>
-      poll.optionOne.votes.includes(user.id) ||
-      poll.optionTwo.votes.includes(user.id),
+  const answeredPolls = Object.values(polls).filter(poll =>
+    poll.votes.some(vote => vote.userId === user.id)
   );
-  const unansweredPolls = Object.values(polls).filter(
-    poll =>
-      !poll.optionOne.votes.includes(user.id) &&
-      !poll.optionTwo.votes.includes(user.id),
+  const unansweredPolls = Object.values(polls).filter(poll =>
+    !poll.votes.some(vote => vote.userId === user.id)
   );
 
   return (

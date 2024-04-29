@@ -6,9 +6,7 @@ import { AppBar, Toolbar, Button, Box } from '@mui/material';
 
 const Navbar = () => {
   const dispatch: AppDispatch = useDispatch();
-  const isAuthenticated = useSelector(
-    (state: RootState) => state.users.isAuthenticated,
-  );
+  const currentUser = useSelector((state: RootState) => state.users.currentUser);
 
   const handleLogout = () => {
     dispatch(logout());
@@ -27,12 +25,11 @@ const Navbar = () => {
             Leaderboard
           </Button>
         </Box>
-        {isAuthenticated && (
+        {currentUser ? (
           <Button color="inherit" onClick={handleLogout}>
             Logout
           </Button>
-        )}
-        {!isAuthenticated && (
+        ) : (
           <Button color="inherit" component={RouterLink} to="/login">
             Login
           </Button>

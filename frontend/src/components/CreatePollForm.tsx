@@ -15,8 +15,8 @@ import {
 
 const CreatePollForm = () => {
   // Local state to manage form inputs
-  const [optionOneText, setOptionOneText] = useState('');
-  const [optionTwoText, setOptionTwoText] = useState('');
+  const [optionOne, setOptionOne] = useState('');
+  const [optionTwo, setOptionTwo] = useState('');
 
   // Accessing Redux state and dispatch
   const user = useSelector((state: RootState) => state.users.currentUser);
@@ -46,9 +46,9 @@ const CreatePollForm = () => {
     e.preventDefault();
     dispatch(
       addNewPoll({
-        optionOneText: optionOneText,
-        optionTwoText: optionTwoText,
-        author: user.id,
+        optionOne: optionOne,
+        optionTwo: optionTwo,
+        userId: user.id,
       }),
     );
     navigate('/'); // Redirect to home page after form submission
@@ -66,8 +66,8 @@ const CreatePollForm = () => {
             id="optionOneText"
             label="Option One"
             variant="outlined"
-            value={optionOneText}
-            onChange={e => setOptionOneText(e.target.value)}
+            value={optionOne}
+            onChange={e => setOptionOne(e.target.value)}
             required
             fullWidth
             margin="normal"
@@ -76,8 +76,8 @@ const CreatePollForm = () => {
             id="optionTwoText"
             label="Option Two"
             variant="outlined"
-            value={optionTwoText}
-            onChange={e => setOptionTwoText(e.target.value)}
+            value={optionTwo}
+            onChange={e => setOptionTwo(e.target.value)}
             required
             fullWidth
             margin="normal"

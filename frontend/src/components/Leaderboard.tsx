@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../features/usersSlice';
 import { AppDispatch, RootState } from '../app/store';
@@ -20,14 +20,9 @@ const Leaderboard = () => {
   const dispatch: AppDispatch = useDispatch();
 
   // Retrieve and sort users by activity (questions asked + answers given)
-  const users = useSelector((state: RootState) => {
-    return Object.values(state.users.users).sort(
-      (a, b) =>
-        b.questions.length +
-        Object.keys(b.answers).length -
-        (a.questions.length + Object.keys(a.answers).length),
-    );
-  });
+  const users = useSelector((state: RootState) => Object.values(state.users.users).sort(
+    (a, b) => ((b.pollCount ?? 0) + (b.voteCount ?? 0)) - ((a.pollCount ?? 0) + (a.voteCount ?? 0))
+  ));
 
   // Access user-related status and error from the Redux store
   const user = useSelector((state: RootState) => state.users.currentUser);
@@ -85,14 +80,11 @@ const Leaderboard = () => {
           <ListItem key={user.id}>
             <ListItemAvatar>
               <Avatar
-                src={user.avatarURL || '/default-avatar.png'}
+                src={user.avatar_url || '/default-avatar.png'}
                 alt={`${user.name}'s avatar`}
               />
             </ListItemAvatar>
-            <ListItemText
-              primary={user.name}
-              secondary={`Questions Asked: ${user.questions.length} - Answers Given: ${Object.keys(user.answers).length}`}
-            />
+            <ListItemText primary={user.name} secondary={`Polls Created: ${user.pollCount}, Votes: ${user.voteCount}`} />
           </ListItem>
         ))}
       </List>
