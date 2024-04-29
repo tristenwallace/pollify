@@ -20,9 +20,14 @@ const Leaderboard = () => {
   const dispatch: AppDispatch = useDispatch();
 
   // Retrieve and sort users by activity (questions asked + answers given)
-  const users = useSelector((state: RootState) => Object.values(state.users.users).sort(
-    (a, b) => ((b.pollCount ?? 0) + (b.voteCount ?? 0)) - ((a.pollCount ?? 0) + (a.voteCount ?? 0))
-  ));
+  const users = useSelector((state: RootState) =>
+    Object.values(state.users.users).sort(
+      (a, b) =>
+        (b.pollCount ?? 0) +
+        (b.voteCount ?? 0) -
+        ((a.pollCount ?? 0) + (a.voteCount ?? 0)),
+    ),
+  );
 
   // Access user-related status and error from the Redux store
   const user = useSelector((state: RootState) => state.users.currentUser);
@@ -84,7 +89,10 @@ const Leaderboard = () => {
                 alt={`${user.name}'s avatar`}
               />
             </ListItemAvatar>
-            <ListItemText primary={user.name} secondary={`Polls Created: ${user.pollCount}, Votes: ${user.voteCount}`} />
+            <ListItemText
+              primary={user.name}
+              secondary={`Polls Created: ${user.pollCount}, Votes: ${user.voteCount}`}
+            />
           </ListItem>
         ))}
       </List>

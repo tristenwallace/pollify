@@ -6,7 +6,9 @@ import { AppBar, Toolbar, Button, Box } from '@mui/material';
 
 const Navbar = () => {
   const dispatch: AppDispatch = useDispatch();
-  const currentUser = useSelector((state: RootState) => state.users.currentUser);
+  const currentUser = useSelector(
+    (state: RootState) => state.users.currentUser,
+  );
 
   const handleLogout = () => {
     dispatch(logout());

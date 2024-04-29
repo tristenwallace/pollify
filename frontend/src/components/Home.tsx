@@ -49,10 +49,10 @@ const Home = () => {
 
   // Filter polls into answered and unanswered based on current user's activity
   const answeredPolls = Object.values(polls).filter(poll =>
-    poll.votes.some(vote => vote.userId === user.id)
+    poll.votes.some(vote => vote.userId === user.id),
   );
-  const unansweredPolls = Object.values(polls).filter(poll =>
-    !poll.votes.some(vote => vote.userId === user.id)
+  const unansweredPolls = Object.values(polls).filter(
+    poll => !poll.votes.some(vote => vote.userId === user.id),
   );
 
   return (

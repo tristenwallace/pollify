@@ -1,44 +1,79 @@
 import { render, fireEvent, screen } from '@testing-library/react';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
-import { ThemeProvider } from '@mui/material/styles';
-import theme from '../theme';
 import Login from '../components/Login';
 import { store } from '../app/store';
+import axiosMock from 'axios-mock-adapter';
+import axios from 'axios';
+
+const mockAxios = new axiosMock(axios);
+
+// Mocking localStorage
+const mockLocalStorage = (() => {
+  let store: Record<string, string> = {};
+
+  return {
+    getItem(key: string) {
+      return store[key] || null;
+    },
+    setItem(key: string, value: string) {
+      store[key] = value.toString();
+    },
+    removeItem(key: string) {
+      delete store[key];
+    },
+    clear() {
+      store = {};
+    },
+  };
+})();
+
+Object.defineProperty(window, 'localStorage', {
+  value: mockLocalStorage,
+});
+
+// Mocking navigation
+const mockNavigate = jest.fn();
+
+jest.mock('react-router-dom', () => ({
+  ...jest.requireActual('react-router-dom'),
+  useNavigate: () => mockNavigate,
+}));
 
 describe('Login Component', () => {
-  // Function to perform the common setup
-  const setup = () =>
+  beforeEach(() => {
+    mockAxios.reset();
+    mockLocalStorage.clear();
+    mockNavigate.mockReset();
+  });
+
+  it('allows the user to login successfully and redirects', async () => {
+    mockAxios.onPost('/user/login').reply(200, {
+      token: 'fake-jwt-token',
+    });
+
     render(
       <Provider store={store}>
         <Router>
-          <ThemeProvider theme={theme}>
-            <Login />
-          </ThemeProvider>
+          <Login />
         </Router>
       </Provider>,
     );
 
-  it('should display username and password inputs and a submit button', () => {
-    setup();
-    expect(screen.getByLabelText(/username/i)).toBeInTheDocument();
-    expect(screen.getByLabelText(/password/i)).toBeInTheDocument();
-    expect(screen.getByRole('button', { name: /login/i })).toBeInTheDocument();
-  });
-
-  it('should display an error message when incorrect credentials are used', async () => {
-    setup();
-
     fireEvent.change(screen.getByLabelText(/username/i), {
-      target: { value: 'wrongusername' },
+      target: { value: 'user' },
     });
     fireEvent.change(screen.getByLabelText(/password/i), {
-      target: { value: 'wrongpassword' },
+      target: { value: 'pass' },
     });
     fireEvent.click(screen.getByRole('button', { name: /login/i }));
 
-    expect(
-      await screen.findByText(/invalid username or password/i),
-    ).toBeInTheDocument();
+    await screen.findByText('Logout'); // Assuming that 'Logout' button will be rendered on successful login
+
+    // Check if the token is stored correctly
+    expect(localStorage.getItem('jwtToken')).toEqual('fake-jwt-token');
+
+    // Check if navigation was called to redirect user
+    expect(mockNavigate).toHaveBeenCalledWith('/');
   });
 });

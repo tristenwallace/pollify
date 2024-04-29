@@ -41,22 +41,23 @@ const PollDetail = () => {
     return <CircularProgress />;
   }
   // Calculate the total votes and percentages for each poll option
-  const optionOneVotes = poll.votes.filter(vote => vote.chosenOption === 1).length;
-  const optionTwoVotes = poll.votes.filter(vote => vote.chosenOption === 2).length;
+  const optionOneVotes = poll.votes.filter(
+    vote => vote.chosenOption === 1,
+  ).length;
+  const optionTwoVotes = poll.votes.filter(
+    vote => vote.chosenOption === 2,
+  ).length;
   const totalVotes = optionOneVotes + optionTwoVotes;
 
   const optionOnePercentage =
-    totalVotes > 0
-      ? ((optionOneVotes / totalVotes) * 100).toFixed(1)
-      : '0';
+    totalVotes > 0 ? ((optionOneVotes / totalVotes) * 100).toFixed(1) : '0';
   const optionTwoPercentage =
-    totalVotes > 0
-      ? ((optionTwoVotes / totalVotes) * 100).toFixed(1)
-      : '0';
+    totalVotes > 0 ? ((optionTwoVotes / totalVotes) * 100).toFixed(1) : '0';
 
   // Determine if the current user has voted and on which option
-  const userVote = poll.votes.find(vote => vote.userId === user.id)?.chosenOption;
-
+  const userVote = poll.votes.find(
+    vote => vote.userId === user.id,
+  )?.chosenOption;
 
   // Handle voting on a poll option
   const handleVote = (chosenOption: number) => {
@@ -88,12 +89,10 @@ const PollDetail = () => {
           Would You Rather...
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          {poll.optionOne} - {optionOneVotes} votes (
-          {optionOnePercentage}%)
+          {poll.optionOne} - {optionOneVotes} votes ({optionOnePercentage}%)
         </Typography>
         <Typography variant="body1" color="textSecondary">
-          {poll.optionTwo} - {optionTwoVotes} votes (
-          {optionTwoPercentage}%)
+          {poll.optionTwo} - {optionTwoVotes} votes ({optionTwoPercentage}%)
         </Typography>
         <div>
           <Button
@@ -102,8 +101,8 @@ const PollDetail = () => {
             disabled={!!userVote}
             sx={{ mr: 2, mt: 2 }}
           >
-            {poll.optionOne}{' '}
-            {poll.optionOne} {userVote === 1 ? '(Your vote)' : ''}
+            {poll.optionOne} {poll.optionOne}{' '}
+            {userVote === 1 ? '(Your vote)' : ''}
           </Button>
           <Button
             variant="contained"
@@ -111,8 +110,8 @@ const PollDetail = () => {
             disabled={!!userVote}
             sx={{ mt: 2 }}
           >
-            {poll.optionTwo}{' '}
-            {poll.optionTwo} {userVote === 2 ? '(Your vote)' : ''}
+            {poll.optionTwo} {poll.optionTwo}{' '}
+            {userVote === 2 ? '(Your vote)' : ''}
           </Button>
         </div>
         {userVote && (

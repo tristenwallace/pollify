@@ -161,7 +161,6 @@ export const createPoll = async (pollData: {
   }
 };
 
-
 export const voteOnPoll = async (
   pollId: string,
   userId: string,
