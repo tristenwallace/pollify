@@ -1,6 +1,5 @@
 import request from 'supertest';
-import { startServer } from '../server';
-import sequelize from '../config/sequelize';
+import { startRandomServer } from '../server';
 import User from '../database/models/user';
 import Poll from '../database/models/poll';
 import Vote from '../database/models/vote';
@@ -14,7 +13,7 @@ describe('User API', () => {
 
   beforeAll(async () => {
     try {
-      serverInstance = await startServer();
+      serverInstance = await startRandomServer();
       app = `http://localhost:${serverInstance.port}`;
 
       await User.bulkCreate([

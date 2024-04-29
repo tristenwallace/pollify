@@ -14,8 +14,8 @@ const connectWithRetry = async () => {
   }
 };
 
-// Function to start the server
-export const startServer = async (): Promise<{
+// Function to start the server for tests
+export const startRandomServer = async (): Promise<{
   server: Server;
   port: number;
 }> => {
@@ -41,15 +41,43 @@ export const startServer = async (): Promise<{
   }
 };
 
+// Function to start the server for tests
+export const startServer = async (): Promise<{
+  server: Server;
+  port: number;
+}> => {
+  try {
+    const port = parseInt(process.env.PORT || '3000');
+    await connectWithRetry(); // Ensure database is connected before starting the server
+    return new Promise((resolve, reject) => {
+      const server = app
+        .listen(port, () => {
+          const address = server.address();
+          if (address && typeof address !== 'string') {
+            const port = address.port;
+            console.log(`Server running on port ${port}`);
+            resolve({ server, port });
+          } else {
+            reject(new Error('Failed to start server on dynamic port'));
+          }
+        })
+        .on('error', reject);
+    });
+  } catch (err) {
+    console.error('Failed to start server:', err);
+    throw err;
+  }
+};
+
 // Graceful shutdown
-const gracefulShutdown = (server: Server) => {
+const gracefulShutdown = (server: Server, port: number) => {
   process.on('SIGTERM', () => {
     console.log('SIGTERM signal received: closing HTTP server');
     server.close(() => {
       console.log('HTTP server closed');
       sequelize.close().then(() => {
         console.log('Database connection closed');
-        process.exit(0);
+        process.exit(port);
       });
     });
   });
@@ -60,7 +88,7 @@ if (require.main === module) {
   startServer()
     .then(({ server, port }) => {
       console.log(`Server started on port ${port}`);
-      gracefulShutdown(server);
+      gracefulShutdown(server, port);
     })
     .catch(err => {
       console.error('Server failed to start:', err);

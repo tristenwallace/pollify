@@ -1,5 +1,5 @@
 import request from 'supertest';
-import { startServer } from '../server';
+import { startRandomServer } from '../server';
 import sequelize from '../config/sequelize';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
@@ -12,7 +12,7 @@ describe('Poll API', () => {
   let testUser: User;
 
   beforeAll(async () => {
-    serverInstance = await startServer();
+    serverInstance = await startRandomServer();
     app = `http://localhost:${serverInstance.port}`;
 
     // Create a test user
