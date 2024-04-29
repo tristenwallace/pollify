@@ -80,7 +80,7 @@ export const registerUser = createAsyncThunk<
   { username: string; password: string; name: string; avatar_url: string },
   { rejectValue: string }
 >(
-  'user/login',
+  'user/register',
   async (
     {
       username,
@@ -152,7 +152,7 @@ export const usersSlice = createSlice({
         state.currentUser = action.payload;
         state.error = undefined;
       })
-      .addCase(loginUser.rejected, (state, action) => {
+      .addCase(registerUser.rejected, (state, action) => {
         state.currentUser = null;
         state.error = action.payload as string;
       });
