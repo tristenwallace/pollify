@@ -7,9 +7,10 @@ import Vote from '../database/models/vote';
 import type { UserDTO } from '../controllers/userController';
 
 describe('User API', () => {
-  let serverInstance: { server: import('http').Server, port: number };
+  let serverInstance: { server: import('http').Server; port: number };
   let app: string;
-  const hashedPass = '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2'
+  const hashedPass =
+    '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2';
 
   beforeAll(async () => {
     try {
@@ -17,8 +18,18 @@ describe('User API', () => {
       app = `http://localhost:${serverInstance.port}`;
 
       await User.bulkCreate([
-        { username: 'user1', password: hashedPass, name: 'User One', avatar_url: null },
-        { username: 'user2', password: hashedPass, name: 'User Two', avatar_url: null }
+        {
+          username: 'user1',
+          password: hashedPass,
+          name: 'User One',
+          avatar_url: null,
+        },
+        {
+          username: 'user2',
+          password: hashedPass,
+          name: 'User Two',
+          avatar_url: null,
+        },
       ]);
       const user1 = await User.findOne({ where: { username: 'user1' } });
       const user2 = await User.findOne({ where: { username: 'user2' } });
@@ -27,14 +38,22 @@ describe('User API', () => {
         throw new Error('Test setup failed, required users not found');
       }
 
-      await Poll.create({ userId: user1.id, optionOne: 'Option One', optionTwo: 'Option Two' });
+      await Poll.create({
+        userId: user1.id,
+        optionOne: 'Option One',
+        optionTwo: 'Option Two',
+      });
       const poll1 = await Poll.findOne({ where: { userId: user1.id } });
 
       if (!poll1) {
         throw new Error('Test setup failed, required poll not found');
       }
 
-      await Vote.create({ pollId: poll1.id, userId: user2.id, chosenOption: 1 });
+      await Vote.create({
+        pollId: poll1.id,
+        userId: user2.id,
+        chosenOption: 1,
+      });
     } catch (error) {
       console.error('Error inserting test user:', error);
     }
