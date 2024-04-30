@@ -43,8 +43,8 @@ export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
   'poll/fetchPolls',
   async () => {
     try {
-      const polls = await fetchPollsApi();
-      return polls;
+      const response = await fetchPollsApi();
+      return response['polls'];
     } catch (error) {
       console.error('Failed to fetch polls:', error);
       throw error;
@@ -111,9 +111,9 @@ export const voteOnPoll = createAsyncThunk<
     { rejectWithValue },
   ) => {
     try {
-      const vote = await voteOnPollApi(pollId, userId, chosenOption);
+      const response = await voteOnPollApi(pollId, userId, chosenOption);
       console.log('vote saved successfully');
-      return vote;
+      return response['vote'];
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);

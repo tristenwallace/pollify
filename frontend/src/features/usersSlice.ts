@@ -10,7 +10,7 @@ import { RootState } from '../app/store';
 // Define the user interface for the state
 interface User {
   id: string;
-  password: string;
+  password?: string;
   name: string;
   avatar_url?: string;
   voteCount?: number;
@@ -25,7 +25,7 @@ interface JWTPayload {
 
 // Define the state structure for the users slice
 export interface UsersState {
-  users: Record<string, User>;
+  users: User[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
   currentUser: User | null;
   error: string | undefined;
@@ -33,7 +33,7 @@ export interface UsersState {
 
 // Initial state for the users slice
 const initialState: UsersState = {
-  users: {},
+  users: [],
   status: 'idle',
   currentUser: null,
   error: undefined,
@@ -123,11 +123,14 @@ export const usersSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(loginUser.fulfilled, (state, action) => {
+        console.log(action.payload);
         state.currentUser = action.payload;
+        state.status = 'succeeded';
         state.error = undefined;
       })
       .addCase(loginUser.rejected, (state, action) => {
         state.currentUser = null;
+        state.status = 'failed';
         state.error = action.payload as string;
       })
       // GET ALL USERS
@@ -136,9 +139,7 @@ export const usersSlice = createSlice({
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        action.payload.forEach(user => {
-          state.users[user.id] = user;
-        });
+        state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = 'failed';
@@ -150,10 +151,12 @@ export const usersSlice = createSlice({
       })
       .addCase(registerUser.fulfilled, (state, action) => {
         state.currentUser = action.payload;
+        state.status = 'succeeded';
         state.error = undefined;
       })
       .addCase(registerUser.rejected, (state, action) => {
         state.currentUser = null;
+        state.status = 'failed';
         state.error = action.payload as string;
       });
   },

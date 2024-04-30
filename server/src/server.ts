@@ -47,7 +47,7 @@ export const startServer = async (): Promise<{
   port: number;
 }> => {
   try {
-    const port = parseInt(process.env.PORT || '3000');
+    const port = parseInt(process.env.PORT || '5000');
     await connectWithRetry(); // Ensure database is connected before starting the server
     return new Promise((resolve, reject) => {
       const server = app
