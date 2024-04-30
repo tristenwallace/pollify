@@ -32,9 +32,6 @@ const Home = () => {
   if (pollStatus === 'loading') return <CircularProgress />;
   // Display error if data fetch fails
   if (error) return <Typography>Error: {error}</Typography>;
-  // Message if no polls are available
-  if (pollStatus === 'succeeded' && !Object.keys(polls).length)
-    return <Typography>No polls available.</Typography>;
 
   // Filter polls into answered and unanswered based on current user's activity
   const answeredPolls = Object.values(polls).filter(
@@ -87,7 +84,11 @@ const Home = () => {
         <Typography variant="h4" sx={{ my: 4 }}>
           All Polls
         </Typography>
-        <PollList polls={Object.values(polls)} />
+        {Object.keys(polls).length ? (
+          <PollList polls={Object.values(polls)} />
+        ) : (
+          <Typography>No polls available.</Typography>
+        )}
       </Container>
     );
   }
@@ -123,10 +124,10 @@ const Home = () => {
         </Button>
       </Box>
       <Grid container spacing={2}>
-        {showAnswered ? (
-          <PollList polls={answeredPolls} />
+        {pollStatus === 'succeeded' && (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
+          <PollList polls={showAnswered ? answeredPolls : unansweredPolls} />
         ) : (
-          <PollList polls={unansweredPolls} />
+          <Typography>No polls available.</Typography>
         )}
       </Grid>
     </Container>
