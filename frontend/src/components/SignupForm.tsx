@@ -75,7 +75,10 @@ const SignupForm = () => {
         </form>
       </Paper>
       <Typography variant="body2" sx={{ mt: 2 }}>
-        Already have an account? <Button color="primary" onClick={() => navigate('/login')}>Login</Button>
+        Already have an account?{' '}
+        <Button color="primary" onClick={() => navigate('/login')}>
+          Login
+        </Button>
       </Typography>
     </Container>
   );

@@ -32,7 +32,7 @@ export interface UsersState {
 }
 
 // Initial state for the users slice
-const initialState: UsersState = {
+export const initialState: UsersState = {
   users: [],
   status: 'idle',
   currentUser: null,
