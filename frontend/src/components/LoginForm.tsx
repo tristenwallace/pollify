@@ -18,7 +18,7 @@ interface LocationState {
   };
 }
 
-const Login: React.FC = () => {
+const LoginForm: React.FC = () => {
   // Local state for handling user input
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -80,4 +80,4 @@ const Login: React.FC = () => {
   );
 };
 
-export default Login;
+export default LoginForm;

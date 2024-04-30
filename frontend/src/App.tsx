@@ -3,7 +3,8 @@ import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Navbar from './components/Navbar';
 import Home from './components/Home';
-import Login from './components/Login';
+import LoginForm from './components/LoginForm';
+import SignupForm from './components/SignupForm';
 import CreatePollForm from './components/CreatePollForm';
 import Leaderboard from './components/Leaderboard';
 import PollDetails from './components/PollDetails';
@@ -15,7 +16,8 @@ const App: React.FC = () => {
       <Navbar />
       <Routes>
         <Route path="/" element={<Home />} />
-        <Route path="/login" element={<Login />} />
+        <Route path="/login" element={<LoginForm />} />
+        <Route path="/Signup" element={<SignupForm />} />
         <Route
           path="/create"
           element={

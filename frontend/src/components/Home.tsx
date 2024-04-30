@@ -37,8 +37,8 @@ const Home = () => {
     return <Typography>No polls available.</Typography>;
 
   // Filter polls into answered and unanswered based on current user's activity
-  const answeredPolls = Object.values(polls).filter(poll =>
-    poll.votes && poll.votes.some(vote => vote.userId === user?.id),
+  const answeredPolls = Object.values(polls).filter(
+    poll => poll.votes && poll.votes.some(vote => vote.userId === user?.id),
   );
   const unansweredPolls = Object.values(polls).filter(
     poll => poll.votes && !poll.votes.some(vote => vote.userId === user?.id),

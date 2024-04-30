@@ -19,13 +19,14 @@ import {
 // Memoized selector
 const selectSortedUsers = createSelector(
   [(state: RootState) => state.users.users],
-    (users) => Object.values(users).sort(
+  users =>
+    Object.values(users).sort(
       (a, b) =>
-          (b.pollCount ?? 0) +
-          (b.voteCount ?? 0) -
-          ((a.pollCount ?? 0) + (a.voteCount ?? 0)),
+        (b.pollCount ?? 0) +
+        (b.voteCount ?? 0) -
+        ((a.pollCount ?? 0) + (a.voteCount ?? 0)),
     ),
-  );
+);
 
 const Leaderboard = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -41,8 +42,6 @@ const Leaderboard = () => {
       dispatch(fetchUsers());
     }
   }, [dispatch, userStatus]);
-
-
 
   // Display a loading spinner while users are being fetched
   if (userStatus === 'loading') {
