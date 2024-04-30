@@ -29,8 +29,6 @@ function createToken(
       username: user.username,
       name: user.name,
       avatar_url: user.avatar_url,
-    },
-    stats: {
       pollsCreated: pollsCreated,
       pollsVotedOn: pollsVotedOn,
     },

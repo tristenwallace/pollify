@@ -13,7 +13,7 @@ Vote.init(
     userId: {
       type: DataTypes.UUID,
       references: {
-        model: 'Users',
+        model: 'User',
         key: 'id',
       },
       primaryKey: true,
@@ -21,7 +21,7 @@ Vote.init(
     pollId: {
       type: DataTypes.UUID,
       references: {
-        model: 'Polls',
+        model: 'Poll',
         key: 'id',
       },
       primaryKey: true,

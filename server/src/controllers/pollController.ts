@@ -1,6 +1,7 @@
 import { Request, Response } from 'express';
-import { Poll } from '../database/models/poll';
-import { Vote } from '../database/models/vote';
+import models from '../database/models';
+
+const { Poll, Vote } = models;
 
 export const getPolls = async (req: Request, res: Response): Promise<void> => {
   try {
@@ -8,7 +9,7 @@ export const getPolls = async (req: Request, res: Response): Promise<void> => {
       include: [
         {
           model: Vote,
-          as: 'voters',
+          as: 'votes',
           attributes: ['userId', 'chosenOption'], // Include relevant vote details
         },
       ],
@@ -50,7 +51,8 @@ export const voteOnPoll = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
-  const { pollId, userId, chosenOption } = req.body;
+  const { userId, chosenOption } = req.body;
+  const pollId = req.params.id;
 
   if (!pollId || !chosenOption || !userId) {
     res.status(400).json({ error: 'Missing information' });

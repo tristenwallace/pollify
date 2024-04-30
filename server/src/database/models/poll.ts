@@ -20,7 +20,7 @@ Poll.init(
     userId: {
       type: DataTypes.UUID,
       references: {
-        model: 'Users',
+        model: 'User',
         key: 'id',
       },
     },
