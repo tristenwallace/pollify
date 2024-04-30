@@ -98,22 +98,22 @@ const PollDetail = () => {
           {poll.optionTwo} - {optionTwoVotes} votes ({optionTwoPercentage}%)
         </Typography>
         <div>
-        <Button
-          variant="contained"
-          onClick={() => handleVote(1)}
-          disabled={!!userVote}
-          sx={{ mr: 2, mt: 2 }}
-        >
-          Vote Option 1 {userVote === 1 ? '(Your vote)' : ''}
-        </Button>
-        <Button
-          variant="contained"
-          onClick={() => handleVote(2)}
-          disabled={!!userVote}
-          sx={{ mt: 2 }}
-        >
-          Vote Option 2 {userVote === 2 ? '(Your vote)' : ''}
-        </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleVote(1)}
+            disabled={!!userVote}
+            sx={{ mr: 2, mt: 2 }}
+          >
+            Vote Option 1 {userVote === 1 ? '(Your vote)' : ''}
+          </Button>
+          <Button
+            variant="contained"
+            onClick={() => handleVote(2)}
+            disabled={!!userVote}
+            sx={{ mt: 2 }}
+          >
+            Vote Option 2 {userVote === 2 ? '(Your vote)' : ''}
+          </Button>
         </div>
         {userVote && (
           <Typography sx={{ mt: 2 }}>

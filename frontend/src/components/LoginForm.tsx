@@ -18,7 +18,7 @@ interface LocationState {
   };
 }
 
-const Login: React.FC = () => {
+const LoginForm: React.FC = () => {
   // Local state for handling user input
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
@@ -76,8 +76,11 @@ const Login: React.FC = () => {
           {error && <ErrorTypography>{error}</ErrorTypography>}
         </form>
       </Paper>
+      <Typography variant="body2" sx={{ mt: 2 }}>
+        Are you new here? <Button color="primary" onClick={() => navigate('/signup')}>Sign Up</Button>
+      </Typography>
     </Container>
   );
 };
 
-export default Login;
+export default LoginForm;
