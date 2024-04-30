@@ -5,4 +5,5 @@ module.exports = {
     '^.+\\.(js|jsx|ts|tsx)$': 'babel-jest',
   },
   transformIgnorePatterns: ['/node_modules/(?!(axios)/)'],
+  setupFilesAfterEnv: ['<rootDir>/src/setupTests.ts'],
 };
