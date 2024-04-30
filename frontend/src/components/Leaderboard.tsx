@@ -1,3 +1,4 @@
+import { createSelector } from 'reselect';
 import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { fetchUsers } from '../features/usersSlice';
@@ -5,7 +6,6 @@ import { AppDispatch, RootState } from '../app/store';
 import { Link } from 'react-router-dom';
 import {
   List,
-  Container,
   ListItem,
   ListItemAvatar,
   Avatar,
@@ -16,21 +16,22 @@ import {
   CircularProgress,
 } from '@mui/material';
 
-const Leaderboard = () => {
-  const dispatch: AppDispatch = useDispatch();
-
-  // Retrieve and sort users by activity (questions asked + answers given)
-  const users = useSelector((state: RootState) =>
-    Object.values(state.users.users).sort(
+// Memoized selector
+const selectSortedUsers = createSelector(
+  [(state: RootState) => state.users.users],
+    (users) => Object.values(users).sort(
       (a, b) =>
-        (b.pollCount ?? 0) +
-        (b.voteCount ?? 0) -
-        ((a.pollCount ?? 0) + (a.voteCount ?? 0)),
+          (b.pollCount ?? 0) +
+          (b.voteCount ?? 0) -
+          ((a.pollCount ?? 0) + (a.voteCount ?? 0)),
     ),
   );
 
+const Leaderboard = () => {
+  const dispatch: AppDispatch = useDispatch();
+
   // Access user-related status and error from the Redux store
-  const user = useSelector((state: RootState) => state.users.currentUser);
+  const users = useSelector(selectSortedUsers);
   const userStatus = useSelector((state: RootState) => state.users.status);
   const userError = useSelector((state: RootState) => state.users.error);
 
@@ -41,16 +42,7 @@ const Leaderboard = () => {
     }
   }, [dispatch, userStatus]);
 
-  // Conditional rendering based on authentication and data loading status
-  if (!user) {
-    return (
-      <Container>
-        <Typography variant="h5" sx={{ mt: 2 }}>
-          Please log in to see the polls.
-        </Typography>
-      </Container>
-    );
-  }
+
 
   // Display a loading spinner while users are being fetched
   if (userStatus === 'loading') {

@@ -22,9 +22,12 @@ const PollDetail = () => {
   const user = useSelector((state: RootState) => state.users.currentUser);
   // Retrieve poll and author details from the Redux store
   const poll = useSelector((state: RootState) => state.poll.polls[pollId]);
-  const author = useSelector(
-    (state: RootState) => poll && state.users.users[poll.userId],
-  );
+  const author = useSelector((state: RootState) => {
+    if (poll) {
+      return state.users.users.find(user => user.id === poll.userId);
+    }
+    return null;
+  });
 
   // Redirect to not found page if no poll ID is found
   if (!pollId || !poll) {
@@ -95,24 +98,22 @@ const PollDetail = () => {
           {poll.optionTwo} - {optionTwoVotes} votes ({optionTwoPercentage}%)
         </Typography>
         <div>
-          <Button
-            variant="contained"
-            onClick={() => handleVote(1)}
-            disabled={!!userVote}
-            sx={{ mr: 2, mt: 2 }}
-          >
-            {poll.optionOne} {poll.optionOne}{' '}
-            {userVote === 1 ? '(Your vote)' : ''}
-          </Button>
-          <Button
-            variant="contained"
-            onClick={() => handleVote(2)}
-            disabled={!!userVote}
-            sx={{ mt: 2 }}
-          >
-            {poll.optionTwo} {poll.optionTwo}{' '}
-            {userVote === 2 ? '(Your vote)' : ''}
-          </Button>
+        <Button
+          variant="contained"
+          onClick={() => handleVote(1)}
+          disabled={!!userVote}
+          sx={{ mr: 2, mt: 2 }}
+        >
+          Vote Option 1 {userVote === 1 ? '(Your vote)' : ''}
+        </Button>
+        <Button
+          variant="contained"
+          onClick={() => handleVote(2)}
+          disabled={!!userVote}
+          sx={{ mt: 2 }}
+        >
+          Vote Option 2 {userVote === 2 ? '(Your vote)' : ''}
+        </Button>
         </div>
         {userVote && (
           <Typography sx={{ mt: 2 }}>
