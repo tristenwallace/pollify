@@ -8,7 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { RootState } from '../app/store';
 
 // Define the user interface for the state
-interface User {
+export interface User {
   id: string;
   password?: string;
   name: string;
@@ -123,7 +123,6 @@ export const usersSlice = createSlice({
         state.status = 'loading';
       })
       .addCase(loginUser.fulfilled, (state, action) => {
-        console.log(action.payload);
         state.currentUser = action.payload;
         state.status = 'succeeded';
         state.error = undefined;
