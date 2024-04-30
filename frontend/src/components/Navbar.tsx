@@ -32,9 +32,14 @@ const Navbar = () => {
             Logout
           </Button>
         ) : (
-          <Button color="inherit" component={RouterLink} to="/login">
-            Login
-          </Button>
+          <>
+            <Button color="inherit" component={RouterLink} to="/login">
+              Login
+            </Button>
+            <Button color="inherit" component={RouterLink} to="/signup">
+              Signup
+            </Button>
+          </>
         )}
       </Toolbar>
     </AppBar>
