@@ -1,4 +1,9 @@
-import React from 'react';
+import React, { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { AppDispatch } from './app/store';
+import { fetchCurrentUser, fetchUsers } from './features/usersSlice';
+import { fetchPolls } from './features/pollSlice';
+import { getToken } from './server/api';
 import { Route, Routes } from 'react-router-dom';
 import ProtectedRoute from './ProtectedRoute';
 import Navbar from './components/Navbar';
@@ -11,6 +16,18 @@ import PollDetails from './components/PollDetails';
 import NotFoundPage from './components/PageNotFound';
 
 const App: React.FC = () => {
+  const dispatch: AppDispatch = useDispatch();
+
+  useEffect(() => {
+    const token = getToken();
+    if (token) {
+      dispatch(fetchCurrentUser(token));
+    }
+    dispatch(fetchUsers());
+    dispatch(fetchPolls());
+  }, [dispatch]);
+
+  
   return (
     <div className="app">
       <Navbar />
