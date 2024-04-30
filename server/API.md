@@ -45,7 +45,7 @@ All API requests are made to the base URL of the deployed backend. For developme
 - **Body**:
   - `optionOne`: String
   - `optionTwo`: String
-  - `userId`: String 
+  - `userId`: String
 - **Response**: Newly created poll object.
 
 ## Votes
@@ -55,7 +55,6 @@ All API requests are made to the base URL of the deployed backend. For developme
 - **Description**: Submit a vote on a poll option (authenticated users only).
 - **Body**:
   - `userId`: String
-  - `pollId`: String
   - `chosenOption`: Integer (1 or 2)
 - **Response**: Newly created vote object.
 
