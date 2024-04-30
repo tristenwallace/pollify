@@ -16,10 +16,10 @@ import {
 const Home = () => {
   const dispatch: AppDispatch = useDispatch();
   const [showAnswered, setShowAnswered] = useState(false);
+  const user = useSelector((state: RootState) => state.users.currentUser);
   const polls = useSelector((state: RootState) => state.poll.polls);
   const pollStatus = useSelector((state: RootState) => state.poll.status);
   const error = useSelector((state: RootState) => state.poll.error);
-  const user = useSelector((state: RootState) => state.users.currentUser);
 
   // Fetch polls when component mounts or status changes to idle
   useEffect(() => {
@@ -27,17 +27,6 @@ const Home = () => {
       dispatch(fetchPolls());
     }
   }, [pollStatus, dispatch]);
-
-  // Conditional rendering based on authentication and data loading status
-  if (!user) {
-    return (
-      <Container>
-        <Typography variant="h5" sx={{ mt: 2 }}>
-          Please log in to see the polls.
-        </Typography>
-      </Container>
-    );
-  }
 
   // Show loading indicator during data fetch
   if (pollStatus === 'loading') return <CircularProgress />;
@@ -48,16 +37,24 @@ const Home = () => {
     return <Typography>No polls available.</Typography>;
 
   // Filter polls into answered and unanswered based on current user's activity
-  const answeredPolls = Object.values(polls).filter(
-    poll =>
-      poll.optionOne.votes.includes(user.id) ||
-      poll.optionTwo.votes.includes(user.id),
+  const answeredPolls = Object.values(polls).filter(poll =>
+    poll.votes && poll.votes.some(vote => vote.userId === user?.id),
   );
   const unansweredPolls = Object.values(polls).filter(
-    poll =>
-      !poll.optionOne.votes.includes(user.id) &&
-      !poll.optionTwo.votes.includes(user.id),
+    poll => poll.votes && !poll.votes.some(vote => vote.userId === user?.id),
   );
+
+  if (!user) {
+    // When there is no user logged in, simply display all polls without filtering
+    return (
+      <Container>
+        <Typography variant="h4" sx={{ my: 4 }}>
+          All Polls
+        </Typography>
+        <PollList polls={Object.values(polls)} />
+      </Container>
+    );
+  }
 
   return (
     <Container>

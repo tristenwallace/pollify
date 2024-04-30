@@ -2,31 +2,36 @@ import User from './user';
 import Poll from './poll';
 import Vote from './vote';
 
-// Set up relationships for polls created by a user
-User.hasMany(Poll, {
-  foreignKey: 'userId',
-  as: 'authoredPolls'
-});
+// Poll relationships
+
+console.log('Defining association between Poll and Users');
 Poll.belongsTo(User, {
   foreignKey: 'userId',
-  as: 'author'  // Clearly indicates the creator of the poll
-});
-
-// Set up relationships for voting
-User.belongsToMany(Poll, {
-  through: Vote,
-  as: 'votedPolls',  // Indicates polls on which the user has voted
-  foreignKey: 'userId',
-  otherKey: 'pollId'
+  as: 'author',
 });
 Poll.belongsToMany(User, {
   through: Vote,
-  as: 'voters',  // Indicates users who have voted on this poll
+  as: 'voters',
   foreignKey: 'pollId',
-  otherKey: 'userId'
+  otherKey: 'userId',
+});
+console.log('Defining association between Poll and Vote');
+Poll.hasMany(Vote, { foreignKey: 'pollId', as: 'votes' });
+console.log('Association defined:', Poll.associations);
+
+// User Relationships
+User.belongsToMany(Poll, {
+  through: Vote,
+  as: 'votedPolls',
+  foreignKey: 'userId',
+  otherKey: 'pollId',
+});
+User.hasMany(Poll, {
+  foreignKey: 'userId',
+  as: 'authoredPolls',
 });
 
-// Relationships in Vote model
+// Vote Relationships
 Vote.belongsTo(User, { foreignKey: 'userId', as: 'voter' });
 Vote.belongsTo(Poll, { foreignKey: 'pollId', as: 'votedPoll' });
 

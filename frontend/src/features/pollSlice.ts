@@ -1,10 +1,10 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../app/store';
 import {
-  _getQuestions,
-  _saveQuestion,
-  _saveQuestionAnswer,
-} from '../server/_DATA';
+  fetchPolls as fetchPollsApi,
+  createPoll as createPollApi,
+  voteOnPoll as voteOnPollApi,
+} from '../server/api';
 
 // Define interfaces to standardize the structure of data used within the slice.
 interface MyThunkAPI {
@@ -12,16 +12,17 @@ interface MyThunkAPI {
   rejectValue: string;
 }
 
-interface PollOption {
-  votes: string[];
-  text: string;
+interface vote {
+  userId: string;
+  chosenOption: number;
 }
 
 export interface Poll {
   id: string;
-  author: string;
-  optionOne: PollOption;
-  optionTwo: PollOption;
+  userId: string;
+  optionOne: string;
+  optionTwo: string;
+  votes: vote[];
 }
 
 export interface PollsState {
@@ -30,9 +31,6 @@ export interface PollsState {
   error: string | undefined;
 }
 
-// Types for poll options to maintain consistency and prevent typos.
-export type PollOptionKey = 'optionOne' | 'optionTwo';
-
 // Initial state setup for the polling feature.
 const initialState: PollsState = {
   polls: {},
@@ -40,13 +38,13 @@ const initialState: PollsState = {
   error: undefined,
 };
 
-// Async thunk for fetching polls. Handles API interaction and error management.
+// Async thunk for fetching polls
 export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
   'poll/fetchPolls',
   async () => {
     try {
-      const response = await _getQuestions();
-      return Object.values(response);
+      const response = await fetchPollsApi();
+      return response['polls'];
     } catch (error) {
       console.error('Failed to fetch polls:', error);
       throw error;
@@ -57,23 +55,21 @@ export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
 // Async thunk for adding a new poll
 export const addNewPoll = createAsyncThunk<
   Poll,
-  { optionOneText: string; optionTwoText: string; author: string },
+  { optionOne: string; optionTwo: string; userId: string },
   MyThunkAPI
 >(
   'poll/addNewPoll',
   async (pollData: {
-    optionOneText: string;
-    optionTwoText: string;
-    author: string;
+    optionOne: string;
+    optionTwo: string;
+    userId: string;
   }) => {
     try {
-      const newPoll = await _saveQuestion({
-        optionOneText: pollData.optionOneText,
-        optionTwoText: pollData.optionTwoText,
-        author: pollData.author,
+      const newPoll = await createPollApi({
+        optionOne: pollData.optionOne,
+        optionTwo: pollData.optionTwo,
+        userId: pollData.userId,
       });
-      fetchPolls();
-      console.log('Poll saved successfully', newPoll);
       return newPoll;
     } catch (error) {
       console.error('Error saving poll', error);
@@ -91,14 +87,13 @@ export const addNewPoll = createAsyncThunk<
 export const voteOnPoll = createAsyncThunk<
   {
     pollId: string;
-    option: PollOptionKey;
+    chosenOption: number;
     userId: string;
   },
   {
     pollId: string;
-    option: PollOptionKey;
+    chosenOption: number;
     userId: string;
-    existingPoll: Poll;
   },
   MyThunkAPI
 >(
@@ -106,33 +101,19 @@ export const voteOnPoll = createAsyncThunk<
   async (
     {
       pollId,
-      option,
+      chosenOption,
       userId,
-      existingPoll,
     }: {
       pollId: string;
-      option: PollOptionKey;
+      chosenOption: number;
       userId: string;
-      existingPoll: Poll;
     },
     { rejectWithValue },
   ) => {
     try {
-      if (!existingPoll) {
-        return rejectWithValue('Poll not found');
-      }
-      if (existingPoll[option].votes.includes(userId)) {
-        return rejectWithValue('User has already voted');
-      }
-      // Simulating backend operation
-      await _saveQuestionAnswer({
-        authedUser: userId,
-        qid: pollId,
-        answer: option,
-      });
-      fetchPolls(); // Refresh poll data post-vote to reflect changes.
+      const response = await voteOnPollApi(pollId, userId, chosenOption);
       console.log('vote saved successfully');
-      return { pollId, option, userId };
+      return response['vote'];
     } catch (error) {
       if (error instanceof Error) {
         return rejectWithValue(error.message);
@@ -188,12 +169,14 @@ const pollSlice = createSlice({
       .addCase(voteOnPoll.fulfilled, (state, action) => {
         state.status = 'succeeded';
         if (action.payload) {
-          const { pollId, option, userId } = action.payload;
+          const { pollId, chosenOption, userId } = action.payload;
           // Update the specific poll with new vote
           const pollToUpdate = state.polls[pollId];
-          if (pollToUpdate && option) {
-            pollToUpdate[option].votes.push(userId); // Add the user's vote
-            state.polls[pollId] = { ...pollToUpdate }; // Ensure we create a new object to help with re-rendering in React components
+          if (pollToUpdate && chosenOption) {
+            pollToUpdate.votes.push({
+              userId: userId,
+              chosenOption: chosenOption,
+            }); // Add the user's vote
           }
         }
       })

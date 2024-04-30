@@ -13,7 +13,7 @@ Vote.init(
     userId: {
       type: DataTypes.UUID,
       references: {
-        model: 'Users',
+        model: 'User',
         key: 'id',
       },
       primaryKey: true,
@@ -21,7 +21,7 @@ Vote.init(
     pollId: {
       type: DataTypes.UUID,
       references: {
-        model: 'Polls',
+        model: 'Poll',
         key: 'id',
       },
       primaryKey: true,
@@ -30,8 +30,8 @@ Vote.init(
       type: DataTypes.INTEGER,
       allowNull: false,
       validate: {
-        isIn: [[1, 2]]  // Only allow 1 or 2 as valid integers
-      }
+        isIn: [[1, 2]], // Only allow 1 or 2 as valid integers
+      },
     },
     createdAt: {
       allowNull: false,

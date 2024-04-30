@@ -4,12 +4,12 @@
 
 All API requests are made to the base URL of the deployed backend. For development, this is `http://localhost:5000/`.
 
-## Users
+## User
 
 - All protected routes require a bearer token to be sent in the `Authorization` header.
 - Tokens are acquired through the login endpoint and must be included in subsequent requests to protected endpoints.
 
-### POST /register
+### POST /user/register
 
 - **Description**: Register a new user.
 - **Body**:
@@ -19,7 +19,7 @@ All API requests are made to the base URL of the deployed backend. For developme
   - `avatar_url_`: String (optional)
 - **Response**: JWT token with user details.
 
-### POST /login
+### POST /user/login
 
 - **Description**: Authenticate a user and return a JWT.
 - **Body**:
@@ -27,7 +27,7 @@ All API requests are made to the base URL of the deployed backend. For developme
   - `password`: String
 - **Response**: JWT token with user details.
 
-### GET /users
+### GET /user/all
 
 - **Description**: Fetch all users.
 - **Response**: Array of all user objects(id, username, name, voteCount, pollCount)
@@ -37,7 +37,7 @@ All API requests are made to the base URL of the deployed backend. For developme
 ### GET /polls
 
 - **Description**: Fetch all polls.
-- **Response**: Array of all poll objects, each including authorId, two options, and array of votes
+- **Response**: Array of all poll objects, each including userId, two options, and array of votes
 
 ### POST /polls
 
@@ -45,7 +45,7 @@ All API requests are made to the base URL of the deployed backend. For developme
 - **Body**:
   - `optionOne`: String
   - `optionTwo`: String
-  - `authorId`: String 
+  - `userId`: String
 - **Response**: Newly created poll object.
 
 ## Votes
@@ -55,7 +55,6 @@ All API requests are made to the base URL of the deployed backend. For developme
 - **Description**: Submit a vote on a poll option (authenticated users only).
 - **Body**:
   - `userId`: String
-  - `pollId`: String
   - `chosenOption`: Integer (1 or 2)
 - **Response**: Newly created vote object.
 
@@ -72,7 +71,7 @@ All API requests are made to the base URL of the deployed backend. For developme
 ### Polls Table
 
 - `id`: Primary Key, UUID
-- `authorId`: Foreign Key, References Users
+- `userId`: Foreign Key, References Users
 - `optionOne`: String
 - `optionTwo`: String
 

@@ -4,7 +4,6 @@ import jwt from 'jsonwebtoken';
 import { User } from '../database/models/user';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
-import sequelize from '../config/sequelize';
 
 export interface UserDTO extends User {
   voteCount: number;
@@ -19,17 +18,19 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
  * @param user The user object for which to create the token.
  * @returns The JWT token as a string.
  */
-function createToken(user: User, pollsCreated: number, pollsVotedOn: number): string {
+function createToken(
+  user: User,
+  pollsCreated: number,
+  pollsVotedOn: number,
+): string {
   const payload = {
     user: {
       id: user.id,
       username: user.username,
       name: user.name,
       avatar_url: user.avatar_url,
-    },
-    stats: {
       pollsCreated: pollsCreated,
-      pollsVotedOn: pollsVotedOn
+      pollsVotedOn: pollsVotedOn,
     },
   };
 
@@ -94,7 +95,6 @@ export const login = async (req: Request, res: Response) => {
     const pollsCreated = await Poll.count({ where: { userId: user.id } });
     const pollsVotedOn = await Vote.count({ where: { userId: user.id } });
 
-
     // Generate a token for the logged-in user
     const token = createToken(user, pollsCreated, pollsVotedOn);
 
@@ -106,25 +106,30 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
-export const getAllUsers = async (req: Request, res: Response): Promise<void> => {
+export const getAllUsers = async (
+  req: Request,
+  res: Response,
+): Promise<void> => {
   try {
     // Fetch all users
     const users = await User.findAll({
       attributes: ['id', 'username', 'name'],
-      raw: true
+      raw: true,
     });
 
     // Asynchronously fetch poll and vote counts for each user
-    const usersWithCounts = await Promise.all(users.map(async (user) => {
-      const pollCount = await Poll.count({ where: { userId: user.id } });
-      const voteCount = await Vote.count({ where: { userId: user.id } });
+    const usersWithCounts = await Promise.all(
+      users.map(async user => {
+        const pollCount = await Poll.count({ where: { userId: user.id } });
+        const voteCount = await Vote.count({ where: { userId: user.id } });
 
-      return {
-        ...user,
-        pollCount,
-        voteCount
-      };
-    }));
+        return {
+          ...user,
+          pollCount,
+          voteCount,
+        };
+      }),
+    );
 
     res.status(200).json(usersWithCounts);
   } catch (error) {

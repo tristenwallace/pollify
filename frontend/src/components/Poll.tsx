@@ -22,9 +22,12 @@ const Poll: React.FC<PollProps> = ({ pollId }) => {
   const usersStatus = useSelector((state: RootState) => state.users.status); // Accessing the user loading status from Redux store
 
   const poll = useSelector((state: RootState) => state.poll.polls[pollId]); // Retrieving specific poll by ID from Redux store
-  const author = useSelector(
-    (state: RootState) => state.users.users[poll.author], // Retrieving author details from the users state
-  );
+  const author = useSelector((state: RootState) => {
+    if (poll) {
+      return state.users.users.find(user => user.id === poll.userId);
+    }
+    return null;
+  });
 
   // Fetch polls if the status is 'idle', indicating they have not been fetched yet
   useEffect(() => {
@@ -51,7 +54,7 @@ const Poll: React.FC<PollProps> = ({ pollId }) => {
       <CardContent>
         <Typography variant="h6">{author.name} asks:</Typography>
         <Typography variant="body1">
-          Would you rather {poll.optionOne.text} or {poll.optionTwo.text}?
+          Would you rather {poll.optionOne} or {poll.optionTwo}?
         </Typography>
         <Button
           component={RouterLink}

@@ -1,32 +1,40 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { validateUser, _getUsers } from '../server/_DATA';
+import {
+  fetchUsers as fetchUsersApi,
+  loginUser as loginUserApi,
+  registerUser as registerUserApi,
+} from '../server/api';
+import { jwtDecode } from 'jwt-decode';
 import { RootState } from '../app/store';
-import { voteOnPoll, addNewPoll } from './pollSlice';
 
 // Define the user interface for the state
 interface User {
   id: string;
-  password: string;
+  password?: string;
   name: string;
-  avatarURL: string | null;
-  answers: Record<string, string>;
-  questions: string[];
+  avatar_url?: string;
+  voteCount?: number;
+  pollCount?: number;
+}
+
+interface JWTPayload {
+  user: User;
+  iat: number;
+  exp: number;
 }
 
 // Define the state structure for the users slice
 export interface UsersState {
-  users: Record<string, User>;
+  users: User[];
   status: 'idle' | 'loading' | 'succeeded' | 'failed';
-  isAuthenticated: boolean;
   currentUser: User | null;
   error: string | undefined;
 }
 
 // Initial state for the users slice
 const initialState: UsersState = {
-  users: {},
+  users: [],
   status: 'idle',
-  isAuthenticated: false,
   currentUser: null,
   error: undefined,
 };
@@ -36,8 +44,8 @@ export const fetchUsers = createAsyncThunk<User[], void, { state: RootState }>(
   'user/fetchUsers',
   async () => {
     try {
-      const response = await _getUsers();
-      return Object.values(response);
+      const users = await fetchUsersApi();
+      return users;
     } catch (error) {
       console.error('Failed to fetch polls:', error);
       throw error;
@@ -57,8 +65,40 @@ export const loginUser = createAsyncThunk<
     { rejectWithValue },
   ) => {
     try {
-      const user = await validateUser(username, password);
-      return user; // validateUser returns user object on success
+      const response = await loginUserApi(username, password);
+      const decoded = jwtDecode<JWTPayload>(response.token);
+      return decoded.user;
+    } catch (error) {
+      return rejectWithValue('Invalid username or password');
+    }
+  },
+);
+
+// Asynchronous thunk for registering user
+export const registerUser = createAsyncThunk<
+  User,
+  { username: string; password: string; name: string; avatar_url: string },
+  { rejectValue: string }
+>(
+  'user/register',
+  async (
+    {
+      username,
+      password,
+      name,
+      avatar_url,
+    }: { username: string; password: string; name: string; avatar_url: string },
+    { rejectWithValue },
+  ) => {
+    try {
+      const response = await registerUserApi(
+        username,
+        password,
+        name,
+        avatar_url,
+      );
+      const decoded = jwtDecode<JWTPayload>(response.token);
+      return decoded.user;
     } catch (error) {
       return rejectWithValue('Invalid username or password');
     }
@@ -71,54 +111,53 @@ export const usersSlice = createSlice({
   initialState,
   reducers: {
     logout: state => {
-      state.isAuthenticated = false;
       state.currentUser = null;
+      state.status = 'idle';
       state.error = undefined;
     },
   },
   extraReducers: builder => {
     builder
+      // LOGIN
+      .addCase(loginUser.pending, state => {
+        state.status = 'loading';
+      })
       .addCase(loginUser.fulfilled, (state, action) => {
-        state.isAuthenticated = true;
+        console.log(action.payload);
         state.currentUser = action.payload;
+        state.status = 'succeeded';
         state.error = undefined;
       })
       .addCase(loginUser.rejected, (state, action) => {
-        state.isAuthenticated = false;
         state.currentUser = null;
+        state.status = 'failed';
         state.error = action.payload as string;
       })
+      // GET ALL USERS
       .addCase(fetchUsers.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchUsers.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        action.payload.forEach(user => {
-          state.users[user.id] = user;
-        });
+        state.users = action.payload;
       })
       .addCase(fetchUsers.rejected, (state, action) => {
         state.status = 'failed';
         state.error = action.error.message;
       })
-      .addCase(addNewPoll.fulfilled, (state, action) => {
-        // New poll data includes the author's ID
-        const { author, id } = action.payload;
-        if (state.currentUser) {
-          state.currentUser.questions.push(id);
-          state.users[author].questions.push(id);
-        } else {
-          console.error('Author not found in users state:', author); // Logs an error if the author doesn't exist
-        }
+      // REGISTER NEW USER
+      .addCase(registerUser.pending, state => {
+        state.status = 'loading';
       })
-      .addCase(voteOnPoll.fulfilled, (state, action) => {
-        const { userId, pollId, option } = action.payload;
-        if (state.currentUser) {
-          state.currentUser.answers[pollId] = option;
-          state.users[userId].answers[pollId] = option;
-        } else {
-          console.error('Current User not found in users state:', userId); // Logs an error if the user doesn't exist
-        }
+      .addCase(registerUser.fulfilled, (state, action) => {
+        state.currentUser = action.payload;
+        state.status = 'succeeded';
+        state.error = undefined;
+      })
+      .addCase(registerUser.rejected, (state, action) => {
+        state.currentUser = null;
+        state.status = 'failed';
+        state.error = action.payload as string;
       });
   },
 });
