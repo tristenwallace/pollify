@@ -105,7 +105,7 @@ To start the backend server, execute the following command inside the server dir
 
 ## Testing
 
-Refer to [Testing Documentation](frontend/src/tests/testing.md) for details on how to execute unit tests and comprehensive testing using Jest & Playwright.
+Refer to [Testing Documentation](frontend/src/tests/docs/testing.md) for details on how to execute unit tests and comprehensive testing using Jest & Playwright.
 
 ## API Documentation
 
