@@ -39,6 +39,22 @@ export const initialState: UsersState = {
   error: undefined,
 };
 
+export const fetchCurrentUser = createAsyncThunk<User, string, { rejectValue: string }>('users/fetchCurrentUser', async (token, { rejectWithValue }) => {
+  try {
+    if (!token) {
+      return rejectWithValue('No token provided');
+    }
+    const decoded = jwtDecode<JWTPayload>(token);
+    if (!decoded || !decoded.user) {
+      return rejectWithValue('Failed to decode token');
+    }
+    return decoded.user;
+  } catch (error) {
+    console.error('Failed to fetch polls:', error);
+    throw error;
+  }
+});
+
 // Asynchronous thunk for fetching users
 export const fetchUsers = createAsyncThunk<User[], void, { state: RootState }>(
   'user/fetchUsers',
@@ -157,6 +173,11 @@ export const usersSlice = createSlice({
         state.currentUser = null;
         state.status = 'failed';
         state.error = action.payload as string;
+      })
+      .addCase(fetchCurrentUser.fulfilled, (state, action) => {
+        state.currentUser = action.payload;
+        state.status = 'succeeded';
+        state.error = undefined;
       });
   },
 });

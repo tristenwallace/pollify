@@ -20,7 +20,7 @@ function storeToken(token: string): void {
 }
 
 // Function to get the JWT token from local storage
-function getToken(): string | null {
+export function getToken(): string | null {
   return localStorage.getItem('jwtToken');
 }
 
