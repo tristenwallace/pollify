@@ -48,6 +48,23 @@ const Home = () => {
     // When there is no user logged in, simply display all polls without filtering
     return (
       <Container>
+        <div style={{ padding: '20px', background: '#f0f0f0', borderRadius: '8px', marginTop: '20px' }}>
+          <Typography variant="h5" gutterBottom>
+            Welcome to Employee Polls!
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+            A fun and engaging way to create and participate in polls. Get started by signing up or logging in!
+          </Typography>
+          <div>
+            <Button variant="contained" color="primary" component={RouterLink} to="/signup" sx={{ mr: 2, mt: 2 }}>
+              Sign Up
+            </Button>
+            <Button variant="contained" color="primary" component={RouterLink} to="/login" sx={{ mr: 2, mt: 2 }}>
+              Login
+            </Button>
+          </div>
+        
+        </div>
         <Typography variant="h4" sx={{ my: 4 }}>
           All Polls
         </Typography>
