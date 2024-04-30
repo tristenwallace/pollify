@@ -32,7 +32,7 @@ export interface PollsState {
 }
 
 // Initial state setup for the polling feature.
-const initialState: PollsState = {
+export const initialState: PollsState = {
   polls: {},
   status: 'idle',
   error: undefined,

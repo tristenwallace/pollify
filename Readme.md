@@ -102,3 +102,11 @@ To start the backend server, execute the following command inside the server dir
 
 1.Start the development server: `npm run dev`
 2.This will start the backend on <http://localhost:5000> by default.
+
+## Testing
+
+Refer to [Testing Documentation](frontend/src/tests/docs/testing.md) for details on how to execute unit tests and comprehensive testing using Jest & Playwright.
+
+## API Documentation
+
+For more information about the API endpoints, see the [API Documentation](server/API.md).

@@ -77,7 +77,10 @@ const LoginForm: React.FC = () => {
         </form>
       </Paper>
       <Typography variant="body2" sx={{ mt: 2 }}>
-        Are you new here? <Button color="primary" onClick={() => navigate('/signup')}>Sign Up</Button>
+        Are you new here?{' '}
+        <Button color="primary" onClick={() => navigate('/signup')}>
+          Sign Up
+        </Button>
       </Typography>
     </Container>
   );
