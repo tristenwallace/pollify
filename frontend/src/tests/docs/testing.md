@@ -4,13 +4,13 @@
 
 ### 1. Navbar
 
-- Verifies responsive behavior and the display of correct navigation links based on the user's authentication status. (!TODO!)
-- Checks the mobile hamburger menu functionality. (!TODO!)
+- Verifies responsive behavior and the display of correct navigation links based on the user's authentication status.
+- Checks the mobile hamburger menu functionality.
 
 ### 2. Home Page
 
-- Tests display of polls and conditional content for authenticated vs. unauthenticated users. (!TODO!)
-- Ensures correct filtering and display of answered and unanswered polls. (!TODO!)
+- Tests display of polls and conditional content for authenticated vs. unauthenticated users.
+- Ensures correct filtering and display of answered and unanswered polls.
 
 ### 3. Login Form
 
@@ -42,15 +42,15 @@
 
 ### 1. Fetch Users
 
-- Ensures users are retrieved correctly and handles errors. (!TODO!)
+- Ensures users are retrieved correctly and handles errors.
 
 ### 2. Login User
 
-- Tests successful user authentication and error handling. (!TODO!)
+- Tests successful user authentication and error handling.
 
 ### 3. Register User
 
-- Validates user registration and error responses. (!TODO!)
+- Validates user registration and error responses.
 
 ### 4. Fetch Polls
 
@@ -70,9 +70,9 @@
 
 #### Unit Tests
 
-- Test individual functions and components in isolation. (!TODO!)
-- Mock API calls using jest mocks to simulate server responses. (!TODO!)
-- Use React Testing Library to render components and interact with them as users would. (!TODO!)
+- Test individual functions and components in isolation. (!TODO!) (In Progress)
+- Mock API calls using jest mocks to simulate server responses.
+- Use React Testing Library to render components and interact with them as users would. (!TODO!) (In Progress)
 
 ### Comprehensive Testing with Playwright
 
