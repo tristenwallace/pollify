@@ -49,6 +49,7 @@ To install the Polling App, follow these steps:
 ```
 NODE_ENV=development
 JWT_SECRET=your_jwt_secret
+REACT_APP_API_URL=http://localhost:5000
 ```
 
 ## Database Setup

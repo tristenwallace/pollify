@@ -6,6 +6,10 @@ This document outlines the dependencies utilized in the full-stack application, 
 
 The root package.json primarily contains development tools and configurations that are applicable across the entire project. These tools ensure consistency in coding style and aid in the development process.
 
+### Root Dependencies
+
+- **concurrently:** Used to run multiple commands concurrently, such as the front-end and back-end servers.
+
 ### Root DevDependencies
 
 - **@babel/plugin-proposal-private-property-in-object:** Allows Babel to compile private properties in objects which are part of the latest ECMAScript features.
