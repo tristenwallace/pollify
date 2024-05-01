@@ -2,16 +2,14 @@
   "name": "employee-polls-root",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "server",
-    "frontend"
-  ],
   "scripts": {
+    "install-client": "cd frontend && npm install -f",
+    "install-server": "cd server && npm install -f",
     "start": "concurrently \"npm:start-client\" \"npm:start-server\"",
     "start-client": "cd frontend && npm start",
     "start-server": "cd server && npm start",
     "build": "concurrently \"npm:build-client\" \"npm:build-server\"",
-    "build-client": "cd frontend && npm run build",
+    "build-client": "cd frontend && npm run build-production",
     "build-server": "cd server && npm run build",
     "test": "concurrently \"npm:test-client\" \"npm:test-server\"",
     "test-client": "cd frontend && npm test",
