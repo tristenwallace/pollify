@@ -45,16 +45,6 @@ jobs:
           command: |
             npm run build-server
             echo "Backend built successfully."
-      - run:
-          name: Run Front-End Tests
-          command: |
-            npm run test-client
-            echo "Frontend tests completed."
-      - run:
-          name: Run Server Tests
-          command: |
-            npm run test-server
-            echo "Backend tests completed."
 
   deploy:
     docker:

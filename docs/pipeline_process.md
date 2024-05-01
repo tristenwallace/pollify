@@ -27,9 +27,6 @@ Our CI/CD pipeline utilizes CircleCI, leveraging its powerful orbs feature to si
 - **Building**:
   - **Frontend Build**: Builds the frontend application, preparing it for deployment to S3.
   - **Backend Build**: Compiles the backend application, preparing it for deployment to Elastic Beanstalk.
-- **Testing**:
-  - **Frontend Tests**: Executes frontend tests to verify that all components function correctly.
-  - **Backend Tests**: Runs backend tests to ensure server-side operations perform as expected.
 
 ### 3. Deploy Job
 
