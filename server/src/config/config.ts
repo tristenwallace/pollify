@@ -2,8 +2,8 @@ import { Dialect } from 'sequelize/types';
 import path from 'path';
 import fs from 'fs';
 
-// Only load dotenv if not in production
-if (process.env.NODE_ENV !== 'production') {
+// Load dotenv if environment variables are not already set
+if (!process.env.POSTGRES_USER) {
   const dotenv = require('dotenv');
   const envPath = path.resolve(
     __dirname,
