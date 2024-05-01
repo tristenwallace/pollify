@@ -63,11 +63,6 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
       - run:
-          name: Initialize Elastic Beanstalk CLI
-          command: |
-            cd server
-            eb init $EB_APP_NAME -r $AWS_DEFAULT_REGION -p node.js
-      - run:
           name: Deploy Frontend to S3
           command: |
             echo "Deploying Frontend to S3..."
@@ -75,6 +70,8 @@ jobs:
       - run:
           name: Deploy Backend to Elastic Beanstalk
           command: |
+            cd server
+            eb init $EB_APP_NAME -r $AWS_DEFAULT_REGION -p node.js
             echo "Deploying Backend to Elastic Beanstalk..."
             eb deploy $EB_ENV
             echo "Deployment completed."
