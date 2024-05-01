@@ -104,10 +104,26 @@ To start the backend server, execute the following command inside the server dir
 1.Start the development server: `npm run dev`
 2.This will start the backend on <http://localhost:5000> by default.
 
-## Testing
+## Further documentation
+
+For more detailed information on setting up, running, and testing the application, refer to the following guides in our documentation:
+
+### Dependencies
+
+All necessary dependencies and their setup instructions are detailed in our dependencies guide. This includes software installations and environment setups.
+
+[View Dependencies Guide](docs/dependencies.md)
+
+### Testing
 
 Refer to [Testing Documentation](frontend/src/tests/docs/testing.md) for details on how to execute unit tests and comprehensive testing using Jest & Playwright.
 
-## API Documentation
+### Deployment
+
+Step-by-step instructions on how to deploy the Polling App.
+
+[View Deployment Guide](docs/infrastructure.md)
+
+### API Documentation
 
 For more information about the API endpoints, see the [API Documentation](server/API.md).
