@@ -52,24 +52,36 @@ jobs:
     steps:
       - node/install:
           node-version: '20.12' 
-      - eb/setup
-      - aws-cli/setup
       - checkout
+      - aws-cli/setup
       - run:
-          name: Deploy App
+          name: Set Up AWS Credentials
           command: |
-            # Setting up AWS credentials
             echo "Setting up AWS credentials..."
             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-            aws configure set default.region us-east-2
-            # Deploying Frontend to S3
-            echo "Deploying Frontend to S3..."
-            aws s3 sync frontend/build s3://employee-polling-app --delete
-            # Deploying Backend to Elastic Beanstalk
-            echo "Deploying Backend to Elastic Beanstalk..."
+            aws configure set default.region $AWS_DEFAULT_REGION
+      - run:
+          name: Install Elastic Beanstalk CLI
+          command: |
+            curl -Lo awsebcli.zip https://github.com/aws/aws-elastic-beanstalk-cli-setup/archive/v1.0.zip
+            unzip awsebcli.zip
+            ./aws-elastic-beanstalk-cli-setup-1.0/scripts/bundled_installer
+      - run:
+          name: Initialize Elastic Beanstalk CLI
+          command: |
             cd server
-            eb deploy Employee-polling-app-env 
+            eb init -p node.js -r $AWS_DEFAULT_REGION Employee-polling-app-env
+      - run:
+          name: Deploy Frontend to S3
+          command: |
+            echo "Deploying Frontend to S3..."
+            aws s3 sync frontend/build s3://$BUCKET_NAME --delete
+      - run:
+          name: Deploy Backend to Elastic Beanstalk
+          command: |
+            echo "Deploying Backend to Elastic Beanstalk..."
+            eb deploy $BEANSTALK_INSTANCE
             echo "Deployment completed."
 
 workflows:
