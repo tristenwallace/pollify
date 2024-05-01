@@ -62,11 +62,9 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
       - run:
-          name: Install Elastic Beanstalk CLI
+          name: Install EB CLI
           command: |
-            curl -Lo awsebcli.zip https://github.com/aws/aws-elastic-beanstalk-cli-setup/archive/v1.0.zip
-            unzip awsebcli.zip
-            ./aws-elastic-beanstalk-cli-setup-1.0/scripts/bundled_installer
+            pip install awsebcli --upgrade
       - run:
           name: Initialize Elastic Beanstalk CLI
           command: |
