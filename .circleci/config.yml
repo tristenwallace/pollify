@@ -14,6 +14,11 @@ jobs:
           node-version: '20.12'         
       - checkout
       - run:
+          name: Install Root Dependencies
+          command: |
+            npm install
+            echo "Root dependencies installed."
+      - run:
           name: Install Front-End Dependencies
           command: |
             echo "NODE --version" 
