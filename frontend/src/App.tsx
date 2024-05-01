@@ -27,7 +27,6 @@ const App: React.FC = () => {
     dispatch(fetchPolls());
   }, [dispatch]);
 
-  
   return (
     <div className="app">
       <Navbar />

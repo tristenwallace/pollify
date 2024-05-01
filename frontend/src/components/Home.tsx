@@ -124,7 +124,8 @@ const Home = () => {
         </Button>
       </Box>
       <Grid container spacing={2}>
-        {pollStatus === 'succeeded' && (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
+        {pollStatus === 'succeeded' &&
+        (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
           <PollList polls={showAnswered ? answeredPolls : unansweredPolls} />
         ) : (
           <Typography>No polls available.</Typography>
