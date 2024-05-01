@@ -1,3 +1,19 @@
+<<<<<<< HEAD
+{
+  "files": {
+    "main.css": "/static/css/main.58462fbc.css",
+    "main.js": "/static/js/main.f26c03ca.js",
+    "index.html": "/index.html",
+    "main.58462fbc.css.map": "/static/css/main.58462fbc.css.map",
+    "main.f26c03ca.js.map": "/static/js/main.f26c03ca.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.58462fbc.css",
+    "static/js/main.f26c03ca.js"
+  ]
+}
+||||||| 0e01dc2
+=======
 {
   "files": {
     "main.css": "/static/css/main.58462fbc.css",
@@ -11,3 +27,4 @@
     "static/js/main.83a25da2.js"
   ]
 }
+>>>>>>> 0193aa4285ba698aff3b22293b4751e15325fa0e
