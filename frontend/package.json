@@ -5,6 +5,7 @@
   "scripts": {
     "start": "react-scripts start --project ./frontend",
     "build": "react-scripts build --project ./frontend",
+    "build-production": "REACT_APP_API_URL=http://employee-polling.us-east-2.elasticbeanstalk.com react-scripts build --project ./frontend",
     "test": "react-scripts test --transformIgnorePatterns \"node_modules/(?!@toolz/allow-react)/\" --env=jsdom",
     "eject": "react-scripts eject"
   },
