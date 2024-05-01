@@ -10,10 +10,6 @@ frontend/node_modules
 # testing
 /coverage
 
-# production
-frontend/build
-server/dist
-
 # misc
 .DS_Store
 .env
