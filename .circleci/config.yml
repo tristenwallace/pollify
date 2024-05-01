@@ -20,7 +20,7 @@ jobs:
             echo $(node --version)
             echo "NPM --version" 
             echo $(npm --version)
-            npm run install-frontend
+            npm run install-client
       - run:
           name: Install Server Dependencies
           command: |
