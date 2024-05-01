@@ -10,9 +10,13 @@
     "skipLibCheck": true,
     "forceConsistentCasingInFileNames": true,
     "moduleResolution": "node",
-    "baseUrl": ".", 
+    "baseUrl": ".",
     "paths": {
-      "*": ["./node_modules/*", "./server/node_modules/*", "./frontend/node_modules/*"]
+      "*": [
+        "./node_modules/*",
+        "./server/node_modules/*",
+        "./frontend/node_modules/*"
+      ]
     },
     "outDir": "./dist",
     "resolveJsonModule": true,
@@ -20,8 +24,6 @@
     "noEmit": true,
     "strict": true
   },
-  "include": [
-    "src/**/*",
-  ],
+  "include": ["src/**/*"],
   "exclude": ["node_modules", "dist", "../frontend/node_modules"]
 }
