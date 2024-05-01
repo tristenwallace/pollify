@@ -21,7 +21,7 @@ module.exports = {
         sourceType: 'module',
       },
       rules: {
-        // Custom rules for frontend
+        '@typescript-eslint/no-var-requires': 'off',
       },
     },
     {

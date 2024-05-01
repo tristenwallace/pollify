@@ -2,15 +2,18 @@
   "name": "employee-polls-root",
   "version": "0.1.0",
   "private": true,
-  "workspaces": [
-    "server",
-    "frontend"
-  ],
   "scripts": {
-    "start:frontend": "cd frontend && npm start",
-    "start:server": "cd server && npm start",
-    "install:frontend": "cd frontend && npm install",
-    "install:server": "cd server && npm install",
+    "install-client": "cd frontend && npm install -f",
+    "install-server": "cd server && npm install -f",
+    "start": "concurrently \"npm:start-client\" \"npm:start-server\"",
+    "start-client": "cd frontend && npm start",
+    "start-server": "cd server && npm start",
+    "build": "concurrently \"npm:build-client\" \"npm:build-server\"",
+    "build-client": "cd frontend && npm run build-production",
+    "build-server": "cd server && npm run build",
+    "test": "concurrently \"npm:test-client\" \"npm:test-server\"",
+    "test-client": "cd frontend && npm test",
+    "test-server": "cd server && npm test",
     "lint": "eslint '*/**/*.{ts,tsx,js,jsx}' --ignore-pattern 'node_modules/'",
     "format": "prettier --write '**/*.{js,jsx,ts,tsx,json,css}'"
   },
@@ -41,8 +44,12 @@
     "eslint-import-resolver-typescript": "^3.6.1",
     "eslint-plugin-import": "^2.29.1",
     "eslint-plugin-prettier": "^5.1.3",
+    "eslint-plugin-react": "^7.34.1",
     "prettier": "^3.2.5",
     "ts-node": "^10.9.2",
     "typescript": "^4.9.5"
+  },
+  "dependencies": {
+    "concurrently": "^8.2.2"
   }
 }

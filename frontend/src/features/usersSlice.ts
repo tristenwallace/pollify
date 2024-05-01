@@ -39,7 +39,11 @@ export const initialState: UsersState = {
   error: undefined,
 };
 
-export const fetchCurrentUser = createAsyncThunk<User, string, { rejectValue: string }>('users/fetchCurrentUser', async (token, { rejectWithValue }) => {
+export const fetchCurrentUser = createAsyncThunk<
+  User,
+  string,
+  { rejectValue: string }
+>('users/fetchCurrentUser', async (token, { rejectWithValue }) => {
   try {
     if (!token) {
       return rejectWithValue('No token provided');

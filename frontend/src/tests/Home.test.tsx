@@ -13,7 +13,7 @@ describe('Home Page', () => {
   it('shows login message when unauthenticated', () => {
     const store = mockStore({
       users: { ...initialUsersState },
-      poll: { ...initialPollState, status: 'succeeded' }
+      poll: { ...initialPollState, status: 'succeeded' },
     });
     mockApi.fetchPolls.mockResolvedValue([]);
     mockApi.fetchUsers.mockResolvedValue([]);
@@ -24,9 +24,7 @@ describe('Home Page', () => {
         </Router>
       </Provider>,
     );
-    expect(
-      screen.getByText('Welcome to Employee Polls!'),
-    ).toBeInTheDocument();
+    expect(screen.getByText('Welcome to Employee Polls!')).toBeInTheDocument();
   });
 
   it('shows welcome message when authenticated', async () => {
@@ -72,7 +70,11 @@ describe('Home Page', () => {
       },
       poll: {
         polls: [
-          { id: '1', title: 'Answered Poll Title', votes: [{ userId: '123', chosenOption: 1 }] }, //userId matches currentUser
+          {
+            id: '1',
+            title: 'Answered Poll Title',
+            votes: [{ userId: '123', chosenOption: 1 }],
+          }, //userId matches currentUser
           { id: '2', title: 'Unanswered Poll Title', votes: [] },
         ],
         status: 'succeeded',
@@ -86,9 +88,9 @@ describe('Home Page', () => {
         </Router>
       </Provider>,
     );
-    
+
     fireEvent.click(screen.getByText('Show Answered Polls'));
-    
+
     // Validate change in displayed polls
     expect(screen.queryByText('Show Answered Polls')).not.toBeInTheDocument();
     expect(screen.getByText('Show Unanswered Polls')).toBeInTheDocument();
