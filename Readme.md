@@ -114,6 +114,12 @@ All necessary dependencies and their setup instructions are detailed in our depe
 
 [View Dependencies Guide](docs/dependencies.md)
 
+### CI/CD Pipeline
+
+Overview of our CircleCi pipeline process
+
+[View Pipeline Process](docs/pipeline_process.md)
+
 ### Testing
 
 Refer to [Testing Documentation](frontend/src/tests/docs/testing.md) for details on how to execute unit tests and comprehensive testing using Jest & Playwright.
@@ -127,3 +133,4 @@ Step-by-step instructions on how to deploy the Polling App.
 ### API Documentation
 
 For more information about the API endpoints, see the [API Documentation](server/API.md).
+
