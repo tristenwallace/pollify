@@ -1,0 +1,94 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.2
+  eb: circleci/aws-elastic-beanstalk@2.0.1
+  aws-cli: circleci/aws-cli@3.1.1
+
+jobs:
+  build:
+    docker:
+      - image: "cimg/node:20.12"
+    steps:
+      - node/install:
+          node-version: '20.12'         
+      - checkout
+      - run:
+          name: Install Front-End Dependencies
+          command: |
+            echo "NODE --version" 
+            echo $(node --version)
+            echo "NPM --version" 
+            echo $(npm --version)
+            npm run install-frontend
+      - run:
+          name: Install Server Dependencies
+          command: |
+            cd server && npm install
+            echo "Server dependencies installed."
+      - run:
+          name: Lint
+          command: |
+            npm run lint 
+      - run:
+          name: Front-End Build
+          command: |
+            npm run build-client
+            echo "Frontend built successfully."
+      - run:
+          name: Server Build
+          command: |
+            npm run build-server
+            echo "Backend built successfully."
+      - run:
+          name: Run Front-End Tests
+          command: |
+            npm run test-client
+            echo "Frontend tests completed."
+      - run:
+          name: Run Server Tests
+          command: |
+            npm run test-server
+            echo "Backend tests completed."
+
+  deploy:
+    docker:
+      - image: "cimg/base:stable"
+    steps:
+      - node/install:
+          node-version: '20.12' 
+      - eb/setup
+      - aws-cli/setup
+      - checkout
+      - run:
+          name: Deploy App
+          command: |
+            # Setting up AWS credentials
+            echo "Setting up AWS credentials..."
+            aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
+            aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
+            aws configure set default.region us-east-2
+            # Deploying Frontend to S3
+            echo "Deploying Frontend to S3..."
+            aws s3 sync frontend/build s3://employee-polling-app --delete
+            # Deploying Backend to Elastic Beanstalk
+            echo "Deploying Backend to Elastic Beanstalk..."
+            cd server
+            eb deploy Employee-polling-app-env 
+            echo "Deployment completed."
+
+workflows:
+  employee-polling:
+    jobs:
+      - build
+      - hold:
+          type: approval
+          requires:
+            - build
+          filters:
+            branches:
+              only:
+                - main
+      - deploy:
+          requires:
+            - hold
