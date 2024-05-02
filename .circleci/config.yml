@@ -54,6 +54,7 @@ jobs:
           node-version: '20.12' 
       - checkout
       - aws-cli/setup
+      - eb/setup
       - run:
           name: Set Up AWS Credentials
           command: |
@@ -62,17 +63,6 @@ jobs:
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
             aws configure set default.region $AWS_DEFAULT_REGION
       - run:
-          name: Install Elastic Beanstalk CLI
-          command: |
-            curl -Lo awsebcli.zip https://github.com/aws/aws-elastic-beanstalk-cli-setup/archive/v1.0.zip
-            unzip awsebcli.zip
-            ./aws-elastic-beanstalk-cli-setup-1.0/scripts/bundled_installer
-      - run:
-          name: Initialize Elastic Beanstalk CLI
-          command: |
-            cd server
-            eb init -p node.js -r $AWS_DEFAULT_REGION Employee-polling-app-env
-      - run:
           name: Deploy Frontend to S3
           command: |
             echo "Deploying Frontend to S3..."
@@ -80,8 +70,10 @@ jobs:
       - run:
           name: Deploy Backend to Elastic Beanstalk
           command: |
+            cd server
+            eb init $EB_APP_NAME -r $AWS_DEFAULT_REGION -p node.js
             echo "Deploying Backend to Elastic Beanstalk..."
-            eb deploy $BEANSTALK_INSTANCE
+            eb deploy $EB_ENV
             echo "Deployment completed."
 
 workflows:
