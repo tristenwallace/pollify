@@ -1,6 +1,11 @@
 # Polling App
 
+[![CircleCI](https://dl.circleci.com/status-badge/img/circleci/KPSszw1xUCAvioRxYj4MSJ/pLc8BUmCLCrMcRmxKvR4U/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/KPSszw1xUCAvioRxYj4MSJ/pLc8BUmCLCrMcRmxKvR4U/tree/main)
+![License](https://img.shields.io/badge/license-MIT-blue.svg)
+
 The Polling App is a full-featured polling platform designed for individuals and organizations to create and participate in polls. It offers an interactive and user-friendly interface for users to express their opinions through votes, view poll results in real-time, and engage with a community of like-minded participants.
+
+![Polling App Homepage](<https://hangouthabit.sirv.com/polling_app/Homepage.png>)
 
 ## Features
 
@@ -114,23 +119,31 @@ All necessary dependencies and their setup instructions are detailed in our depe
 
 [View Dependencies Guide](docs/dependencies.md)
 
+### API Documentation
+
+For more information about the API endpoints, see the [API Documentation](docs/API.md).
+
+### Architecture
+
+Below is a high-level overview of the Polling App's architecture:
+
+![Architecture Diagram](https://hangouthabit.sirv.com/polling_app/architecture_diagram.jpeg)
+
+For a detailed explanation of our infrastructure setup, view our [Infrastructure Guide](docs/infrastructure.md).
+
+
 ### CI/CD Pipeline
 
 Overview of our CircleCi pipeline process
 
 [View Pipeline Process](docs/pipeline_process.md)
 
+![Pipeline Diagram](<https://hangouthabit.sirv.com/polling_app/pipeline_diagram.jpeg>)
+
 ### Testing
 
-Refer to [Testing Documentation](frontend/src/tests/docs/testing.md) for details on how to execute unit tests and comprehensive testing using Jest & Playwright.
+Refer to [Testing Documentation](frontend/src/tests/docs/testing.md) for details on planned testing using Jest & Playwright.
 
-### Deployment
+## License
 
-Step-by-step instructions on how to deploy the Polling App.
-
-[View Deployment Guide](docs/infrastructure.md)
-
-### API Documentation
-
-For more information about the API endpoints, see the [API Documentation](server/API.md).
-
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.

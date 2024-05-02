@@ -2,7 +2,7 @@
 
 ## Base URL
 
-All API requests are made to the base URL of the deployed backend. For development, this is `http://localhost:5000/`.
+All API requests are made to the base URL of the deployed backend. For development, this is `http://localhost:5000`.
 
 ## User
 
@@ -16,7 +16,7 @@ All API requests are made to the base URL of the deployed backend. For developme
   - `username`: String
   - `password`: String
   - `name`: String
-  - `avatar_url_`: String (optional)
+  - `avatar_url`: String (optional)
 - **Response**: JWT token with user details.
 
 ### POST /user/login
