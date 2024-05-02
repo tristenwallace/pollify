@@ -45,6 +45,11 @@ jobs:
           command: |
             npm run build-server
             echo "Backend built successfully."
+      - persist_to_workspace:
+          root: .
+          paths:
+            - frontend/build
+            - server/dist
 
   deploy:
     docker:
@@ -52,24 +57,30 @@ jobs:
     steps:
       - node/install:
           node-version: '20.12' 
-      - eb/setup
-      - aws-cli/setup
       - checkout
+      - aws-cli/setup
+      - eb/setup
+      - attach_workspace:
+          at: .
       - run:
-          name: Deploy App
+          name: Set Up AWS Credentials
           command: |
-            # Setting up AWS credentials
             echo "Setting up AWS credentials..."
             aws configure set aws_access_key_id $AWS_ACCESS_KEY_ID
             aws configure set aws_secret_access_key $AWS_SECRET_ACCESS_KEY
-            aws configure set default.region us-east-2
-            # Deploying Frontend to S3
+            aws configure set default.region $AWS_DEFAULT_REGION
+      - run:
+          name: Deploy Frontend to S3
+          command: |
             echo "Deploying Frontend to S3..."
-            aws s3 sync frontend/build s3://employee-polling-app --delete
-            # Deploying Backend to Elastic Beanstalk
-            echo "Deploying Backend to Elastic Beanstalk..."
+            aws s3 sync frontend/build s3://$BUCKET_NAME --delete
+      - run:
+          name: Deploy Backend to Elastic Beanstalk
+          command: |
             cd server
-            eb deploy Employee-polling-app-env 
+            eb init $EB_APP_NAME -r $AWS_DEFAULT_REGION -p node.js
+            echo "Deploying Backend to Elastic Beanstalk..."
+            eb deploy $EB_ENV
             echo "Deployment completed."
 
 workflows:
