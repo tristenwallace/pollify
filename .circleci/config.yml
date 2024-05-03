@@ -13,6 +13,10 @@ jobs:
       - node/install:
           node-version: '20.12'         
       - checkout
+      - restore_cache:
+          keys:
+            - v1-dependencies-{{ checksum "package-lock.json" }}
+            - v1-dependencies-
       - run:
           name: Install Root Dependencies
           command: |
@@ -29,8 +33,12 @@ jobs:
       - run:
           name: Install Server Dependencies
           command: |
-            cd server && npm install
+            npm run install-server
             echo "Server dependencies installed."
+      - save_cache:
+          paths:
+            - node_modules
+          key: v1-dependencies-{{ checksum "package-lock.json" }}
       - run:
           name: Lint
           command: |
@@ -79,6 +87,7 @@ jobs:
           command: |
             cd server
             eb init $EB_APP_NAME -r $AWS_DEFAULT_REGION -p node.js
+            eb setenv JWT_SECRET=$JWT_SECRET NODE_ENV=production POSTGRES_HOST=$POSTGRES_HOST POSTGRES_NAME=$POSTGRES_NAME POSTGRES_PASSWORD=$POSTGRES_PASSWORD POSTGRES_PORT=$POSTGRES_PORT POSTGRES_USER=$POSTGRES_USER
             echo "Deploying Backend to Elastic Beanstalk..."
             eb deploy $EB_ENV
             echo "Deployment completed."
