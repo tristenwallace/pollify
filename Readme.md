@@ -117,7 +117,7 @@ For more detailed information on setting up, running, and testing the applicatio
 
 All necessary dependencies and their setup instructions are detailed in our dependencies guide. This includes software installations and environment setups.
 
-[View Dependencies Guide](docs/dependencies.md)
+[View Dependencies Guide](docs/App_dependencies.md)
 
 ### API Documentation
 
@@ -129,14 +129,14 @@ Below is a high-level overview of the Polling App's architecture:
 
 ![Architecture Diagram](https://hangouthabit.sirv.com/polling_app/architecture_diagram.jpeg)
 
-For a detailed explanation of our infrastructure setup, view our [Infrastructure Guide](docs/infrastructure.md).
+For a detailed explanation of our infrastructure setup, view our [Infrastructure Guide](docs/Infrastructure.md).
 
 
 ### CI/CD Pipeline
 
 Overview of our CircleCi pipeline process
 
-[View Pipeline Process](docs/pipeline_process.md)
+[View Pipeline Process](docs/Pipeline.md)
 
 ![Pipeline Diagram](<https://hangouthabit.sirv.com/polling_app/pipeline_diagram.jpeg>)
 
