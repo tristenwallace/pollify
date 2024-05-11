@@ -13,6 +13,7 @@ frontend/node_modules
 # production
 frontend/build
 server/dist
+server/dist.zip
 
 # misc
 .DS_Store

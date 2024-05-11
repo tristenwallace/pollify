@@ -58,6 +58,7 @@ jobs:
           paths:
             - frontend/build
             - server/dist
+            - server/dist.zip
 
   deploy:
     docker:
