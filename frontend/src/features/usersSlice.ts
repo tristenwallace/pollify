@@ -7,6 +7,7 @@ import {
 } from '../server/api';
 import { jwtDecode } from 'jwt-decode';
 import { RootState } from '../app/store';
+import { addNewPoll } from './pollSlice';
 
 // Define the user interface for the state
 export interface User {
@@ -184,6 +185,16 @@ export const usersSlice = createSlice({
         state.currentUser = action.payload;
         state.status = 'succeeded';
         state.error = undefined;
+      })
+      // POLL & VOTE UPDATES
+      .addCase(addNewPoll.fulfilled, (state, action) => {
+        const userId = action.payload.userId;
+        state.users = state.users.map(user => {
+          if (user.id === userId) {
+            return {...user, pollCount: (user.pollCount || 0) + 1};
+          }
+          return user;
+        });
       });
   },
 });
