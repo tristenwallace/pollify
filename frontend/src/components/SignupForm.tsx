@@ -10,11 +10,67 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+    name: '',
+  });
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
+  const validateField = (field: string, value: string) => {
+    switch (field) {
+      case 'username':
+        if (!value.trim()) return 'Username is required';
+        return '';
+      case 'password':
+        if (value.length < 6)
+          return 'Password must be at least 6 characters long';
+        return '';
+      case 'name':
+        if (!value.trim()) return 'Name is required';
+        return '';
+      default:
+        return '';
+    }
+  };
+
+  const handleChange = (field: string, value: string) => {
+    const error = validateField(field, value);
+    setErrors(prev => ({ ...prev, [field]: error }));
+    switch (field) {
+      case 'username':
+        setUsername(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
+      case 'name':
+        setName(value);
+        break;
+      case 'avatarUrl':
+        setAvatarUrl(value);
+        break;
+      default:
+        break;
+    }
+  };
+
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault();
+    const usernameError = validateField('username', username);
+    const passwordError = validateField('password', password);
+    const nameError = validateField('name', name);
+
+    if (usernameError || passwordError || nameError) {
+      setErrors({
+        username: usernameError,
+        password: passwordError,
+        name: nameError,
+      });
+      return; // prevent submission if errors
+    }
+
     dispatch(registerUser({ username, password, name, avatar_url: avatarUrl }))
       .unwrap()
       .then(() => {
@@ -38,7 +94,9 @@ const SignupForm = () => {
             label="Username"
             variant="outlined"
             value={username}
-            onChange={e => setUsername(e.target.value)}
+            onChange={e => handleChange('username', e.target.value)}
+            error={!!errors.username}
+            helperText={errors.username}
             required
             sx={{ mb: 2 }}
           />
@@ -48,7 +106,9 @@ const SignupForm = () => {
             type="password"
             variant="outlined"
             value={password}
-            onChange={e => setPassword(e.target.value)}
+            onChange={e => handleChange('password', e.target.value)}
+            error={!!errors.password}
+            helperText={errors.password}
             required
             sx={{ mb: 2 }}
           />
@@ -57,7 +117,9 @@ const SignupForm = () => {
             label="Name"
             variant="outlined"
             value={name}
-            onChange={e => setName(e.target.value)}
+            onChange={e => handleChange('name', e.target.value)}
+            error={!!errors.name}
+            helperText={errors.name}
             required
             sx={{ mb: 2 }}
           />

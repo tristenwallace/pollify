@@ -159,7 +159,13 @@ const pollSlice = createSlice({
       .addCase(addNewPoll.fulfilled, (state, action) => {
         state.status = 'succeeded';
         if (action.payload) {
-          state.polls[action.payload.id] = action.payload;
+          // Add a new field `votes` initialized as an empty list to the payload
+          const newPoll = {
+            ...action.payload, // Spread existing payload properties
+            votes: [], // Initialize votes as an empty list
+          };
+          // Assign the new poll object to the state.polls under the specific id
+          state.polls[action.payload.id] = newPoll;
         }
       })
       .addCase(addNewPoll.rejected, (state, action) => {
