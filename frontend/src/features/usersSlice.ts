@@ -3,6 +3,7 @@ import {
   fetchUsers as fetchUsersApi,
   loginUser as loginUserApi,
   registerUser as registerUserApi,
+  clearToken
 } from '../server/api';
 import { jwtDecode } from 'jwt-decode';
 import { RootState } from '../app/store';
@@ -134,6 +135,7 @@ export const usersSlice = createSlice({
       state.currentUser = null;
       state.status = 'idle';
       state.error = undefined;
+      clearToken();
     },
   },
   extraReducers: builder => {

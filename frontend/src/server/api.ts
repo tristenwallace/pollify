@@ -25,7 +25,7 @@ export function getToken(): string | null {
 }
 
 // Function to clear the JWT token from local storage
-function clearToken(): void {
+export function clearToken(): void {
   localStorage.removeItem('jwtToken');
 }
 
