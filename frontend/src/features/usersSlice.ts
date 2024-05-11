@@ -3,7 +3,7 @@ import {
   fetchUsers as fetchUsersApi,
   loginUser as loginUserApi,
   registerUser as registerUserApi,
-  clearToken
+  clearToken,
 } from '../server/api';
 import { jwtDecode } from 'jwt-decode';
 import { RootState } from '../app/store';
@@ -191,7 +191,7 @@ export const usersSlice = createSlice({
         const userId = action.payload.userId;
         state.users = state.users.map(user => {
           if (user.id === userId) {
-            return {...user, pollCount: (user.pollCount || 0) + 1};
+            return { ...user, pollCount: (user.pollCount || 0) + 1 };
           }
           return user;
         });
@@ -200,7 +200,7 @@ export const usersSlice = createSlice({
         const userId = action.payload.userId;
         state.users = state.users.map(user => {
           if (user.id === userId) {
-            return {...user, voteCount: (user.voteCount || 0) + 1};
+            return { ...user, voteCount: (user.voteCount || 0) + 1 };
           }
           return user;
         });

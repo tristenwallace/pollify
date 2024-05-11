@@ -10,7 +10,11 @@ const SignupForm = () => {
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
-  const [errors, setErrors] = useState({ username: '', password: '', name: '' });
+  const [errors, setErrors] = useState({
+    username: '',
+    password: '',
+    name: '',
+  });
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -20,7 +24,8 @@ const SignupForm = () => {
         if (!value.trim()) return 'Username is required';
         return '';
       case 'password':
-        if (value.length < 6) return 'Password must be at least 6 characters long';
+        if (value.length < 6)
+          return 'Password must be at least 6 characters long';
         return '';
       case 'name':
         if (!value.trim()) return 'Name is required';
@@ -34,11 +39,20 @@ const SignupForm = () => {
     const error = validateField(field, value);
     setErrors(prev => ({ ...prev, [field]: error }));
     switch (field) {
-      case 'username': setUsername(value); break;
-      case 'password': setPassword(value); break;
-      case 'name': setName(value); break;
-      case 'avatarUrl': setAvatarUrl(value); break;
-      default: break;
+      case 'username':
+        setUsername(value);
+        break;
+      case 'password':
+        setPassword(value);
+        break;
+      case 'name':
+        setName(value);
+        break;
+      case 'avatarUrl':
+        setAvatarUrl(value);
+        break;
+      default:
+        break;
     }
   };
 
@@ -49,7 +63,11 @@ const SignupForm = () => {
     const nameError = validateField('name', name);
 
     if (usernameError || passwordError || nameError) {
-      setErrors({ username: usernameError, password: passwordError, name: nameError });
+      setErrors({
+        username: usernameError,
+        password: passwordError,
+        name: nameError,
+      });
       return; // prevent submission if errors
     }
 
@@ -67,7 +85,9 @@ const SignupForm = () => {
   return (
     <Container maxWidth="sm">
       <Paper elevation={6} sx={{ p: 3, mt: 10 }}>
-        <Typography variant="h4" gutterBottom>Sign Up</Typography>
+        <Typography variant="h4" gutterBottom>
+          Sign Up
+        </Typography>
         <form onSubmit={handleSignup}>
           <TextField
             fullWidth
@@ -118,7 +138,9 @@ const SignupForm = () => {
       </Paper>
       <Typography variant="body2" sx={{ mt: 2 }}>
         Already have an account?{' '}
-        <Button color="primary" onClick={() => navigate('/login')}>Login</Button>
+        <Button color="primary" onClick={() => navigate('/login')}>
+          Login
+        </Button>
       </Typography>
     </Container>
   );

@@ -161,8 +161,8 @@ const pollSlice = createSlice({
         if (action.payload) {
           // Add a new field `votes` initialized as an empty list to the payload
           const newPoll = {
-            ...action.payload,  // Spread existing payload properties
-            votes: []           // Initialize votes as an empty list
+            ...action.payload, // Spread existing payload properties
+            votes: [], // Initialize votes as an empty list
           };
           // Assign the new poll object to the state.polls under the specific id
           state.polls[action.payload.id] = newPoll;

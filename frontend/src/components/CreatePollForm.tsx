@@ -49,14 +49,15 @@ const CreatePollForm = () => {
         optionOne: optionOne,
         optionTwo: optionTwo,
         userId: user.id,
-      }))
-    .unwrap()
-    .then(() => {
-      navigate('/'); // Redirect to home page after form submission
-    })
-    .catch(error => {
-      console.error('Failed to create poll', error);
-    });
+      }),
+    )
+      .unwrap()
+      .then(() => {
+        navigate('/'); // Redirect to home page after form submission
+      })
+      .catch(error => {
+        console.error('Failed to create poll', error);
+      });
   };
 
   // Render form for creating a new poll
