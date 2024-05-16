@@ -11,6 +11,7 @@ import {
   IconButton,
   Menu,
   MenuItem,
+  Avatar,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 
@@ -23,7 +24,11 @@ const Navbar = () => {
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
+
   const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
 
   const handleMobileMenuClose = () => {
     setMobileMoreAnchorEl(null);
@@ -33,9 +38,18 @@ const Navbar = () => {
     setMobileMoreAnchorEl(event.currentTarget);
   };
 
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchorEl(null);
+  };
+
+  const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
+    setProfileMenuAnchorEl(event.currentTarget);
+  };
+
   const handleLogout = () => {
     dispatch(logout());
-    handleMobileMenuClose();
+    handleProfileMenuClose();
+    navigate('/');
   };
 
   const handleLoginSignup = () => {
@@ -43,6 +57,8 @@ const Navbar = () => {
   };
 
   const mobileMenuId = 'primary-search-account-menu-mobile';
+  const profileMenuId = 'primary-search-account-menu-profile';
+
   const renderMobileMenu = (
     <Menu
       anchorEl={mobileMoreAnchorEl}
@@ -73,6 +89,27 @@ const Navbar = () => {
     </Menu>
   );
 
+  const renderProfileMenu = (
+    <Menu
+      anchorEl={profileMenuAnchorEl}
+      anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
+      id={profileMenuId}
+      keepMounted
+      transformOrigin={{ vertical: 'top', horizontal: 'right' }}
+      open={isProfileMenuOpen}
+      onClose={handleProfileMenuClose}
+    >
+      <MenuItem
+        component={RouterLink}
+        to="/settings"
+        onClick={handleProfileMenuClose}
+      >
+        Settings
+      </MenuItem>
+      <MenuItem onClick={handleLogout}>Logout</MenuItem>
+    </Menu>
+  );
+
   return (
     <AppBar position="static" color="secondary" elevation={0}>
       <Toolbar>
@@ -98,20 +135,31 @@ const Navbar = () => {
           </Button>
         </Box>
         {currentUser ? (
-          <Button color="inherit" onClick={handleLogout}>
-            Logout
-          </Button>
+          <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+            <IconButton
+              size="large"
+              edge="end"
+              aria-label="account of current user"
+              aria-controls={profileMenuId}
+              aria-haspopup="true"
+              onClick={handleProfileMenuOpen}
+              color="inherit"
+            >
+              <Avatar src={currentUser.avatar_url} />
+            </IconButton>
+          </Box>
         ) : (
           <Button
             color="inherit"
             onClick={handleLoginSignup}
-            sx={{ display: { xs: 'block', sm: 'block' } }}
+            sx={{ display: { xs: 'block', sm: 'block' }, ml: 'auto' }}
           >
             Login/Signup
           </Button>
         )}
       </Toolbar>
       {renderMobileMenu}
+      {renderProfileMenu}
     </AppBar>
   );
 };

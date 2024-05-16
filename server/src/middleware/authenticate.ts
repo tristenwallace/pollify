@@ -18,9 +18,10 @@ export const authenticate = (
 ) => {
   // Extract the token from the Authorization header
   const token = req.headers.authorization?.split(' ')[1];
-
+  console.log('Authentication middleware triggered');
   // If token is not present, return a 403 Forbidden status
   if (!token) {
+    console.log('No token provided');
     return res.status(403).json({ error: 'No token provided' });
   }
 
@@ -31,12 +32,14 @@ export const authenticate = (
     // Check if the decoded object has the user property and assign it to req.user
     if (typeof decoded === 'object' && decoded.user) {
       req.user = decoded.user as User;
+      console.log('Token verified successfully');
       next(); // Pass control to the next middleware function
     } else {
       throw new Error('Invalid token payload'); // Throw an error if token payload is invalid
     }
   } catch (error) {
     // Handle any error related to token verification by sending a 401 Unauthorized status
+    console.error('Invalid token', error);
     res.status(401).json({ error: 'Invalid token' });
   }
 };

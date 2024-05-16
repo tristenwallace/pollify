@@ -11,6 +11,7 @@ import {
   TextField,
   Button,
   Typography,
+  Container,
 } from '@mui/material';
 
 const CreatePollForm = () => {
@@ -62,43 +63,45 @@ const CreatePollForm = () => {
 
   // Render form for creating a new poll
   return (
-    <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3 }}>
-      <CardContent>
-        <Typography variant="h4" gutterBottom>
-          Create a New Poll
-        </Typography>
-        <form onSubmit={handleSubmit}>
-          <TextField
-            id="optionOneText"
-            label="Option One"
-            variant="outlined"
-            value={optionOne}
-            onChange={e => setOptionOne(e.target.value)}
-            required
-            fullWidth
-            margin="normal"
-          />
-          <TextField
-            id="optionTwoText"
-            label="Option Two"
-            variant="outlined"
-            value={optionTwo}
-            onChange={e => setOptionTwo(e.target.value)}
-            required
-            fullWidth
-            margin="normal"
-          />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-          >
-            Create Poll
-          </Button>
-        </form>
-      </CardContent>
-    </Card>
+    <Container>
+      <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3 }}>
+        <CardContent>
+          <Typography variant="h4" gutterBottom>
+            Create a New Poll
+          </Typography>
+          <form onSubmit={handleSubmit}>
+            <TextField
+              id="optionOneText"
+              label="Option One"
+              variant="outlined"
+              value={optionOne}
+              onChange={e => setOptionOne(e.target.value)}
+              required
+              fullWidth
+              margin="normal"
+            />
+            <TextField
+              id="optionTwoText"
+              label="Option Two"
+              variant="outlined"
+              value={optionTwo}
+              onChange={e => setOptionTwo(e.target.value)}
+              required
+              fullWidth
+              margin="normal"
+            />
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              sx={{ mt: 2 }}
+            >
+              Create Poll
+            </Button>
+          </form>
+        </CardContent>
+      </Card>
+    </Container>
   );
 };
 

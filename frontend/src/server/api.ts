@@ -1,4 +1,5 @@
 import axios, { AxiosError } from 'axios';
+import { User } from '../features/usersSlice';
 
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
@@ -123,6 +124,25 @@ export const loginUser = async (username: string, password: string) => {
     return response.data;
   } catch (error) {
     console.error('Failed to login:', error);
+    throw error;
+  }
+};
+
+export const updateUser = async (userData: Partial<User>) => {
+  try {
+    const response = await api.put(`/user/${userData.id}`, userData);
+    return response.data;
+  } catch (error) {
+    console.error('Failed to update user:', error);
+    throw error;
+  }
+};
+
+export const deleteUser = async (userId: string) => {
+  try {
+    await api.delete(`/user/${userId}`);
+  } catch (error) {
+    console.error('Failed to delete user:', error);
     throw error;
   }
 };

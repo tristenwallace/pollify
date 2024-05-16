@@ -44,7 +44,7 @@ const Poll: React.FC<PollProps> = ({ pollId }) => {
   }, [usersStatus, dispatch]);
 
   // Display loading indicator if poll or author data is not available
-  if (!poll || !author) {
+  if (!poll) {
     return <CircularProgress />; // Shows a progress indicator while loading data
   }
 
@@ -52,7 +52,9 @@ const Poll: React.FC<PollProps> = ({ pollId }) => {
   return (
     <Card variant="outlined" sx={{ mb: 2 }}>
       <CardContent>
-        <Typography variant="h6">{author.name} asks:</Typography>
+        <Typography variant="h6">
+          {author ? author.name : 'An anonymous user'} asks:
+        </Typography>
         <Typography variant="body1">
           Would you rather {poll.optionOne} or {poll.optionTwo}?
         </Typography>

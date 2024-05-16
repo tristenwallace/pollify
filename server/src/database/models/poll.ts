@@ -23,6 +23,7 @@ Poll.init(
         model: 'User',
         key: 'id',
       },
+      allowNull: true,
     },
     optionOne: {
       type: DataTypes.STRING,

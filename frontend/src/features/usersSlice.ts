@@ -3,6 +3,8 @@ import {
   fetchUsers as fetchUsersApi,
   loginUser as loginUserApi,
   registerUser as registerUserApi,
+  updateUser as updateUserApi,
+  deleteUser as deleteUserApi,
   clearToken,
 } from '../server/api';
 import { jwtDecode } from 'jwt-decode';
@@ -12,6 +14,7 @@ import { addNewPoll, voteOnPoll } from './pollSlice';
 // Define the user interface for the state
 export interface User {
   id: string;
+  username: string;
   password?: string;
   name: string;
   avatar_url?: string;
@@ -127,6 +130,32 @@ export const registerUser = createAsyncThunk<
   },
 );
 
+export const updateUser = createAsyncThunk<
+  User,
+  Partial<User>,
+  { state: RootState }
+>('user/updateUser', async (userData, { rejectWithValue }) => {
+  try {
+    const response = await updateUserApi(userData);
+    return response;
+  } catch (error) {
+    return rejectWithValue('Failed to update user');
+  }
+});
+
+export const deleteUser = createAsyncThunk<
+  string,
+  string,
+  { state: RootState }
+>('user/deleteUser', async (userId, { rejectWithValue }) => {
+  try {
+    await deleteUserApi(userId);
+    return userId;
+  } catch (error) {
+    return rejectWithValue('Failed to delete user');
+  }
+});
+
 // Users slice containing the reducer logic and actions
 export const usersSlice = createSlice({
   name: 'users',
@@ -185,6 +214,37 @@ export const usersSlice = createSlice({
         state.currentUser = action.payload;
         state.status = 'succeeded';
         state.error = undefined;
+      })
+      // UPDATE USER
+      .addCase(updateUser.pending, state => {
+        state.status = 'loading';
+      })
+      .addCase(updateUser.fulfilled, (state, action) => {
+        state.status = 'succeeded';
+        if (state.currentUser?.id === action.payload.id) {
+          state.currentUser = { ...state.currentUser, ...action.payload };
+        }
+        state.users = state.users.map(user =>
+          user.id === action.payload.id ? { ...user, ...action.payload } : user,
+        );
+      })
+      .addCase(updateUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
+      })
+      // DELETE USER
+      .addCase(deleteUser.fulfilled, (state, action) => {
+        state.users = state.users.filter(user => user.id !== action.payload);
+        if (state.currentUser?.id === action.payload) {
+          state.currentUser = null;
+        }
+        state.status = 'idle';
+        state.error = undefined;
+        clearToken();
+      })
+      .addCase(deleteUser.rejected, (state, action) => {
+        state.status = 'failed';
+        state.error = action.payload as string;
       })
       // POLL & VOTE UPDATES
       .addCase(addNewPoll.fulfilled, (state, action) => {

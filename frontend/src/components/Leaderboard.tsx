@@ -14,6 +14,7 @@ import {
   Paper,
   Button,
   CircularProgress,
+  Container,
 } from '@mui/material';
 
 // Memoized selector
@@ -64,30 +65,32 @@ const Leaderboard = () => {
 
   // Render the leaderboard UI
   return (
-    <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 2 }}>
-      <Typography variant="h4" gutterBottom>
-        Leaderboard
-      </Typography>
-      <Button component={Link} to="/" variant="outlined" sx={{ mb: 2 }}>
-        Back to Home
-      </Button>
-      <List>
-        {users.map(user => (
-          <ListItem key={user.id}>
-            <ListItemAvatar>
-              <Avatar
-                src={user.avatar_url || '/default-avatar.png'}
-                alt={`${user.name}'s avatar`}
+    <Container>
+      <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 2 }}>
+        <Typography variant="h4" gutterBottom>
+          Leaderboard
+        </Typography>
+        <Button component={Link} to="/" variant="outlined" sx={{ mb: 2 }}>
+          Back to Home
+        </Button>
+        <List>
+          {users.map(user => (
+            <ListItem key={user.id}>
+              <ListItemAvatar>
+                <Avatar
+                  src={user.avatar_url || '/default-avatar.png'}
+                  alt={`${user.name}'s avatar`}
+                />
+              </ListItemAvatar>
+              <ListItemText
+                primary={user.name}
+                secondary={`Polls Created: ${user.pollCount}, Votes: ${user.voteCount}`}
               />
-            </ListItemAvatar>
-            <ListItemText
-              primary={user.name}
-              secondary={`Polls Created: ${user.pollCount}, Votes: ${user.voteCount}`}
-            />
-          </ListItem>
-        ))}
-      </List>
-    </Paper>
+            </ListItem>
+          ))}
+        </List>
+      </Paper>
+    </Container>
   );
 };
 

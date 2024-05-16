@@ -80,8 +80,8 @@ export const register = async (req: Request, res: Response) => {
  */
 export const login = async (req: Request, res: Response) => {
   try {
+    console.log('Login user controller triggered');
     const { username, password } = req.body;
-
     // Find the user by username
     const user = await User.findOne({ where: { username } });
 
@@ -135,5 +135,65 @@ export const getAllUsers = async (
   } catch (error) {
     console.error('Failed to fetch users:', error);
     res.status(500).json({ error: 'Error fetching users' });
+  }
+};
+
+export const updateUser = async (req: Request, res: Response) => {
+  try {
+    console.log('Update user controller triggered');
+    const id = req.params.id;
+    const { username, name, avatar_url, password } = req.body;
+
+    console.log(`Fetching user with ID: ${id}`);
+    const user = await User.findByPk(id);
+    if (!user) {
+      console.log(`User not found`);
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    // Update the user's fields
+    console.log('Updating user details');
+    user.username = username || user.username;
+    user.name = name || user.name;
+    user.avatar_url = avatar_url || user.avatar_url;
+    if (password) {
+      user.password = await bcrypt.hash(password, 10);
+    }
+
+    // Save the updated user
+    await user.save();
+    console.log('User updated successfully');
+
+    // Generate a token for the new user
+    const token = createToken(user, 0, 0);
+
+    // Respond with success message and the user token
+    res.status(201).json({ message: 'User updated successfully', token });
+  } catch (error) {
+    console.error('Failed to update user:', error);
+    res.status(500).json({ error: 'Failed to update user' });
+  }
+};
+
+export const deleteUser = async (req: Request, res: Response) => {
+  try {
+    console.log('Delete user controller triggered');
+    const { id } = req.params;
+
+    console.log(`Fetching user with ID: ${id}`);
+    const user = await User.findByPk(id);
+    if (!user) {
+      console.log('User Not Found');
+      return res.status(404).json({ error: 'User not found' });
+    }
+
+    console.log('anonymizing polls');
+    await Poll.update({ userId: null }, { where: { userId: id } });
+    await user.destroy();
+    console.log('User deleted successfully');
+    res.status(204).send();
+  } catch (error) {
+    console.error('Failed to delete user:', error);
+    res.status(500).json({ error: 'Failed to delete user' });
   }
 };
