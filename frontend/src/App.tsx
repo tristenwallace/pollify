@@ -13,6 +13,7 @@ import SignupForm from './components/SignupForm';
 import CreatePollForm from './components/CreatePollForm';
 import Leaderboard from './components/Leaderboard';
 import PollDetails from './components/PollDetails';
+import UserSettings from './components/userSettings';
 import NotFoundPage from './components/PageNotFound';
 
 const App: React.FC = () => {
@@ -34,6 +35,14 @@ const App: React.FC = () => {
         <Route path="/" element={<Home />} />
         <Route path="/login" element={<LoginForm />} />
         <Route path="/Signup" element={<SignupForm />} />
+        <Route
+          path="/settings"
+          element={
+            <ProtectedRoute>
+              <UserSettings />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/create"
           element={
