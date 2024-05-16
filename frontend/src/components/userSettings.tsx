@@ -17,6 +17,10 @@ import {
 import { useNavigate } from 'react-router-dom';
 import PollPagination from './PollPagination'; // Import PollPagination component
 
+/**
+ * UserSettings component allows users to update their account details or delete their account.
+ * It also displays the user's current details and their created polls.
+ */
 const UserSettings: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const user = useSelector((state: RootState) => state.users.currentUser);
@@ -25,6 +29,7 @@ const UserSettings: React.FC = () => {
   );
   const navigate = useNavigate();
 
+  // State variables for form fields and validation errors
   const [name, setName] = useState(user?.name || '');
   const [password, setPassword] = useState('');
   const [avatarUrl, setAvatarUrl] = useState(user?.avatar_url || '');
@@ -32,12 +37,15 @@ const UserSettings: React.FC = () => {
     password: '',
   });
 
+  // Fetch user polls on component mount
   useEffect(() => {
     dispatch(fetchPolls());
   }, [dispatch]);
 
+  // Filter polls created by the current user
   const userPolls = polls.filter(poll => poll.userId === user?.id);
 
+  // Validate form fields
   const validateField = (field: string, value: string) => {
     switch (field) {
       case 'password':
@@ -49,6 +57,7 @@ const UserSettings: React.FC = () => {
     }
   };
 
+  // Handle field changes and set errors
   const handleChange = (field: string, value: string) => {
     const error = validateField(field, value);
     setErrors(prev => ({ ...prev, [field]: error }));
@@ -67,6 +76,7 @@ const UserSettings: React.FC = () => {
     }
   };
 
+  // Handle form submission for updating user settings
   const handleUpdate = async (event: React.FormEvent) => {
     event.preventDefault();
     const passwordError = validateField('password', password);
@@ -75,7 +85,7 @@ const UserSettings: React.FC = () => {
       setErrors({
         password: passwordError,
       });
-      return; // prevent submission if errors
+      return; // Prevent submission if there are errors
     }
 
     dispatch(
@@ -90,6 +100,7 @@ const UserSettings: React.FC = () => {
       });
   };
 
+  // Handle account deletion with confirmation
   const handleDeleteAccount = () => {
     if (
       window.confirm(
@@ -111,6 +122,7 @@ const UserSettings: React.FC = () => {
   return (
     <Container sx={{ mt: 5 }}>
       <Container component={Paper} sx={{ mb: 5, p: 3 }}>
+        {/* Display current user details */}
         <Typography variant="h5" gutterBottom>
           Current User Details
         </Typography>
@@ -130,6 +142,7 @@ const UserSettings: React.FC = () => {
           </Box>
         </Box>
         <Divider sx={{ my: 3 }} />
+        {/* Form to edit user settings */}
         <Typography variant="h4" gutterBottom>
           Edit User Settings
         </Typography>
@@ -182,6 +195,7 @@ const UserSettings: React.FC = () => {
           </Grid>
         </Box>
       </Container>
+      {/* Display user's polls with pagination */}
       <Typography variant="h5" gutterBottom>
         Your Polls
       </Typography>
