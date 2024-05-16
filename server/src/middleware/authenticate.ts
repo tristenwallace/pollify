@@ -21,6 +21,7 @@ export const authenticate = (
   console.log('Authentication middleware triggered');
   // If token is not present, return a 403 Forbidden status
   if (!token) {
+    console.log('No token provided');
     return res.status(403).json({ error: 'No token provided' });
   }
 

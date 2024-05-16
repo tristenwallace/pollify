@@ -32,6 +32,20 @@ All API requests are made to the base URL of the deployed backend. For developme
 - **Description**: Fetch all users.
 - **Response**: Array of all user objects(id, username, name, voteCount, pollCount)
 
+### PUT /user/:id
+
+- **Description**: Update a user's details (authenticated users only).
+- **Body**:
+  - `username`: String (optional)
+  - `name`: String (optional)
+  - `avatar_url`: String (optional)
+- **Response**: Updated user object.
+
+### DELETE /user/:id
+
+- **Description**: Delete a user (authenticated users only).
+- **Response**: No content.
+
 ## Polls
 
 ### GET /polls
