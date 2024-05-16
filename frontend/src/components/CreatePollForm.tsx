@@ -11,7 +11,7 @@ import {
   TextField,
   Button,
   Typography,
-  Container
+  Container,
 } from '@mui/material';
 
 const CreatePollForm = () => {
