@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
+import PollPagination from './PollPagination';
 import { AppDispatch, RootState } from '../app/store';
 import {
   Container,
@@ -99,42 +100,29 @@ const Home = () => {
 
   return (
     <Container>
-      <Typography variant="h4" sx={{ my: 4 }}>
-        Welcome, {user.name}!
-      </Typography>
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
-        <Button
-          variant="contained"
-          color="secondary"
-          onClick={() => setShowAnswered(!showAnswered)}
+      <div
+          style={{
+            padding: '20px',
+            background: '#f0f0f0',
+            borderRadius: '8px',
+            marginTop: '20px',
+          }}
         >
-          Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
-        </Button>
-        <Button
-          component={RouterLink}
-          to="/create"
-          variant="outlined"
-          color="primary"
-        >
-          Create New Poll
-        </Button>
-        <Button
-          component={RouterLink}
-          to="/leaderboard"
-          variant="outlined"
-          color="primary"
-        >
-          Go to Leaderboard
-        </Button>
-      </Box>
-      <Grid container spacing={2}>
+          <Typography variant="h5" gutterBottom>
+            Welcome, {user.name}!
+          </Typography>
+          <Typography variant="body1" gutterBottom>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
+          In in velit mattis, faucibus sapien id, tristique turpis. 
+          Etiam pulvinar ante magna, a finibus nibh lacinia sit amet.
+          </Typography>
+      </div>
         {pollStatus === 'succeeded' &&
         (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
-          <PollList polls={showAnswered ? answeredPolls : unansweredPolls} />
+          <PollPagination polls={showAnswered ? answeredPolls : unansweredPolls} />
         ) : (
           <Typography>No polls available.</Typography>
         )}
-      </Grid>
     </Container>
   );
 };
