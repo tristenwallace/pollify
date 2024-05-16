@@ -1,13 +1,22 @@
 import React, { useState } from 'react';
-import type { PollListProps } from './PollList'
+import type { PollListProps } from './PollList';
 import PollList from './PollList';
-import { Box, Select, MenuItem, Pagination, SelectChangeEvent } from '@mui/material';
+import {
+  Box,
+  Select,
+  MenuItem,
+  Pagination,
+  SelectChangeEvent,
+} from '@mui/material';
 
 const PollPagination: React.FC<PollListProps> = ({ polls }) => {
   const [currentPage, setCurrentPage] = useState(1);
   const [itemsPerPage, setItemsPerPage] = useState(5);
 
-  const handlePageChange = (event: React.ChangeEvent<unknown>, page: number) => {
+  const handlePageChange = (
+    event: React.ChangeEvent<unknown>,
+    page: number,
+  ) => {
     setCurrentPage(page);
   };
 
@@ -24,7 +33,9 @@ const PollPagination: React.FC<PollListProps> = ({ polls }) => {
   return (
     <Box>
       <PollList polls={currentPolls} />
-      <Box sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, mb: 3 }}>
+      <Box
+        sx={{ display: 'flex', justifyContent: 'space-between', mt: 3, mb: 3 }}
+      >
         <Select value={itemsPerPage} onChange={handleItemsPerPageChange}>
           {[5, 10, 15, 20].map(option => (
             <MenuItem key={option} value={option}>

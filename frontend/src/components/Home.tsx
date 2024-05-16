@@ -10,7 +10,6 @@ import {
   Typography,
   Button,
   Box,
-  Grid,
   CircularProgress,
 } from '@mui/material';
 
@@ -101,28 +100,39 @@ const Home = () => {
   return (
     <Container>
       <div
-          style={{
-            padding: '20px',
-            background: '#f0f0f0',
-            borderRadius: '8px',
-            marginTop: '20px',
-          }}
-        >
-          <Typography variant="h5" gutterBottom>
-            Welcome, {user.name}!
-          </Typography>
-          <Typography variant="body1" gutterBottom>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. 
-          In in velit mattis, faucibus sapien id, tristique turpis. 
-          Etiam pulvinar ante magna, a finibus nibh lacinia sit amet.
-          </Typography>
+        style={{
+          padding: '20px',
+          background: '#f0f0f0',
+          borderRadius: '8px',
+          marginTop: '20px',
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          Welcome, {user.name}!
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in velit
+          mattis, faucibus sapien id, tristique turpis. Etiam pulvinar ante
+          magna, a finibus nibh lacinia sit amet.
+        </Typography>
       </div>
-        {pollStatus === 'succeeded' &&
-        (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
-          <PollPagination polls={showAnswered ? answeredPolls : unansweredPolls} />
-        ) : (
-          <Typography>No polls available.</Typography>
-        )}
+      <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
+        <Button
+          variant="contained"
+          color="secondary"
+          onClick={() => setShowAnswered(!showAnswered)}
+        >
+          Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
+        </Button>
+      </Box>
+      {pollStatus === 'succeeded' &&
+      (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
+        <PollPagination
+          polls={showAnswered ? answeredPolls : unansweredPolls}
+        />
+      ) : (
+        <Typography>No polls available.</Typography>
+      )}
     </Container>
   );
 };
