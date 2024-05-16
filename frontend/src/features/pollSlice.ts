@@ -19,7 +19,7 @@ interface vote {
 
 export interface Poll {
   id: string;
-  userId: string;
+  userId: string | null;
   optionOne: string;
   optionTwo: string;
   votes: vote[];
