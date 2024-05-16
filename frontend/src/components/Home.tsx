@@ -42,7 +42,11 @@ const Home = () => {
   );
 
   if (!user) {
-    // When there is no user logged in, simply display all polls without filtering
+    // When there is no user logged in, only display 5 most voted on polls
+    const topPolls = Object.values(polls)
+      .sort((a, b) => b.votes.length - a.votes.length)
+      .slice(0, 3);
+
     return (
       <Container>
         <div
@@ -82,10 +86,10 @@ const Home = () => {
           </div>
         </div>
         <Typography variant="h4" sx={{ my: 4 }}>
-          All Polls
+          Featured Polls
         </Typography>
-        {Object.keys(polls).length ? (
-          <PollList polls={Object.values(polls)} />
+        {topPolls.length ? (
+          <PollList polls={topPolls} />
         ) : (
           <Typography>No polls available.</Typography>
         )}
