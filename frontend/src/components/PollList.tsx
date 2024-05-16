@@ -4,7 +4,7 @@ import { Poll as PollType } from '../features/pollSlice'; // Importing the Poll 
 import List from '@mui/material/List'; // Material-UI List component for consistent styling
 
 // Defining the props expected by the PollList component using TypeScript interface
-interface PollListProps {
+export interface PollListProps {
   polls: PollType[]; // Array of polls of type PollType
 }
 

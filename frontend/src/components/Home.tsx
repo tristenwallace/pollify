@@ -3,13 +3,13 @@ import { useSelector, useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './PollList';
+import PollPagination from './PollPagination';
 import { AppDispatch, RootState } from '../app/store';
 import {
   Container,
   Typography,
   Button,
   Box,
-  Grid,
   CircularProgress,
 } from '@mui/material';
 
@@ -42,7 +42,11 @@ const Home = () => {
   );
 
   if (!user) {
-    // When there is no user logged in, simply display all polls without filtering
+    // When there is no user logged in, only display 5 most voted on polls
+    const topPolls = Object.values(polls)
+      .sort((a, b) => b.votes.length - a.votes.length)
+      .slice(0, 3);
+
     return (
       <Container>
         <div
@@ -82,10 +86,10 @@ const Home = () => {
           </div>
         </div>
         <Typography variant="h4" sx={{ my: 4 }}>
-          All Polls
+          Featured Polls
         </Typography>
-        {Object.keys(polls).length ? (
-          <PollList polls={Object.values(polls)} />
+        {topPolls.length ? (
+          <PollList polls={topPolls} />
         ) : (
           <Typography>No polls available.</Typography>
         )}
@@ -95,9 +99,23 @@ const Home = () => {
 
   return (
     <Container>
-      <Typography variant="h4" sx={{ my: 4 }}>
-        Welcome, {user.name}!
-      </Typography>
+      <div
+        style={{
+          padding: '20px',
+          background: '#f0f0f0',
+          borderRadius: '8px',
+          marginTop: '20px',
+        }}
+      >
+        <Typography variant="h5" gutterBottom>
+          Welcome, {user.name}!
+        </Typography>
+        <Typography variant="body1" gutterBottom>
+          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in velit
+          mattis, faucibus sapien id, tristique turpis. Etiam pulvinar ante
+          magna, a finibus nibh lacinia sit amet.
+        </Typography>
+      </div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
         <Button
           variant="contained"
@@ -106,31 +124,15 @@ const Home = () => {
         >
           Show {showAnswered ? 'Unanswered' : 'Answered'} Polls
         </Button>
-        <Button
-          component={RouterLink}
-          to="/create"
-          variant="outlined"
-          color="primary"
-        >
-          Create New Poll
-        </Button>
-        <Button
-          component={RouterLink}
-          to="/leaderboard"
-          variant="outlined"
-          color="primary"
-        >
-          Go to Leaderboard
-        </Button>
       </Box>
-      <Grid container spacing={2}>
-        {pollStatus === 'succeeded' &&
-        (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
-          <PollList polls={showAnswered ? answeredPolls : unansweredPolls} />
-        ) : (
-          <Typography>No polls available.</Typography>
-        )}
-      </Grid>
+      {pollStatus === 'succeeded' &&
+      (showAnswered ? answeredPolls.length : unansweredPolls.length) ? (
+        <PollPagination
+          polls={showAnswered ? answeredPolls : unansweredPolls}
+        />
+      ) : (
+        <Typography>No polls available.</Typography>
+      )}
     </Container>
   );
 };
