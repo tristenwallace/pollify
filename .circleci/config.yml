@@ -46,7 +46,7 @@ jobs:
       - run:
           name: Front-End Build
           command: |
-            npm run build-client
+            REACT_APP_API_URL=$REACT_APP_API_URL npm run build-client
             echo "Frontend built successfully."
       - run:
           name: Server Build
