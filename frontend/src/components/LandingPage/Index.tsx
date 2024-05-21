@@ -7,6 +7,7 @@ import MainHero from './MainHero';
 import MainHeroImage from './MainHeroImage';
 import Pricing from './Pricing';
 import Product from './Product';
+import Canvas from '../Wave/Canvas';
 
 const LandingPage = () => {
   const location = useLocation();
@@ -25,6 +26,7 @@ const LandingPage = () => {
     <Container disableGutters maxWidth={false}>
       <MainHero />
       <Box position="relative">
+        <Canvas />
         <MainHeroImage />
       </Box>
       <Box py={8}>
