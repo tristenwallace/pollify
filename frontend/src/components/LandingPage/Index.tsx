@@ -7,6 +7,7 @@ import MainHero from './MainHero';
 import MainHeroImage from './MainHeroImage';
 import Pricing from './Pricing';
 import Product from './Product';
+import Roadmap from './Roadmap';
 import Canvas from '../Wave/Canvas';
 
 const LandingPage = () => {
@@ -34,6 +35,9 @@ const LandingPage = () => {
       </Box>
       <Box py={8} bgcolor="background.paper">
         <Features />
+      </Box>
+      <Box py={8}>
+        <Roadmap />
       </Box>
       <Box py={8}>
         <Pricing />
