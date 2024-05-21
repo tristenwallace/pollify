@@ -4,15 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import { addNewPoll } from '../features/pollSlice';
 import { AppDispatch, RootState } from '../app/store';
 import { fetchUsers } from '../features/usersSlice';
-import Login from './LoginForm';
-import {
-  Card,
-  CardContent,
-  TextField,
-  Button,
-  Typography,
-  Container,
-} from '@mui/material';
+import Login from './Authentication/LoginForm';
+import { Paper, TextField, Button, Typography, Container } from '@mui/material';
 
 const CreatePollForm = () => {
   // Local state to manage form inputs
@@ -64,43 +57,41 @@ const CreatePollForm = () => {
   // Render form for creating a new poll
   return (
     <Container>
-      <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3 }}>
-        <CardContent>
-          <Typography variant="h4" gutterBottom>
-            Create a New Poll
-          </Typography>
-          <form onSubmit={handleSubmit}>
-            <TextField
-              id="optionOneText"
-              label="Option One"
-              variant="outlined"
-              value={optionOne}
-              onChange={e => setOptionOne(e.target.value)}
-              required
-              fullWidth
-              margin="normal"
-            />
-            <TextField
-              id="optionTwoText"
-              label="Option Two"
-              variant="outlined"
-              value={optionTwo}
-              onChange={e => setOptionTwo(e.target.value)}
-              required
-              fullWidth
-              margin="normal"
-            />
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              sx={{ mt: 2 }}
-            >
-              Create Poll
-            </Button>
-          </form>
-        </CardContent>
-      </Card>
+      <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 10, p: 5 }}>
+        <Typography variant="h4" gutterBottom>
+          Create a New Poll
+        </Typography>
+        <form onSubmit={handleSubmit}>
+          <TextField
+            id="optionOneText"
+            label="Option One"
+            variant="outlined"
+            value={optionOne}
+            onChange={e => setOptionOne(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <TextField
+            id="optionTwoText"
+            label="Option Two"
+            variant="outlined"
+            value={optionTwo}
+            onChange={e => setOptionTwo(e.target.value)}
+            required
+            fullWidth
+            margin="normal"
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
+            Create Poll
+          </Button>
+        </form>
+      </Paper>
     </Container>
   );
 };

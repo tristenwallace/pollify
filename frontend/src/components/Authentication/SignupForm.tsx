@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import { registerUser } from '../features/usersSlice';
+import { registerUser } from '../../features/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
-import { AppDispatch } from '../app/store';
+import { AppDispatch } from '../../app/store';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');
@@ -84,7 +84,7 @@ const SignupForm = () => {
 
   return (
     <Container maxWidth="sm">
-      <Paper elevation={6} sx={{ p: 3, mt: 10 }}>
+      <Paper elevation={6} sx={{ p: 5, mt: 17 }}>
         <Typography variant="h4" gutterBottom>
           Sign Up
         </Typography>

@@ -2,8 +2,8 @@ import { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { Link as RouterLink } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
-import PollList from './PollList';
-import PollPagination from './PollPagination';
+import PollList from './Polls/PollList';
+import PollPagination from './Polls/PollPagination';
 import { AppDispatch, RootState } from '../app/store';
 import {
   Container,
@@ -102,7 +102,6 @@ const Home = () => {
       <div
         style={{
           padding: '20px',
-          background: '#f0f0f0',
           borderRadius: '8px',
           marginTop: '20px',
         }}

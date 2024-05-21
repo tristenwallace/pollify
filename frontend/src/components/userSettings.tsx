@@ -15,7 +15,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import PollPagination from './PollPagination'; // Import PollPagination component
+import PollPagination from './Polls/PollPagination'; // Import PollPagination component
 
 /**
  * UserSettings component allows users to update their account details or delete their account.
@@ -121,7 +121,7 @@ const UserSettings: React.FC = () => {
 
   return (
     <Container sx={{ mt: 5 }}>
-      <Container component={Paper} sx={{ mb: 5, p: 3 }}>
+      <Container component={Paper} sx={{ mb: 5, p: 4 }}>
         {/* Display current user details */}
         <Typography variant="h5" gutterBottom>
           Current User Details
