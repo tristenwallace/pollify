@@ -1,7 +1,5 @@
-import React from 'react';
 import {
   Container,
-  Box,
   Typography,
   Grid,
   Card,
