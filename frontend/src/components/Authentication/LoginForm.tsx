@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation, Location } from 'react-router-dom';
-import { loginUser } from '../features/usersSlice';
-import { AppDispatch, RootState } from '../app/store';
+import { loginUser } from '../../features/usersSlice';
+import { AppDispatch, RootState } from '../../app/store';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -46,7 +46,7 @@ const LoginForm: React.FC = () => {
   // Render the login form
   return (
     <Container maxWidth="sm">
-      <Paper elevation={6} sx={{ p: 3, mt: 10 }}>
+      <Paper elevation={6} sx={{ p: 3, mt: 17 }}>
         <Typography variant="h4" gutterBottom>
           Login
         </Typography>

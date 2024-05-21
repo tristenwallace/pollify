@@ -4,7 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { addNewPoll } from '../features/pollSlice';
 import { AppDispatch, RootState } from '../app/store';
 import { fetchUsers } from '../features/usersSlice';
-import Login from './LoginForm';
+import Login from './Authentication/LoginForm';
 import {
   Card,
   CardContent,

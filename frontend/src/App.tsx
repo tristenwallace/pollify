@@ -6,20 +6,22 @@ import { fetchPolls } from './features/pollSlice';
 import { getToken } from './server/api';
 import { Route, Routes } from 'react-router-dom';
 import Home from './components/Home';
-import LoginForm from './components/LoginForm';
-import SignupForm from './components/SignupForm';
+import LoginForm from './components/Authentication/LoginForm';
+import SignupForm from './components/Authentication/SignupForm';
 import CreatePollForm from './components/CreatePollForm';
 import Leaderboard from './components/Leaderboard';
-import PollDetails from './components/PollDetails';
+import PollDetails from './components/Polls/PollDetails';
 import UserSettings from './components/userSettings';
 import NotFoundPage from './components/PageNotFound';
 import LandingPage from './components/LandingPage/Index';
 import Layout from './components/Layout';
-import LandingLayout from './components/LandingPage/LandingLayout'
+import LandingLayout from './components/LandingPage/LandingLayout';
 
 const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const currentUser = useSelector((state: RootState) => state.users.currentUser);
+  const currentUser = useSelector(
+    (state: RootState) => state.users.currentUser,
+  );
 
   useEffect(() => {
     const token = getToken();
@@ -32,14 +34,76 @@ const App: React.FC = () => {
 
   return (
     <Routes>
-      <Route path="/" element={currentUser ? <Layout><Home /></Layout> : <LandingLayout><LandingPage /></LandingLayout>} />
-      <Route path="/login" element={<LandingLayout><LoginForm /></LandingLayout>} />
-      <Route path="/signup" element={<LandingLayout><SignupForm /></LandingLayout>} />
-      <Route path="/settings" element={<Layout><UserSettings /></Layout>} />
-      <Route path="/create" element={<Layout><CreatePollForm /></Layout>} />
-      <Route path="/leaderboard" element={<Layout><Leaderboard /></Layout>} />
-      <Route path="/questions/:pollId" element={<Layout><PollDetails /></Layout>} />
-      <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
+      <Route
+        path="/"
+        element={
+          currentUser ? (
+            <Layout>
+              <Home />
+            </Layout>
+          ) : (
+            <LandingLayout>
+              <LandingPage />
+            </LandingLayout>
+          )
+        }
+      />
+      <Route
+        path="/login"
+        element={
+          <LandingLayout>
+            <LoginForm />
+          </LandingLayout>
+        }
+      />
+      <Route
+        path="/signup"
+        element={
+          <LandingLayout>
+            <SignupForm />
+          </LandingLayout>
+        }
+      />
+      <Route
+        path="/settings"
+        element={
+          <Layout>
+            <UserSettings />
+          </Layout>
+        }
+      />
+      <Route
+        path="/create"
+        element={
+          <Layout>
+            <CreatePollForm />
+          </Layout>
+        }
+      />
+      <Route
+        path="/leaderboard"
+        element={
+          <Layout>
+            <Leaderboard />
+          </Layout>
+        }
+      />
+      <Route
+        path="/questions/:pollId"
+        element={
+          <Layout>
+            <PollDetails />
+          </Layout>
+        }
+      />
+      <Route
+        path="*"
+        element={
+          <Layout>
+            <NotFoundPage />
+          </Layout>
+        }
+      />
     </Routes>
   );
 };

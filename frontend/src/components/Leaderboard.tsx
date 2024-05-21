@@ -66,7 +66,7 @@ const Leaderboard = () => {
   // Render the leaderboard UI
   return (
     <Container>
-      <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 2 }}>
+      <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 10, p: 2 }}>
         <Typography variant="h4" gutterBottom>
           Leaderboard
         </Typography>

@@ -15,7 +15,7 @@ import {
   Divider,
 } from '@mui/material';
 import { useNavigate } from 'react-router-dom';
-import PollPagination from './PollPagination'; // Import PollPagination component
+import PollPagination from './Polls/PollPagination'; // Import PollPagination component
 
 /**
  * UserSettings component allows users to update their account details or delete their account.

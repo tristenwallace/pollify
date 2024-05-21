@@ -85,14 +85,26 @@ const Navbar = () => {
         to="/create"
         onClick={handleMobileMenuClose}
       >
-        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>Create Poll</MuiLink>
+        <MuiLink
+          color="textPrimary"
+          underline="none"
+          sx={{ color: theme.palette.text.secondary }}
+        >
+          Create Poll
+        </MuiLink>
       </MenuItem>
       <MenuItem
         component={RouterLink}
         to="/leaderboard"
         onClick={handleMobileMenuClose}
       >
-        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>Leaderboard</MuiLink>
+        <MuiLink
+          color="textPrimary"
+          underline="none"
+          sx={{ color: theme.palette.text.secondary }}
+        >
+          Leaderboard
+        </MuiLink>
       </MenuItem>
     </Menu>
   );
@@ -119,7 +131,10 @@ const Navbar = () => {
   );
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: theme.palette.background.default }}>
+    <AppBar
+      position="static"
+      sx={{ backgroundColor: theme.palette.background.default }}
+    >
       <Container>
         <Toolbar>
           <IconButton
@@ -127,7 +142,11 @@ const Navbar = () => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2, display: { xs: 'block', md: 'none' }, color: theme.palette.text.primary }}
+            sx={{
+              mr: 2,
+              display: { xs: 'block', md: 'none' },
+              color: theme.palette.text.primary,
+            }}
             onClick={handleMobileMenuOpen}
           >
             <MenuIcon />
@@ -198,7 +217,11 @@ const Navbar = () => {
           ) : (
             <Button
               onClick={handleLoginSignup}
-              sx={{ display: { xs: 'block', sm: 'block' }, ml: 'auto', color: theme.palette.text.secondary }}
+              sx={{
+                display: { xs: 'block', sm: 'block' },
+                ml: 'auto',
+                color: theme.palette.text.secondary,
+              }}
             >
               Login/Signup
             </Button>

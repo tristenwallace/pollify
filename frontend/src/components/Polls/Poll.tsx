@@ -1,9 +1,9 @@
 import React, { useEffect } from 'react';
 import { Link as RouterLink } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../app/store';
-import { fetchPolls } from '../features/pollSlice'; // Action to fetch polls from the server
-import { fetchUsers } from '../features/usersSlice'; // Action to fetch users from the server
+import { RootState, AppDispatch } from '../../app/store';
+import { fetchPolls } from '../../features/pollSlice'; // Action to fetch polls from the server
+import { fetchUsers } from '../../features/usersSlice'; // Action to fetch users from the server
 import {
   Card,
   CardContent,
