@@ -1,12 +1,10 @@
 import React, { useEffect } from 'react';
-import { useDispatch } from 'react-redux';
-import { AppDispatch } from './app/store';
+import { useDispatch, useSelector } from 'react-redux';
+import { AppDispatch, RootState } from './app/store';
 import { fetchCurrentUser, fetchUsers } from './features/usersSlice';
 import { fetchPolls } from './features/pollSlice';
 import { getToken } from './server/api';
 import { Route, Routes } from 'react-router-dom';
-import ProtectedRoute from './ProtectedRoute';
-import Navbar from './components/Navbar';
 import Home from './components/Home';
 import LoginForm from './components/LoginForm';
 import SignupForm from './components/SignupForm';
@@ -15,9 +13,13 @@ import Leaderboard from './components/Leaderboard';
 import PollDetails from './components/PollDetails';
 import UserSettings from './components/userSettings';
 import NotFoundPage from './components/PageNotFound';
+import LandingPage from './components/LandingPage/Index';
+import Layout from './components/Layout';
+import LandingLayout from './components/LandingPage/LandingLayout'
 
 const App: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
+  const currentUser = useSelector((state: RootState) => state.users.currentUser);
 
   useEffect(() => {
     const token = getToken();
@@ -29,47 +31,16 @@ const App: React.FC = () => {
   }, [dispatch]);
 
   return (
-    <div className="app">
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/login" element={<LoginForm />} />
-        <Route path="/Signup" element={<SignupForm />} />
-        <Route
-          path="/settings"
-          element={
-            <ProtectedRoute>
-              <UserSettings />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/create"
-          element={
-            <ProtectedRoute>
-              <CreatePollForm />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/leaderboard"
-          element={
-            <ProtectedRoute>
-              <Leaderboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/questions/:pollId"
-          element={
-            <ProtectedRoute>
-              <PollDetails />
-            </ProtectedRoute>
-          }
-        />
-        <Route path="*" element={<NotFoundPage />} />
-      </Routes>
-    </div>
+    <Routes>
+      <Route path="/" element={currentUser ? <Layout><Home /></Layout> : <LandingLayout><LandingPage /></LandingLayout>} />
+      <Route path="/login" element={<LandingLayout><LoginForm /></LandingLayout>} />
+      <Route path="/signup" element={<LandingLayout><SignupForm /></LandingLayout>} />
+      <Route path="/settings" element={<Layout><UserSettings /></Layout>} />
+      <Route path="/create" element={<Layout><CreatePollForm /></Layout>} />
+      <Route path="/leaderboard" element={<Layout><Leaderboard /></Layout>} />
+      <Route path="/questions/:pollId" element={<Layout><PollDetails /></Layout>} />
+      <Route path="*" element={<Layout><NotFoundPage /></Layout>} />
+    </Routes>
   );
 };
 
