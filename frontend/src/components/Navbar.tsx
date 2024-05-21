@@ -4,16 +4,19 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { logout } from '../features/usersSlice';
 import { AppDispatch, RootState } from '../app/store';
 import {
+  Container,
   AppBar,
   Toolbar,
-  Button,
   Box,
   IconButton,
+  Button,
   Menu,
   MenuItem,
   Avatar,
+  Link as MuiLink,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { useTheme } from '@mui/material/styles';
 
 const Navbar = () => {
   const dispatch: AppDispatch = useDispatch();
@@ -21,6 +24,7 @@ const Navbar = () => {
     (state: RootState) => state.users.currentUser,
   );
   const navigate = useNavigate();
+  const theme = useTheme();
 
   const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
     useState<null | HTMLElement>(null);
@@ -70,21 +74,25 @@ const Navbar = () => {
       onClose={handleMobileMenuClose}
     >
       <MenuItem component={RouterLink} to="/" onClick={handleMobileMenuClose}>
-        Home
+        <img
+          alt="Pollify Enterprise Logo"
+          src="https://hangouthabit.sirv.com/polling_app/images/logo.png"
+          style={{ height: '30px', marginRight: '10px' }}
+        />
       </MenuItem>
       <MenuItem
         component={RouterLink}
         to="/create"
         onClick={handleMobileMenuClose}
       >
-        Create Poll
+        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>Create Poll</MuiLink>
       </MenuItem>
       <MenuItem
         component={RouterLink}
         to="/leaderboard"
         onClick={handleMobileMenuClose}
       >
-        Leaderboard
+        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>Leaderboard</MuiLink>
       </MenuItem>
     </Menu>
   );
@@ -111,55 +119,94 @@ const Navbar = () => {
   );
 
   return (
-    <AppBar position="static" color="secondary" elevation={0}>
-      <Toolbar>
-        <IconButton
-          size="large"
-          edge="start"
-          color="inherit"
-          aria-label="menu"
-          sx={{ mr: 2, display: { xs: 'block', md: 'none' } }}
-          onClick={handleMobileMenuOpen}
-        >
-          <MenuIcon />
-        </IconButton>
-        <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-          <Button color="inherit" component={RouterLink} to="/">
-            Home
-          </Button>
-          <Button color="inherit" component={RouterLink} to="/create">
-            Create Poll
-          </Button>
-          <Button color="inherit" component={RouterLink} to="/leaderboard">
-            Leaderboard
-          </Button>
-        </Box>
-        {currentUser ? (
-          <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
-            <IconButton
-              size="large"
-              edge="end"
-              aria-label="account of current user"
-              aria-controls={profileMenuId}
-              aria-haspopup="true"
-              onClick={handleProfileMenuOpen}
-              color="inherit"
-            >
-              <Avatar src={currentUser.avatar_url} />
-            </IconButton>
-          </Box>
-        ) : (
-          <Button
+    <AppBar position="static" sx={{ backgroundColor: theme.palette.background.default }}>
+      <Container>
+        <Toolbar>
+          <IconButton
+            size="large"
+            edge="start"
             color="inherit"
-            onClick={handleLoginSignup}
-            sx={{ display: { xs: 'block', sm: 'block' }, ml: 'auto' }}
+            aria-label="menu"
+            sx={{ mr: 2, display: { xs: 'block', md: 'none' }, color: theme.palette.text.primary }}
+            onClick={handleMobileMenuOpen}
           >
-            Login/Signup
-          </Button>
-        )}
-      </Toolbar>
-      {renderMobileMenu}
-      {renderProfileMenu}
+            <MenuIcon />
+          </IconButton>
+          <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
+            <MuiLink
+              component={RouterLink}
+              to="/"
+              sx={{
+                display: 'flex',
+                alignItems: 'center',
+                color: theme.palette.text.secondary,
+                textDecoration: 'none',
+                mr: 2,
+              }}
+            >
+              <img
+                alt="Pollify Enterprise Logo"
+                src="https://hangouthabit.sirv.com/polling_app/images/logo.png"
+                style={{ height: '30px' }}
+              />
+            </MuiLink>
+            <MuiLink
+              component={RouterLink}
+              to="/create"
+              sx={{
+                color: theme.palette.text.secondary,
+                textDecoration: 'none',
+                '&:hover': {
+                  color: theme.palette.common.black,
+                  borderBottom: `2px solid ${theme.palette.primary.main}`,
+                },
+                mr: 2,
+              }}
+            >
+              Create Poll
+            </MuiLink>
+            <MuiLink
+              component={RouterLink}
+              to="/leaderboard"
+              sx={{
+                color: theme.palette.text.secondary,
+                textDecoration: 'none',
+                '&:hover': {
+                  color: theme.palette.common.black,
+                  borderBottom: `2px solid ${theme.palette.primary.main}`,
+                },
+                mr: 2,
+              }}
+            >
+              Leaderboard
+            </MuiLink>
+          </Box>
+          {currentUser ? (
+            <Box sx={{ display: 'flex', alignItems: 'center', ml: 'auto' }}>
+              <IconButton
+                size="large"
+                edge="end"
+                aria-label="account of current user"
+                aria-controls={profileMenuId}
+                aria-haspopup="true"
+                onClick={handleProfileMenuOpen}
+                sx={{ color: theme.palette.text.primary }}
+              >
+                <Avatar src={currentUser.avatar_url} />
+              </IconButton>
+            </Box>
+          ) : (
+            <Button
+              onClick={handleLoginSignup}
+              sx={{ display: { xs: 'block', sm: 'block' }, ml: 'auto', color: theme.palette.text.secondary }}
+            >
+              Login/Signup
+            </Button>
+          )}
+        </Toolbar>
+        {renderMobileMenu}
+        {renderProfileMenu}
+      </Container>
     </AppBar>
   );
 };

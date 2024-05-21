@@ -102,7 +102,6 @@ const Home = () => {
       <div
         style={{
           padding: '20px',
-          background: '#f0f0f0',
           borderRadius: '8px',
           marginTop: '20px',
         }}
