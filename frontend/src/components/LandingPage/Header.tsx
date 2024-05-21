@@ -1,11 +1,22 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { useNavigate, Link as RouterLink } from 'react-router-dom';
-import { AppBar, Toolbar, Button, Box, Link as MuiLink, IconButton, Menu, MenuItem, Container } from '@mui/material';
+import {
+  AppBar,
+  Toolbar,
+  Button,
+  Box,
+  Link as MuiLink,
+  IconButton,
+  Menu,
+  MenuItem,
+  Container,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 
 const Header = () => {
-  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
   const [visible, setVisible] = useState(true);
   const navigate = useNavigate();
@@ -25,7 +36,7 @@ const Header = () => {
 
   const handleScroll = useCallback(() => {
     const currentScrollPos = window.pageYOffset;
-    const isVisible = (prevScrollPos > currentScrollPos) || currentScrollPos < 10;
+    const isVisible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
     setVisible(isVisible);
     setPrevScrollPos(currentScrollPos);
   }, [prevScrollPos]);
@@ -47,19 +58,15 @@ const Header = () => {
       open={Boolean(mobileMenuAnchorEl)}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={() => handleNavigation('product')}>
-        Product
-      </MenuItem>
-      <MenuItem onClick={() => handleNavigation('features')}>
-        Features
-      </MenuItem>
-      <MenuItem onClick={() => handleNavigation('pricing')}>
-        Pricing
-      </MenuItem>
-      <MenuItem onClick={() => handleNavigation('about')}>
-        About
-      </MenuItem>
-      <MenuItem component={RouterLink} to="/signup" onClick={handleMobileMenuClose}>
+      <MenuItem onClick={() => handleNavigation('product')}>Product</MenuItem>
+      <MenuItem onClick={() => handleNavigation('features')}>Features</MenuItem>
+      <MenuItem onClick={() => handleNavigation('pricing')}>Pricing</MenuItem>
+      <MenuItem onClick={() => handleNavigation('about')}>About</MenuItem>
+      <MenuItem
+        component={RouterLink}
+        to="/signup"
+        onClick={handleMobileMenuClose}
+      >
         <Button variant="contained" color="secondary">
           Get Started
         </Button>
@@ -162,7 +169,12 @@ const Header = () => {
             >
               About
             </MuiLink>
-            <Button variant="contained" color="secondary" component={RouterLink} to="/signup">
+            <Button
+              variant="contained"
+              color="secondary"
+              component={RouterLink}
+              to="/signup"
+            >
               Get Started
             </Button>
           </Box>

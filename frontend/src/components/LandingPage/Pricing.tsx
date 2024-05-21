@@ -1,6 +1,13 @@
-import { Container, Typography, Grid, Card, CardContent, CardActions, Button } from '@mui/material';
+import {
+  Container,
+  Typography,
+  Grid,
+  Card,
+  CardContent,
+  CardActions,
+  Button,
+} from '@mui/material';
 import { Link as RouterLink } from 'react-router-dom';
-
 
 const Pricing = () => {
   return (
@@ -9,7 +16,8 @@ const Pricing = () => {
         Pricing
       </Typography>
       <Typography variant="body1" gutterBottom align="center">
-        Pollify is currently in beta and available for testing. Early users will be offered steep discount access when the full application goes live.
+        Pollify is currently in beta and available for testing. Early users will
+        be offered steep discount access when the full application goes live.
       </Typography>
       <Grid container spacing={4} sx={{ mt: 4 }} justifyContent="center">
         <Grid item xs={12} md={4}>
@@ -26,12 +34,17 @@ const Pricing = () => {
               </Typography>
               <Typography variant="body1" sx={{ mt: 2 }}>
                 Unlimited Users <br />
-                Basic Support <br />
-                1 GB Storage
+                Basic Support <br />1 GB Storage
               </Typography>
             </CardContent>
             <CardActions>
-              <Button size="small" variant="contained" color="primary" component={RouterLink} to="/signup">
+              <Button
+                size="small"
+                variant="contained"
+                color="primary"
+                component={RouterLink}
+                to="/signup"
+              >
                 Sign Up
               </Button>
             </CardActions>

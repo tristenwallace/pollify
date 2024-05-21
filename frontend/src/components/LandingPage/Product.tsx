@@ -46,26 +46,32 @@ const Product = () => {
               Easily create polls to gather valuable feedback
             </Subheading>
             <Text variant="body1">
-              Pollify helps companies build a strong community and create an environment employees love. 
-              Whether it's HR gathering feedback, team leads planning events, or managers understanding team sentiment, 
-              Pollify is here to help.
+              Pollify helps companies build a strong community and create an
+              environment employees love. Whether it's HR gathering feedback,
+              team leads planning events, or managers understanding team
+              sentiment, Pollify is here to help.
             </Text>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Image src="https://hangouthabit.sirv.com/polling_app/images/poll_creation.png" alt="Gather Feedback" />
+            <Image
+              src="https://hangouthabit.sirv.com/polling_app/images/poll_creation.png"
+              alt="Gather Feedback"
+            />
           </Grid>
         </Grid>
         <Grid container spacing={4} direction="row-reverse" sx={{ mt: 4 }}>
           <Grid item xs={12} md={6}>
-            <Subheading variant="h3">
-              Foster a sense of community
-            </Subheading>
+            <Subheading variant="h3">Foster a sense of community</Subheading>
             <Text variant="body1">
-            By involving employees in the decision-making processes, you can create a sense of ownership and belonging among team members.
+              By involving employees in the decision-making processes, you can
+              create a sense of ownership and belonging among team members.
             </Text>
           </Grid>
           <Grid item xs={12} md={6}>
-            <Image src="https://hangouthabit.sirv.com/polling_app/images/gather_feedback.png" alt="Foster Community" />
+            <Image
+              src="https://hangouthabit.sirv.com/polling_app/images/gather_feedback.png"
+              alt="Foster Community"
+            />
           </Grid>
         </Grid>
       </Container>

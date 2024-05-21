@@ -10,7 +10,8 @@ const Features = () => {
         Why Choose Pollify?
       </Typography>
       <Typography variant="body1" gutterBottom align="center">
-        Pollify is designed to help companies understand their employees better and create an engaging workplace.
+        Pollify is designed to help companies understand their employees better
+        and create an engaging workplace.
       </Typography>
       <Grid container spacing={4} sx={{ mt: 4 }}>
         <Grid item xs={12} md={4}>
@@ -20,7 +21,8 @@ const Features = () => {
               Gather Feedback
             </Typography>
             <Typography variant="body1">
-              Easily create polls to gather valuable feedback from employees on various topics.
+              Easily create polls to gather valuable feedback from employees on
+              various topics.
             </Typography>
           </Box>
         </Grid>
@@ -31,7 +33,8 @@ const Features = () => {
               Plan Events
             </Typography>
             <Typography variant="body1">
-              Organize team retreats and events based on what your employees actually want.
+              Organize team retreats and events based on what your employees
+              actually want.
             </Typography>
           </Box>
         </Grid>
@@ -42,7 +45,8 @@ const Features = () => {
               Build Community
             </Typography>
             <Typography variant="body1">
-              Foster a sense of community by engaging employees in decision-making processes.
+              Foster a sense of community by engaging employees in
+              decision-making processes.
             </Typography>
           </Box>
         </Grid>
