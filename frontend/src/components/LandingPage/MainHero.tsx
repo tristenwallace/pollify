@@ -17,7 +17,7 @@ const MainHero = () => {
         Pollify helps companies build a strong community and create an
         environment employees love. Whether it's HR gathering feedback, team
         leads planning events, or managers understanding team sentiment, Pollify
-        Enterprise is here to help.
+        is here to help.
       </Typography>
       <Box sx={{ display: 'flex', justifyContent: 'center', gap: 2 }}>
         <Button

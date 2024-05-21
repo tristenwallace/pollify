@@ -60,8 +60,8 @@ const Header = () => {
     >
       <MenuItem onClick={() => handleNavigation('product')}>Product</MenuItem>
       <MenuItem onClick={() => handleNavigation('features')}>Features</MenuItem>
+      <MenuItem onClick={() => handleNavigation('roadmap')}>Roadmap</MenuItem>
       <MenuItem onClick={() => handleNavigation('pricing')}>Pricing</MenuItem>
-      <MenuItem onClick={() => handleNavigation('about')}>About</MenuItem>
       <MenuItem
         component={RouterLink}
         to="/signup"
@@ -141,6 +141,21 @@ const Header = () => {
             </MuiLink>
             <MuiLink
               component="button"
+              onClick={() => handleNavigation('roadmap')}
+              sx={{
+                color: theme.palette.text.secondary,
+                textDecoration: 'none',
+                '&:hover': {
+                  color: theme.palette.common.black,
+                  borderBottom: `2px solid ${theme.palette.primary.main}`,
+                },
+                mr: 2,
+              }}
+            >
+              Roadmap
+            </MuiLink>
+            <MuiLink
+              component="button"
               onClick={() => handleNavigation('pricing')}
               sx={{
                 color: theme.palette.text.secondary,
@@ -153,21 +168,6 @@ const Header = () => {
               }}
             >
               Pricing
-            </MuiLink>
-            <MuiLink
-              component="button"
-              onClick={() => handleNavigation('about')}
-              sx={{
-                color: theme.palette.text.secondary,
-                textDecoration: 'none',
-                '&:hover': {
-                  color: theme.palette.common.black,
-                  borderBottom: `2px solid ${theme.palette.primary.main}`,
-                },
-                mr: 2,
-              }}
-            >
-              About
             </MuiLink>
             <Button
               variant="contained"
