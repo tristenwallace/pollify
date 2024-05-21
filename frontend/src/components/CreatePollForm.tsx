@@ -6,8 +6,7 @@ import { AppDispatch, RootState } from '../app/store';
 import { fetchUsers } from '../features/usersSlice';
 import Login from './Authentication/LoginForm';
 import {
-  Card,
-  CardContent,
+  Paper,
   TextField,
   Button,
   Typography,
@@ -64,8 +63,7 @@ const CreatePollForm = () => {
   // Render form for creating a new poll
   return (
     <Container>
-      <Card sx={{ maxWidth: 600, mx: 'auto', mt: 4, p: 3 }}>
-        <CardContent>
+      <Paper elevation={3} sx={{ maxWidth: 600, mx: 'auto', mt: 10, p: 5 }}>
           <Typography variant="h4" gutterBottom>
             Create a New Poll
           </Typography>
@@ -99,8 +97,7 @@ const CreatePollForm = () => {
               Create Poll
             </Button>
           </form>
-        </CardContent>
-      </Card>
+      </Paper>
     </Container>
   );
 };
