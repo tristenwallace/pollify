@@ -1,10 +1,4 @@
-import {
-  Container,
-  Typography,
-  Grid,
-  Card,
-  CardContent,
-} from '@mui/material';
+import { Container, Typography, Grid, Card, CardContent } from '@mui/material';
 import { styled } from '@mui/system';
 
 const PhaseTitle = styled(Typography)(({ theme }) => ({
