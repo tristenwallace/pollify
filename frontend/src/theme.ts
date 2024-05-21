@@ -2,60 +2,69 @@ import { createTheme } from '@mui/material/styles';
 
 // Define the color palette
 const palette = {
-  ivory: '#f2f1ef', // used for backgrounds and for secondary text
-  lightGray: '#d9d2cc', // used for borders and dividers
-  sandy: '#d9b18e', // primary color for buttons and highlights
-  terraCotta: '#a67564', // secondary color for icons and accents
-  mahogany: '#412c27', // primary text color and some headers
+  primary: '#fac800', // used for primary elements
+  secondary: '#d3ba84', // used for secondary elements
+  tertiary: '#928d81', // used for tertiary elements
+  background: '#ffffff', // used for backgrounds
+  border: '#1a2e35', // used for borders
+  textPrimary: '#1a2e35', // primary text color
+  textSecondary: '#928d81', // secondary text color
 };
 
 // Create a theme instance
 const theme = createTheme({
   palette: {
     primary: {
-      main: palette.sandy,
-      contrastText: palette.ivory,
+      main: palette.primary,
+      contrastText: palette.background,
     },
     secondary: {
-      main: palette.terraCotta,
-      contrastText: palette.ivory,
+      main: palette.secondary,
+      contrastText: palette.background,
     },
     background: {
-      default: palette.ivory,
-      paper: palette.lightGray,
+      default: palette.background,
+      paper: palette.background,
     },
     text: {
-      primary: palette.mahogany,
-      secondary: palette.terraCotta,
+      primary: palette.textPrimary,
+      secondary: palette.textSecondary,
     },
   },
   typography: {
     fontFamily: '"Helvetica Neue", Arial, sans-serif',
     h1: {
-      fontWeight: 300, // Lighter weight for larger headers
-      color: palette.mahogany,
+      fontWeight: 300,
+      color: palette.textPrimary,
     },
     h2: {
       fontWeight: 400,
-      color: palette.mahogany,
+      color: palette.textPrimary,
+    },
+    h3: {
+      fontWeight: 500,
+      color: palette.textPrimary,
+    },
+    body1: {
+      color: palette.textPrimary,
     },
     button: {
-      textTransform: 'none', // Buttons have regular casing, not uppercase
+      textTransform: 'none',
     },
   },
   components: {
     MuiButton: {
       styleOverrides: {
         root: {
-          borderRadius: 8, // Rounded corners for buttons
+          borderRadius: 8,
         },
       },
     },
     MuiCard: {
       styleOverrides: {
         root: {
-          boxShadow: 'none', // Remove shadow from cards for a flatter design
-          border: `1px solid ${palette.lightGray}`, // Add a subtle border
+          boxShadow: 'none',
+          border: `1px solid ${palette.tertiary}`,
         },
       },
     },
