@@ -9,7 +9,7 @@ Try adding your own Polls!
 
 [https://pollify.dev/](https://pollify.dev/)
 
-![Polling App Homepage](<https://hangouthabit.sirv.com/polling_app/Homepage.png>)
+![Polling App Homepage](<https://hangouthabit.sirv.com/polling_app/Poll_Dashboard.png>)
 
 ## Features
 
