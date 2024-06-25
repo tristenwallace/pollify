@@ -1,9 +1,9 @@
-# Polling App
+# Pollify
 
 [![CircleCI](https://dl.circleci.com/status-badge/img/circleci/KPSszw1xUCAvioRxYj4MSJ/pLc8BUmCLCrMcRmxKvR4U/tree/main.svg?style=svg)](https://dl.circleci.com/status-badge/redirect/circleci/KPSszw1xUCAvioRxYj4MSJ/pLc8BUmCLCrMcRmxKvR4U/tree/main)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
-The Polling App is a full-featured polling platform designed for individuals and organizations to create and participate in polls. It offers an interactive and user-friendly interface for users to express their opinions through votes, view poll results in real-time, and engage with a community of like-minded participants.
+Pollify is a full-featured polling platform designed for individuals and organizations to create and participate in polls. It offers an interactive and user-friendly interface for users to express their opinions through votes, view poll results in real-time, and engage with a community of like-minded participants.
 
 Try adding your own Polls!
 
