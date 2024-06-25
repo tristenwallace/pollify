@@ -7,7 +7,7 @@ The Polling App is a full-featured polling platform designed for individuals and
 
 Try adding your own Polls!
 
-[http://employee-polling-app.s3-website.us-east-2.amazonaws.com/](http://employee-polling-app.s3-website.us-east-2.amazonaws.com/)
+[https://pollify.dev/](https://pollify.dev/)
 
 ![Polling App Homepage](<https://hangouthabit.sirv.com/polling_app/Homepage.png>)
 
