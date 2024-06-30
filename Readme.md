@@ -118,7 +118,7 @@ All necessary dependencies and their setup instructions are detailed in our depe
 
 ### API Documentation
 
-For more information about the API endpoints, see the [API Documentation](docs/API.md).
+For more information about the API endpoints, see the [API Documentation](https://app.swaggerhub.com/apis-docs/INFO_646/pollify/1.0.0)).
 
 ### Architecture
 
