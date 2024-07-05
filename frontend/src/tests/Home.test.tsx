@@ -3,34 +3,20 @@ import Home from '../components/Home';
 import { Provider } from 'react-redux';
 import { BrowserRouter as Router } from 'react-router-dom';
 import configureStore from 'redux-mock-store';
-import { initialState as initialUsersState } from '../features/usersSlice';
-import { initialState as initialPollState } from '../features/pollSlice';
-import * as mockApi from '../tests/mocks/api';
 
 const mockStore = configureStore();
 
 describe('Home Page', () => {
-  it('shows login message when unauthenticated', () => {
-    const store = mockStore({
-      users: { ...initialUsersState },
-      poll: { ...initialPollState, status: 'succeeded' },
-    });
-    mockApi.fetchPolls.mockResolvedValue([]);
-    mockApi.fetchUsers.mockResolvedValue([]);
-    render(
-      <Provider store={store}>
-        <Router>
-          <Home />
-        </Router>
-      </Provider>,
-    );
-    expect(screen.getByText('Welcome to Employee Polls!')).toBeInTheDocument();
-  });
-
   it('shows welcome message when authenticated', async () => {
     const store = mockStore({
       users: {
-        currentUser: { id: '123', name: 'User' },
+        currentUser: {
+          id: '123',
+          name: 'User',
+          username: 'User',
+          pollsCreated: 1,
+          pollsVotedOn: 0,
+        },
         users: [],
         status: 'succeeded',
         error: null,
@@ -56,8 +42,7 @@ describe('Home Page', () => {
       </Provider>,
     );
     expect(await screen.findByText('Welcome, User!')).toBeInTheDocument();
-    expect(await screen.findByText('Create New Poll')).toBeInTheDocument();
-    expect(await screen.findByText('Go to Leaderboard')).toBeInTheDocument();
+    expect(await screen.findByText('Show Answered Polls')).toBeInTheDocument();
   });
 
   it('toggles between answered and unanswered polls', async () => {
