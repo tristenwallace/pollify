@@ -21,6 +21,7 @@ server/dist.zip
 .env.development
 .env.test
 .env.production
+cypress.env.json
 
 npm-debug.log*
 yarn-debug.log*
