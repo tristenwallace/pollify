@@ -110,9 +110,7 @@ const Home = () => {
           Welcome, {user.name}!
         </Typography>
         <Typography variant="body1" gutterBottom>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. In in velit
-          mattis, faucibus sapien id, tristique turpis. Etiam pulvinar ante
-          magna, a finibus nibh lacinia sit amet.
+          Take a look at the most recent polls!
         </Typography>
       </div>
       <Box sx={{ display: 'flex', justifyContent: 'space-between', mb: 2 }}>
