@@ -2,7 +2,7 @@ import { useState, useEffect, FormEvent } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router-dom';
 import { addNewPoll } from '../features/pollSlice';
-import { AppDispatch, RootState } from '../app/store';
+import { AppDispatch, RootState } from '../store/store';
 import { fetchUsers } from '../features/usersSlice';
 import Login from './Authentication/LoginForm';
 import { Paper, TextField, Button, Typography, Container } from '@mui/material';

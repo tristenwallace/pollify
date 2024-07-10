@@ -4,7 +4,7 @@ import { Link as RouterLink } from 'react-router-dom';
 import { fetchPolls } from '../features/pollSlice';
 import PollList from './Polls/PollList';
 import PollPagination from './Polls/PollPagination';
-import { AppDispatch, RootState } from '../app/store';
+import { AppDispatch, RootState } from '../store/store';
 import {
   Container,
   Typography,

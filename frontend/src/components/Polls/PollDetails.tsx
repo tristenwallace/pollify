@@ -1,7 +1,7 @@
 import { useParams, Navigate, Link } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import { voteOnPoll } from '../../features/pollSlice';
-import { RootState, AppDispatch } from '../../app/store';
+import { RootState, AppDispatch } from '../../store/store';
 import {
   Card,
   CardContent,

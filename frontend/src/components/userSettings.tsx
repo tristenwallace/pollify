@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, AppDispatch } from '../store/store';
 import { updateUser, deleteUser } from '../features/usersSlice';
 import { fetchPolls } from '../features/pollSlice';
 import {

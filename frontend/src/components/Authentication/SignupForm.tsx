@@ -3,7 +3,7 @@ import { useDispatch } from 'react-redux';
 import { registerUser } from '../../features/usersSlice';
 import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
-import { AppDispatch } from '../../app/store';
+import { AppDispatch } from '../../store/store';
 
 const SignupForm = () => {
   const [username, setUsername] = useState('');

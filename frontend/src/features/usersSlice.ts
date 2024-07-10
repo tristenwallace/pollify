@@ -8,7 +8,7 @@ import {
   clearToken,
 } from '../server/api';
 import { jwtDecode } from 'jwt-decode';
-import { RootState } from '../app/store';
+import { RootState } from '../store/store';
 import { addNewPoll, voteOnPoll } from './pollSlice';
 
 // Define the user interface for the state

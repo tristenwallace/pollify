@@ -1,5 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { RootState } from '../app/store';
+import { RootState } from '../store/store';
 import {
   fetchPolls as fetchPollsApi,
   createPoll as createPollApi,

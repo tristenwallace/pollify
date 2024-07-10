@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation, Location } from 'react-router-dom';
 import { loginUser } from '../../features/usersSlice';
-import { AppDispatch, RootState } from '../../app/store';
+import { AppDispatch, RootState } from '../../store/store';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 

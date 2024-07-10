@@ -1,7 +1,7 @@
 import React from 'react';
 import { useLocation, Navigate } from 'react-router-dom';
 import { useSelector } from 'react-redux';
-import { RootState } from '../app/store';
+import { RootState } from '../store/store';
 
 const NotFoundPage: React.FC = () => {
   const user = useSelector((state: RootState) => state.users.currentUser);
