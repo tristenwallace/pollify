@@ -3,11 +3,11 @@ import { useCanvasContext } from '../../hooks/useCanvas';
 import useResponsiveSize from '../../hooks/useResponsiveSize';
 import WaveObj from '../../utils/wave';
 
-const Wave = () => {
+const Wave: React.FC = () => {
   const { context } = useCanvasContext();
   const { width } = useResponsiveSize();
   const height = 600; // Adjust height as needed
-  const startTimeRef = useRef<number | null>(null); // Reference to keep track of the start time
+  const startTimeRef = useRef<number | null>(null); // Reference to track the start time
 
   // Memoize waves to prevent recreation on every render
   const waves = useMemo(
@@ -29,19 +29,19 @@ const Wave = () => {
         }
         const elapsedTime = (timestamp - startTimeRef.current) / 1000; // Elapsed time in seconds
 
-        context.clearRect(0, 0, width, height);
+        context.clearRect(0, 0, width, height); // Clear the canvas for each frame
         Object.values(waves).forEach(wave =>
           wave.draw(context, width, height, elapsedTime),
-        );
+        ); // Draw each wave
 
-        requestAnimationFrame(render);
+        requestAnimationFrame(render); // Request the next animation frame
       }
     };
 
-    const animationFrameId = requestAnimationFrame(render);
+    const animationFrameId = requestAnimationFrame(render); // Start the animation
 
     return () => {
-      cancelAnimationFrame(animationFrameId);
+      cancelAnimationFrame(animationFrameId); // Clean up the animation frame
       startTimeRef.current = null; // Reset start time when component unmounts
     };
   }, [context, width, height, waves]);
