@@ -10,11 +10,12 @@ import Product from './Product';
 import Roadmap from './Roadmap';
 import Canvas from '../Wave/Canvas';
 
-const LandingPage = () => {
+const LandingPage: React.FC = () => {
   const location = useLocation();
 
+  // Scroll to the section specified in the location state, if any
   useEffect(() => {
-    if (location.state && location.state.targetSection) {
+    if (location.state?.targetSection) {
       scroller.scrollTo(location.state.targetSection, {
         duration: 1000,
         delay: 0,
