@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import { RootState, AppDispatch } from '../app/store';
+import { RootState, AppDispatch } from '../store/store';
 import { updateUser, deleteUser } from '../features/usersSlice';
 import { fetchPolls } from '../features/pollSlice';
 import {
@@ -47,14 +47,10 @@ const UserSettings: React.FC = () => {
 
   // Validate form fields
   const validateField = (field: string, value: string) => {
-    switch (field) {
-      case 'password':
-        if (value.length > 0 && value.length < 6)
-          return 'Password must be at least 6 characters long';
-        return '';
-      default:
-        return '';
+    if (field === 'password' && value.length > 0 && value.length < 6) {
+      return 'Password must be at least 6 characters long';
     }
+    return '';
   };
 
   // Handle field changes and set errors
@@ -82,9 +78,7 @@ const UserSettings: React.FC = () => {
     const passwordError = validateField('password', password);
 
     if (passwordError) {
-      setErrors({
-        password: passwordError,
-      });
+      setErrors({ password: passwordError });
       return; // Prevent submission if there are errors
     }
 
@@ -92,12 +86,8 @@ const UserSettings: React.FC = () => {
       updateUser({ id: user?.id, name, password, avatar_url: avatarUrl }),
     )
       .unwrap()
-      .then(() => {
-        alert('Settings updated successfully!');
-      })
-      .catch(error => {
-        alert('Failed to update settings: ' + error.message);
-      });
+      .then(() => alert('Settings updated successfully!'))
+      .catch(error => alert('Failed to update settings: ' + error.message));
   };
 
   // Handle account deletion with confirmation
@@ -113,9 +103,7 @@ const UserSettings: React.FC = () => {
           alert('Account deleted successfully');
           navigate('/home');
         })
-        .catch(error => {
-          alert('Failed to delete account: ' + error.message);
-        });
+        .catch(error => alert('Failed to delete account: ' + error.message));
     }
   };
 
@@ -134,10 +122,10 @@ const UserSettings: React.FC = () => {
           <Box>
             <Typography variant="h6">{user?.name}</Typography>
             <Typography variant="body1">
-              Polls Created: {user?.pollCount}
+              Polls Created: {user?.pollCount || 0}
             </Typography>
             <Typography variant="body1">
-              Votes Cast: {user?.voteCount}
+              Votes Cast: {user?.voteCount || 0}
             </Typography>
           </Box>
         </Box>
