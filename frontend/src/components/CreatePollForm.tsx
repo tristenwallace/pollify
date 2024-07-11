@@ -35,23 +35,12 @@ const CreatePollForm = () => {
     );
   }
 
-  // Handle form submission
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    dispatch(
-      addNewPoll({
-        optionOne: optionOne,
-        optionTwo: optionTwo,
-        userId: user.id,
-      }),
-    )
+    dispatch(addNewPoll({ optionOne, optionTwo, userId: user.id }))
       .unwrap()
-      .then(() => {
-        navigate('/'); // Redirect to home page after form submission
-      })
-      .catch(error => {
-        console.error('Failed to create poll', error);
-      });
+      .then(() => navigate('/'))
+      .catch(error => console.error('Failed to create poll', error));
   };
 
   // Render form for creating a new poll
@@ -82,12 +71,7 @@ const CreatePollForm = () => {
             fullWidth
             margin="normal"
           />
-          <Button
-            type="submit"
-            variant="contained"
-            color="primary"
-            sx={{ mt: 2 }}
-          >
+          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
             Create Poll
           </Button>
         </form>
