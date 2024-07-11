@@ -13,7 +13,7 @@ const CreatePollForm = () => {
   const [optionTwo, setOptionTwo] = useState('');
 
   // Accessing Redux state and dispatch
-  const user = useSelector((state: RootState) => state.users.currentUser);
+  const user = useSelector((state: RootState) => state.users.currentUser!); // Ensure that user is always defined
   const userStatus = useSelector((state: RootState) => state.users.status);
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
@@ -24,16 +24,6 @@ const CreatePollForm = () => {
       dispatch(fetchUsers());
     }
   }, [dispatch, userStatus]);
-
-  // Guard to check if user is logged in before showing form
-  if (!user) {
-    return (
-      <div>
-        <h3>Please log in to see the polls.</h3>
-        <Login />
-      </div>
-    );
-  }
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -71,7 +61,12 @@ const CreatePollForm = () => {
             fullWidth
             margin="normal"
           />
-          <Button type="submit" variant="contained" color="primary" sx={{ mt: 2 }}>
+          <Button
+            type="submit"
+            variant="contained"
+            color="primary"
+            sx={{ mt: 2 }}
+          >
             Create Poll
           </Button>
         </form>
