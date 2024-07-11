@@ -4,7 +4,6 @@ import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { logout } from '../features/usersSlice';
 import { AppDispatch, RootState } from '../store/store';
 import {
-  Container,
   AppBar,
   Toolbar,
   Box,
@@ -14,40 +13,37 @@ import {
   MenuItem,
   Avatar,
   Link as MuiLink,
+  Container,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const currentUser = useSelector(
-    (state: RootState) => state.users.currentUser,
-  );
+  const currentUser = useSelector((state: RootState) => state.users.currentUser);
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
-    useState<null | HTMLElement>(null);
-  const [profileMenuAnchorEl, setProfileMenuAnchorEl] =
-    useState<null | HTMLElement>(null);
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState<null | HTMLElement>(null);
 
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
   const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget);
+    setMobileMenuAnchorEl(event.currentTarget);
   };
 
-  const handleProfileMenuClose = () => {
-    setProfileMenuAnchorEl(null);
+  const handleMobileMenuClose = () => {
+    setMobileMenuAnchorEl(null);
   };
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setProfileMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchorEl(null);
   };
 
   const handleLogout = () => {
@@ -63,9 +59,10 @@ const Navbar = () => {
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const profileMenuId = 'primary-search-account-menu-profile';
 
+  // Render the mobile menu for small screens
   const renderMobileMenu = (
     <Menu
-      anchorEl={mobileMoreAnchorEl}
+      anchorEl={mobileMenuAnchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       id={mobileMenuId}
       keepMounted
@@ -80,35 +77,20 @@ const Navbar = () => {
           style={{ height: '30px', marginRight: '10px' }}
         />
       </MenuItem>
-      <MenuItem
-        component={RouterLink}
-        to="/create"
-        onClick={handleMobileMenuClose}
-      >
-        <MuiLink
-          color="textPrimary"
-          underline="none"
-          sx={{ color: theme.palette.text.secondary }}
-        >
+      <MenuItem component={RouterLink} to="/create" onClick={handleMobileMenuClose}>
+        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>
           Create Poll
         </MuiLink>
       </MenuItem>
-      <MenuItem
-        component={RouterLink}
-        to="/leaderboard"
-        onClick={handleMobileMenuClose}
-      >
-        <MuiLink
-          color="textPrimary"
-          underline="none"
-          sx={{ color: theme.palette.text.secondary }}
-        >
+      <MenuItem component={RouterLink} to="/leaderboard" onClick={handleMobileMenuClose}>
+        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>
           Leaderboard
         </MuiLink>
       </MenuItem>
     </Menu>
   );
 
+  // Render the profile menu for user settings and logout
   const renderProfileMenu = (
     <Menu
       anchorEl={profileMenuAnchorEl}
@@ -119,11 +101,7 @@ const Navbar = () => {
       open={isProfileMenuOpen}
       onClose={handleProfileMenuClose}
     >
-      <MenuItem
-        component={RouterLink}
-        to="/settings"
-        onClick={handleProfileMenuClose}
-      >
+      <MenuItem component={RouterLink} to="/settings" onClick={handleProfileMenuClose}>
         Settings
       </MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -131,10 +109,7 @@ const Navbar = () => {
   );
 
   return (
-    <AppBar
-      position="static"
-      sx={{ backgroundColor: theme.palette.background.default }}
-    >
+    <AppBar position="static" sx={{ backgroundColor: theme.palette.background.default }}>
       <Container>
         <Toolbar>
           <IconButton
@@ -142,11 +117,7 @@ const Navbar = () => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{
-              mr: 2,
-              display: { xs: 'block', md: 'none' },
-              color: theme.palette.text.primary,
-            }}
+            sx={{ mr: 2, display: { xs: 'block', md: 'none' }, color: theme.palette.text.primary }}
             onClick={handleMobileMenuOpen}
           >
             <MenuIcon />
@@ -217,11 +188,7 @@ const Navbar = () => {
           ) : (
             <Button
               onClick={handleLoginSignup}
-              sx={{
-                display: { xs: 'block', sm: 'block' },
-                ml: 'auto',
-                color: theme.palette.text.secondary,
-              }}
+              sx={{ display: { xs: 'block', sm: 'block' }, ml: 'auto', color: theme.palette.text.secondary }}
             >
               Login/Signup
             </Button>
