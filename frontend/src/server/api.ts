@@ -1,13 +1,10 @@
 import axios, { AxiosError } from 'axios';
 import { User } from '../features/usersSlice';
 
+// Base URL for API requests
 const API_URL = process.env.REACT_APP_API_URL || 'http://localhost:5000';
 
-//--------------------------------------//
-//-------- AXIOS & JWT SETUP -----------//
-//--------------------------------------//
-
-// Create an axios instance
+// Create an axios instance with default settings
 const api = axios.create({
   baseURL: API_URL,
   headers: {
@@ -15,22 +12,22 @@ const api = axios.create({
   },
 });
 
-// Function to store the JWT token in local storage
+// Store JWT token in local storage
 function storeToken(token: string): void {
   localStorage.setItem('jwtToken', token);
 }
 
-// Function to get the JWT token from local storage
+// Retrieve JWT token from local storage
 export function getToken(): string | null {
   return localStorage.getItem('jwtToken');
 }
 
-// Function to clear the JWT token from local storage
+// Remove JWT token from local storage
 export function clearToken(): void {
   localStorage.removeItem('jwtToken');
 }
 
-// Add a request interceptor to inject the token into headers before sending them
+// Add a request interceptor to include the JWT token in headers
 api.interceptors.request.use(
   config => {
     const token = getToken();
@@ -39,66 +36,50 @@ api.interceptors.request.use(
     }
     return config;
   },
-  error => {
-    return Promise.reject(error);
-  },
+  error => Promise.reject(error),
 );
 
+// Add a response interceptor to handle errors globally
 api.interceptors.response.use(
-  response => {
-    // Directly return the response if everything is fine
-    return response;
-  },
+  response => response,
   (error: AxiosError) => {
-    // Check if it's an error response and if it has a status code
     if (error.response) {
       switch (error.response.status) {
-        case 401: // Unauthorized or token expired
-          // Token refresh logic could be initiated here if you implement token refreshing
-          // For simplicity, just clear the token and redirect to login
+        case 401:
           clearToken();
-          // Optionally redirect to login or emit a global event that your application can handle to force logout
           window.location.href = '/login';
           break;
-        case 403: // Forbidden - the user might not have the necessary permissions
+        case 403:
           alert('You do not have permission to perform this action.');
           break;
-        case 404: // Not found - the requested resource is not available
+        case 404:
           alert('Requested resource not found.');
           break;
-        case 500: // Internal Server Error
+        case 500:
           alert('A server error occurred. Please try again later.');
           break;
         default:
-          // Handle other status codes or generic response errors
           alert(`An unexpected error occurred: ${error.response.status}`);
           break;
       }
     } else if (error.request) {
-      // The request was made but no response was received
       console.error('Error: No response received', error.request);
       alert('No response from server. Please check your network connection.');
     } else {
-      // Something happened in setting up the request and triggered an error
       console.error('Error setting up request:', error.message);
       alert('Error in setting up the request.');
     }
-
-    // Always reject the promise if the error config does not request otherwise
     return Promise.reject(error);
   },
 );
 
-//----------------------------------//
-//-------- API FUNCTIONS -----------//
-//----------------------------------//
-
+// Register a new user
 export const registerUser = async (
   username: string,
   password: string,
   name: string,
   avatar_url?: string,
-) => {
+): Promise<any> => {
   try {
     const response = await api.post('/user/register', {
       username,
@@ -114,12 +95,13 @@ export const registerUser = async (
   }
 };
 
-export const loginUser = async (username: string, password: string) => {
+// Log in a user
+export const loginUser = async (
+  username: string,
+  password: string,
+): Promise<any> => {
   try {
-    const response = await api.post('/user/login', {
-      username,
-      password,
-    });
+    const response = await api.post('/user/login', { username, password });
     storeToken(response.data.token);
     return response.data;
   } catch (error) {
@@ -128,7 +110,8 @@ export const loginUser = async (username: string, password: string) => {
   }
 };
 
-export const updateUser = async (userData: Partial<User>) => {
+// Update user details
+export const updateUser = async (userData: Partial<User>): Promise<any> => {
   try {
     const response = await api.put(`/user/${userData.id}`, userData);
     return response.data;
@@ -138,7 +121,8 @@ export const updateUser = async (userData: Partial<User>) => {
   }
 };
 
-export const deleteUser = async (userId: string) => {
+// Delete a user
+export const deleteUser = async (userId: string): Promise<void> => {
   try {
     await api.delete(`/user/${userId}`);
   } catch (error) {
@@ -147,7 +131,8 @@ export const deleteUser = async (userId: string) => {
   }
 };
 
-export const fetchUsers = async () => {
+// Fetch all users
+export const fetchUsers = async (): Promise<any> => {
   try {
     const response = await api.get('/user/all');
     return response.data;
@@ -157,7 +142,8 @@ export const fetchUsers = async () => {
   }
 };
 
-export const fetchPolls = async () => {
+// Fetch all polls
+export const fetchPolls = async (): Promise<any> => {
   try {
     const response = await api.get('/polls');
     return response.data;
@@ -167,11 +153,12 @@ export const fetchPolls = async () => {
   }
 };
 
+// Create a new poll
 export const createPoll = async (pollData: {
   optionOne: string;
   optionTwo: string;
   userId: string;
-}) => {
+}): Promise<any> => {
   try {
     const response = await api.post('/polls', pollData);
     return response.data;
@@ -181,11 +168,12 @@ export const createPoll = async (pollData: {
   }
 };
 
+// Vote on a poll
 export const voteOnPoll = async (
   pollId: string,
   userId: string,
   chosenOption: number,
-) => {
+): Promise<any> => {
   try {
     const response = await api.post(`/polls/${pollId}/vote`, {
       userId,
