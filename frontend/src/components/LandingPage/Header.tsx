@@ -14,7 +14,7 @@ import {
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 
-const Header = () => {
+const Header: React.FC = () => {
   const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
   const [prevScrollPos, setPrevScrollPos] = useState(window.pageYOffset);
@@ -22,18 +22,22 @@ const Header = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
+  // Handle opening the mobile menu
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setMobileMenuAnchorEl(event.currentTarget);
   };
 
+  // Handle closing the mobile menu
   const handleMobileMenuClose = () => {
     setMobileMenuAnchorEl(null);
   };
 
+  // Navigate to the specified section
   const handleNavigation = (section: string) => {
     navigate('/', { state: { targetSection: section } });
   };
 
+  // Handle scroll to show or hide the AppBar based on scroll direction
   const handleScroll = useCallback(() => {
     const currentScrollPos = window.pageYOffset;
     const isVisible = prevScrollPos > currentScrollPos || currentScrollPos < 10;
@@ -58,10 +62,11 @@ const Header = () => {
       open={Boolean(mobileMenuAnchorEl)}
       onClose={handleMobileMenuClose}
     >
-      <MenuItem onClick={() => handleNavigation('product')}>Product</MenuItem>
-      <MenuItem onClick={() => handleNavigation('features')}>Features</MenuItem>
-      <MenuItem onClick={() => handleNavigation('roadmap')}>Roadmap</MenuItem>
-      <MenuItem onClick={() => handleNavigation('pricing')}>Pricing</MenuItem>
+      {['product', 'features', 'roadmap', 'pricing'].map(section => (
+        <MenuItem key={section} onClick={() => handleNavigation(section)}>
+          {section.charAt(0).toUpperCase() + section.slice(1)}
+        </MenuItem>
+      ))}
       <MenuItem
         component={RouterLink}
         to="/signup"
@@ -109,66 +114,24 @@ const Header = () => {
             </MuiLink>
           </Box>
           <Box display={{ xs: 'none', md: 'flex' }} alignItems="center">
-            <MuiLink
-              component="button"
-              onClick={() => handleNavigation('product')}
-              sx={{
-                color: theme.palette.text.secondary,
-                textDecoration: 'none',
-                '&:hover': {
-                  color: theme.palette.common.black,
-                  borderBottom: `2px solid ${theme.palette.primary.main}`,
-                },
-                mr: 2,
-              }}
-            >
-              Product
-            </MuiLink>
-            <MuiLink
-              component="button"
-              onClick={() => handleNavigation('features')}
-              sx={{
-                color: theme.palette.text.secondary,
-                textDecoration: 'none',
-                '&:hover': {
-                  color: theme.palette.common.black,
-                  borderBottom: `2px solid ${theme.palette.primary.main}`,
-                },
-                mr: 2,
-              }}
-            >
-              Features
-            </MuiLink>
-            <MuiLink
-              component="button"
-              onClick={() => handleNavigation('roadmap')}
-              sx={{
-                color: theme.palette.text.secondary,
-                textDecoration: 'none',
-                '&:hover': {
-                  color: theme.palette.common.black,
-                  borderBottom: `2px solid ${theme.palette.primary.main}`,
-                },
-                mr: 2,
-              }}
-            >
-              Roadmap
-            </MuiLink>
-            <MuiLink
-              component="button"
-              onClick={() => handleNavigation('pricing')}
-              sx={{
-                color: theme.palette.text.secondary,
-                textDecoration: 'none',
-                '&:hover': {
-                  color: theme.palette.common.black,
-                  borderBottom: `2px solid ${theme.palette.primary.main}`,
-                },
-                mr: 2,
-              }}
-            >
-              Pricing
-            </MuiLink>
+            {['product', 'features', 'roadmap', 'pricing'].map(section => (
+              <MuiLink
+                key={section}
+                component="button"
+                onClick={() => handleNavigation(section)}
+                sx={{
+                  color: theme.palette.text.secondary,
+                  textDecoration: 'none',
+                  '&:hover': {
+                    color: theme.palette.common.black,
+                    borderBottom: `2px solid ${theme.palette.primary.main}`,
+                  },
+                  mr: 2,
+                }}
+              >
+                {section.charAt(0).toUpperCase() + section.slice(1)}
+              </MuiLink>
+            ))}
             <Button
               variant="contained"
               color="secondary"

@@ -2,9 +2,8 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { Link as RouterLink, useNavigate } from 'react-router-dom';
 import { logout } from '../features/usersSlice';
-import { AppDispatch, RootState } from '../app/store';
+import { AppDispatch, RootState } from '../store/store';
 import {
-  Container,
   AppBar,
   Toolbar,
   Box,
@@ -14,11 +13,12 @@ import {
   MenuItem,
   Avatar,
   Link as MuiLink,
+  Container,
 } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import { useTheme } from '@mui/material/styles';
 
-const Navbar = () => {
+const Navbar: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const currentUser = useSelector(
     (state: RootState) => state.users.currentUser,
@@ -26,28 +26,28 @@ const Navbar = () => {
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const [mobileMoreAnchorEl, setMobileMoreAnchorEl] =
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
   const [profileMenuAnchorEl, setProfileMenuAnchorEl] =
     useState<null | HTMLElement>(null);
 
-  const isMobileMenuOpen = Boolean(mobileMoreAnchorEl);
+  const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
   const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
 
-  const handleMobileMenuClose = () => {
-    setMobileMoreAnchorEl(null);
-  };
-
   const handleMobileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
-    setMobileMoreAnchorEl(event.currentTarget);
+    setMobileMenuAnchorEl(event.currentTarget);
   };
 
-  const handleProfileMenuClose = () => {
-    setProfileMenuAnchorEl(null);
+  const handleMobileMenuClose = () => {
+    setMobileMenuAnchorEl(null);
   };
 
   const handleProfileMenuOpen = (event: React.MouseEvent<HTMLElement>) => {
     setProfileMenuAnchorEl(event.currentTarget);
+  };
+
+  const handleProfileMenuClose = () => {
+    setProfileMenuAnchorEl(null);
   };
 
   const handleLogout = () => {
@@ -63,9 +63,10 @@ const Navbar = () => {
   const mobileMenuId = 'primary-search-account-menu-mobile';
   const profileMenuId = 'primary-search-account-menu-profile';
 
+  // Render the mobile menu for small screens
   const renderMobileMenu = (
     <Menu
-      anchorEl={mobileMoreAnchorEl}
+      anchorEl={mobileMenuAnchorEl}
       anchorOrigin={{ vertical: 'top', horizontal: 'right' }}
       id={mobileMenuId}
       keepMounted
@@ -109,6 +110,7 @@ const Navbar = () => {
     </Menu>
   );
 
+  // Render the profile menu for user settings and logout
   const renderProfileMenu = (
     <Menu
       anchorEl={profileMenuAnchorEl}

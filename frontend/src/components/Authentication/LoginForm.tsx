@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate, useLocation, Location } from 'react-router-dom';
 import { loginUser } from '../../features/usersSlice';
-import { AppDispatch, RootState } from '../../app/store';
+import { AppDispatch, RootState } from '../../store/store';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
 import { styled } from '@mui/material/styles';
 
@@ -34,12 +34,12 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     if (username && password) {
-      dispatch(loginUser({ username, password }))
-        .unwrap() // Ensures promise returns in either fulfilled or rejected state
-        .then(() => navigate(from)) // Navigate to home page on successful login
-        .catch(error => {
-          console.error('Failed to login:', error.message); // Log error if login fails
-        });
+      try {
+        await dispatch(loginUser({ username, password })).unwrap(); // Ensures promise returns in either fulfilled or rejected state
+        navigate(from); // Navigate to the previous page or home on successful login
+      } catch (error) {
+        console.error('Failed to login:', error); // Log error if login fails
+      }
     }
   };
 

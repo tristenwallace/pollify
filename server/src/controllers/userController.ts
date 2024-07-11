@@ -18,19 +18,15 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
  * @param user The user object for which to create the token.
  * @returns The JWT token as a string.
  */
-function createToken(
-  user: User,
-  pollsCreated: number,
-  pollsVotedOn: number,
-): string {
+function createToken(user: User, pollCount: number, voteCount: number): string {
   const payload = {
     user: {
       id: user.id,
       username: user.username,
       name: user.name,
       avatar_url: user.avatar_url,
-      pollsCreated: pollsCreated,
-      pollsVotedOn: pollsVotedOn,
+      pollCount: pollCount,
+      voteCount: voteCount,
     },
   };
 
@@ -92,11 +88,11 @@ export const login = async (req: Request, res: Response) => {
     }
 
     // Fetch additional user stats data for token
-    const pollsCreated = await Poll.count({ where: { userId: user.id } });
-    const pollsVotedOn = await Vote.count({ where: { userId: user.id } });
+    const pollCount = await Poll.count({ where: { userId: user.id } });
+    const voteCount = await Vote.count({ where: { userId: user.id } });
 
     // Generate a token for the logged-in user
-    const token = createToken(user, pollsCreated, pollsVotedOn);
+    const token = createToken(user, pollCount, voteCount);
 
     // Respond with success message and the token
     res.json({ message: 'User logged in successfully', token });
