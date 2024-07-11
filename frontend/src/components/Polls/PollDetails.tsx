@@ -13,21 +13,16 @@ import {
 } from '@mui/material';
 import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 
-const PollDetail = () => {
-  // Retrieve poll ID from URL parameters
-  const pollId = useParams<{ pollId: string }>().pollId as string;
-  // Hook to programmatically navigate
-  const dispatch: AppDispatch = useDispatch();
-  // Retrieve the current user from global state
-  const user = useSelector((state: RootState) => state.users.currentUser);
-  // Retrieve poll and author details from the Redux store
-  const poll = useSelector((state: RootState) => state.poll.polls[pollId]);
-  const author = useSelector((state: RootState) => {
-    if (poll) {
-      return state.users.users.find(user => user.id === poll.userId);
-    }
-    return null;
-  });
+const PollDetail: React.FC = () => {
+  const { pollId } = useParams<{ pollId: string }>(); // Retrieve poll ID from URL parameters
+  const dispatch: AppDispatch = useDispatch(); // Hook to dispatch actions
+  const user = useSelector((state: RootState) => state.users.currentUser); // Retrieve the current user from global state
+  const poll = useSelector(
+    (state: RootState) => state.poll.polls[pollId as string],
+  ); // Retrieve specific poll by ID
+  const author = useSelector((state: RootState) =>
+    poll ? state.users.users.find(user => user.id === poll.userId) : null,
+  );
 
   // Redirect to not found page if no poll ID is found
   if (!pollId || !poll) {
@@ -43,6 +38,7 @@ const PollDetail = () => {
   if (!author) {
     return <CircularProgress />;
   }
+
   // Calculate the total votes and percentages for each poll option
   const optionOneVotes = poll.votes.filter(
     vote => vote.chosenOption === 1,
@@ -65,21 +61,15 @@ const PollDetail = () => {
   // Handle voting on a poll option
   const handleVote = (chosenOption: number) => {
     if (!userVote) {
-      dispatch(
-        voteOnPoll({
-          pollId: poll.id,
-          userId: user.id,
-          chosenOption,
-        }),
-      );
+      dispatch(voteOnPoll({ pollId: poll.id, userId: user.id, chosenOption }));
     }
   };
 
   return (
     <Card sx={{ maxWidth: 500, mx: 'auto', mt: 5 }}>
       <CardHeader
-        avatar={<Avatar src={author.avatar_url || '/default-avatar.png'} />}
-        title={author.name}
+        avatar={<Avatar src={author?.avatar_url || '/default-avatar.png'} />}
+        title={author?.name}
         subheader="asks:"
         action={
           <Button component={Link} to="/" startIcon={<ArrowBackIcon />}>
