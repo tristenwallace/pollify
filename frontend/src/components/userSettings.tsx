@@ -24,9 +24,7 @@ import PollPagination from './Polls/PollPagination'; // Import PollPagination co
 const UserSettings: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const user = useSelector((state: RootState) => state.users.currentUser);
-  const polls = useSelector((state: RootState) =>
-    Object.values(state.poll.polls),
-  );
+  const polls = useSelector((state: RootState) => Object.values(state.poll.polls));
   const navigate = useNavigate();
 
   // State variables for form fields and validation errors
@@ -47,14 +45,10 @@ const UserSettings: React.FC = () => {
 
   // Validate form fields
   const validateField = (field: string, value: string) => {
-    switch (field) {
-      case 'password':
-        if (value.length > 0 && value.length < 6)
-          return 'Password must be at least 6 characters long';
-        return '';
-      default:
-        return '';
+    if (field === 'password' && value.length > 0 && value.length < 6) {
+      return 'Password must be at least 6 characters long';
     }
+    return '';
   };
 
   // Handle field changes and set errors
@@ -82,40 +76,26 @@ const UserSettings: React.FC = () => {
     const passwordError = validateField('password', password);
 
     if (passwordError) {
-      setErrors({
-        password: passwordError,
-      });
+      setErrors({ password: passwordError });
       return; // Prevent submission if there are errors
     }
 
-    dispatch(
-      updateUser({ id: user?.id, name, password, avatar_url: avatarUrl }),
-    )
+    dispatch(updateUser({ id: user?.id, name, password, avatar_url: avatarUrl }))
       .unwrap()
-      .then(() => {
-        alert('Settings updated successfully!');
-      })
-      .catch(error => {
-        alert('Failed to update settings: ' + error.message);
-      });
+      .then(() => alert('Settings updated successfully!'))
+      .catch(error => alert('Failed to update settings: ' + error.message));
   };
 
   // Handle account deletion with confirmation
   const handleDeleteAccount = () => {
-    if (
-      window.confirm(
-        'Are you sure you want to delete your account? This action cannot be undone.',
-      )
-    ) {
+    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
       dispatch(deleteUser(user?.id || ''))
         .unwrap()
         .then(() => {
           alert('Account deleted successfully');
           navigate('/home');
         })
-        .catch(error => {
-          alert('Failed to delete account: ' + error.message);
-        });
+        .catch(error => alert('Failed to delete account: ' + error.message));
     }
   };
 
@@ -127,17 +107,14 @@ const UserSettings: React.FC = () => {
           Current User Details
         </Typography>
         <Box display="flex" alignItems="center" sx={{ mb: 3 }}>
-          <Avatar
-            src={user?.avatar_url}
-            sx={{ width: 100, height: 100, mr: 2 }}
-          />
+          <Avatar src={user?.avatar_url} sx={{ width: 100, height: 100, mr: 2 }} />
           <Box>
             <Typography variant="h6">{user?.name}</Typography>
             <Typography variant="body1">
-              Polls Created: {user?.pollCount}
+              Polls Created: {user?.pollCount || 0}
             </Typography>
             <Typography variant="body1">
-              Votes Cast: {user?.voteCount}
+              Votes Cast: {user?.voteCount || 0}
             </Typography>
           </Box>
         </Box>
