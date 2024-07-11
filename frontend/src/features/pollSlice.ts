@@ -1,18 +1,14 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 import { RootState } from '../store/store';
-import {
-  fetchPolls as fetchPollsApi,
-  createPoll as createPollApi,
-  voteOnPoll as voteOnPollApi,
-} from '../server/api';
+import * as api from '../server/api';
 
-// Define interfaces to standardize the structure of data used within the slice.
+// Interfaces for data structures
 interface MyThunkAPI {
   state: RootState;
   rejectValue: string;
 }
 
-interface vote {
+interface Vote {
   userId: string;
   chosenOption: number;
 }
@@ -22,7 +18,7 @@ export interface Poll {
   userId: string | null;
   optionOne: string;
   optionTwo: string;
-  votes: vote[];
+  votes: Vote[];
 }
 
 export interface PollsState {
@@ -31,23 +27,23 @@ export interface PollsState {
   error: string | undefined;
 }
 
-// Initial state setup for the polling feature.
-export const initialState: PollsState = {
+// Initial state for polls
+const initialState: PollsState = {
   polls: {},
   status: 'idle',
   error: undefined,
 };
 
 // Async thunk for fetching polls
-export const fetchPolls = createAsyncThunk<Poll[], void, { state: RootState }>(
+export const fetchPolls = createAsyncThunk<Poll[], void, MyThunkAPI>(
   'poll/fetchPolls',
-  async () => {
+  async (_, { rejectWithValue }) => {
     try {
-      const response = await fetchPollsApi();
-      return response['polls'];
+      const response = await api.fetchPolls();
+      return response.polls;
     } catch (error) {
       console.error('Failed to fetch polls:', error);
-      throw error;
+      return rejectWithValue('Failed to fetch polls');
     }
   },
 );
@@ -57,141 +53,86 @@ export const addNewPoll = createAsyncThunk<
   Poll,
   { optionOne: string; optionTwo: string; userId: string },
   MyThunkAPI
->(
-  'poll/addNewPoll',
-  async (pollData: {
-    optionOne: string;
-    optionTwo: string;
-    userId: string;
-  }) => {
-    try {
-      const newPoll = await createPollApi({
-        optionOne: pollData.optionOne,
-        optionTwo: pollData.optionTwo,
-        userId: pollData.userId,
-      });
-      return newPoll;
-    } catch (error) {
-      console.error('Error saving poll', error);
-      if (error instanceof Error) {
-        throw new Error('Failed to save the poll: ' + error.message);
-      } else {
-        // If it's not an Error instance, handle it appropriately
-        throw new Error('Failed to save the poll due to an unknown error');
-      }
-    }
-  },
-);
+>('poll/addNewPoll', async (pollData, { rejectWithValue }) => {
+  try {
+    const newPoll = await api.createPoll(pollData);
+    return newPoll;
+  } catch (error) {
+    console.error('Error saving poll', error);
+    return rejectWithValue('Failed to save the poll');
+  }
+});
 
-// Async thunk for voting on a poll. Ensures users can't vote more than once per poll.
+// Async thunk for voting on a poll
 export const voteOnPoll = createAsyncThunk<
-  {
-    pollId: string;
-    chosenOption: number;
-    userId: string;
-  },
-  {
-    pollId: string;
-    chosenOption: number;
-    userId: string;
-  },
+  { pollId: string; chosenOption: number; userId: string },
+  { pollId: string; chosenOption: number; userId: string },
   MyThunkAPI
->(
-  'poll/voteOnPoll',
-  async (
-    {
-      pollId,
-      chosenOption,
-      userId,
-    }: {
-      pollId: string;
-      chosenOption: number;
-      userId: string;
-    },
-    { rejectWithValue },
-  ) => {
-    try {
-      const response = await voteOnPollApi(pollId, userId, chosenOption);
-      console.log('vote saved successfully');
-      return response['vote'];
-    } catch (error) {
-      if (error instanceof Error) {
-        return rejectWithValue(error.message);
-      } else {
-        return rejectWithValue(
-          'Failed to save the vote due to an unknown error',
-        );
-      }
-    }
-  },
-);
+>('poll/voteOnPoll', async (voteData, { rejectWithValue }) => {
+  try {
+    const response = await api.voteOnPoll(
+      voteData.pollId,
+      voteData.userId,
+      voteData.chosenOption,
+    );
+    return response.vote;
+  } catch (error) {
+    console.error('Failed to save vote', error);
+    return rejectWithValue('Failed to save the vote');
+  }
+});
 
-// Slice configuration including reducers and extraReducers for handling async actions.
+// Polls slice configuration
 const pollSlice = createSlice({
   name: 'poll',
   initialState,
   reducers: {},
   extraReducers: builder => {
     builder
+      // Handle fetchPolls lifecycle
       .addCase(fetchPolls.pending, state => {
         state.status = 'loading';
       })
       .addCase(fetchPolls.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        if (Array.isArray(action.payload)) {
-          action.payload.forEach(poll => {
-            state.polls[poll.id] = poll;
-          });
-        } else {
-          console.error(
-            'Expected an array of polls, but received:',
-            action.payload,
-          );
-        }
+        action.payload.forEach(poll => {
+          state.polls[poll.id] = poll;
+        });
       })
       .addCase(fetchPolls.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload as string;
       })
+      // Handle addNewPoll lifecycle
       .addCase(addNewPoll.pending, state => {
         state.status = 'loading';
       })
       .addCase(addNewPoll.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        if (action.payload) {
-          // Add a new field `votes` initialized as an empty list to the payload
-          const newPoll = {
-            ...action.payload, // Spread existing payload properties
-            votes: [], // Initialize votes as an empty list
-          };
-          // Assign the new poll object to the state.polls under the specific id
-          state.polls[action.payload.id] = newPoll;
-        }
+        state.polls[action.payload.id] = { ...action.payload, votes: [] };
       })
       .addCase(addNewPoll.rejected, (state, action) => {
         state.status = 'failed';
-        state.error = action.error.message;
+        state.error = action.payload as string;
       })
+      // Handle voteOnPoll lifecycle
       .addCase(voteOnPoll.fulfilled, (state, action) => {
         state.status = 'succeeded';
-        if (action.payload) {
-          const { pollId, chosenOption, userId } = action.payload;
-          // Update the specific poll with new vote
-          const pollToUpdate = state.polls[pollId];
-          if (pollToUpdate && chosenOption) {
-            pollToUpdate.votes.push({
-              userId: userId,
-              chosenOption: chosenOption,
-            }); // Add the user's vote
-          }
+        const { pollId, chosenOption, userId } = action.payload;
+        const poll = state.polls[pollId];
+        if (poll) {
+          poll.votes.push({ userId, chosenOption });
         }
       })
       .addCase(voteOnPoll.rejected, (state, action) => {
-        console.error('Failed to vote:', action.payload);
         state.status = 'failed';
+        state.error = action.payload as string;
       });
   },
 });
 
+// Selector to get all polls from the state
 export const selectAllPolls = (state: RootState) => state.poll.polls;
+
+// Export the reducer
 export default pollSlice.reducer;
