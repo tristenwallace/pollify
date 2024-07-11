@@ -1,12 +1,5 @@
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import {
-  fetchUsers as fetchUsersApi,
-  loginUser as loginUserApi,
-  registerUser as registerUserApi,
-  updateUser as updateUserApi,
-  deleteUser as deleteUserApi,
-  clearToken,
-} from '../server/api';
+import * as api from '../server/api';
 import { jwtDecode } from 'jwt-decode';
 import { RootState } from '../store/store';
 import { addNewPoll, voteOnPoll } from './pollSlice';
@@ -69,7 +62,7 @@ export const fetchUsers = createAsyncThunk<User[], void, { state: RootState }>(
   'user/fetchUsers',
   async () => {
     try {
-      const users = await fetchUsersApi();
+      const users = await api.fetchUsers();
       return users;
     } catch (error) {
       console.error('Failed to fetch polls:', error);
@@ -90,7 +83,7 @@ export const loginUser = createAsyncThunk<
     { rejectWithValue },
   ) => {
     try {
-      const response = await loginUserApi(username, password);
+      const response = await api.loginUser(username, password);
       const decoded = jwtDecode<JWTPayload>(response.token);
       return decoded.user;
     } catch (error) {
@@ -116,7 +109,7 @@ export const registerUser = createAsyncThunk<
     { rejectWithValue },
   ) => {
     try {
-      const response = await registerUserApi(
+      const response = await api.registerUser(
         username,
         password,
         name,
@@ -136,7 +129,7 @@ export const updateUser = createAsyncThunk<
   { state: RootState }
 >('user/updateUser', async (userData, { rejectWithValue }) => {
   try {
-    const response = await updateUserApi(userData);
+    const response = await api.updateUser(userData);
     return response;
   } catch (error) {
     return rejectWithValue('Failed to update user');
@@ -149,7 +142,7 @@ export const deleteUser = createAsyncThunk<
   { state: RootState }
 >('user/deleteUser', async (userId, { rejectWithValue }) => {
   try {
-    await deleteUserApi(userId);
+    await api.deleteUser(userId);
     return userId;
   } catch (error) {
     return rejectWithValue('Failed to delete user');
@@ -165,7 +158,7 @@ export const usersSlice = createSlice({
       state.currentUser = null;
       state.status = 'idle';
       state.error = undefined;
-      clearToken();
+      api.clearToken();
     },
   },
   extraReducers: builder => {
@@ -240,7 +233,7 @@ export const usersSlice = createSlice({
         }
         state.status = 'idle';
         state.error = undefined;
-        clearToken();
+        api.clearToken();
       })
       .addCase(deleteUser.rejected, (state, action) => {
         state.status = 'failed';
