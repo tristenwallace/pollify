@@ -34,12 +34,12 @@ const LoginForm: React.FC = () => {
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault(); // Prevent default form submission behavior
     if (username && password) {
-      dispatch(loginUser({ username, password }))
-        .unwrap() // Ensures promise returns in either fulfilled or rejected state
-        .then(() => navigate(from)) // Navigate to home page on successful login
-        .catch(error => {
-          console.error('Failed to login:', error.message); // Log error if login fails
-        });
+      try {
+        await dispatch(loginUser({ username, password })).unwrap(); // Ensures promise returns in either fulfilled or rejected state
+        navigate(from); // Navigate to the previous page or home on successful login
+      } catch (error) {
+        console.error('Failed to login:', error); // Log error if login fails
+      }
     }
   };
 
