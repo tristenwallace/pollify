@@ -5,39 +5,43 @@ import { useNavigate } from 'react-router-dom';
 import { TextField, Button, Typography, Paper, Container } from '@mui/material';
 import { AppDispatch } from '../../store/store';
 
-const SignupForm = () => {
+// Initial state for form errors
+const initialErrorState = {
+  username: '',
+  password: '',
+  name: '',
+};
+
+const SignupForm: React.FC = () => {
+  // Local state for form fields
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
   const [avatarUrl, setAvatarUrl] = useState('');
-  const [errors, setErrors] = useState({
-    username: '',
-    password: '',
-    name: '',
-  });
+  const [errors, setErrors] = useState(initialErrorState);
+
   const dispatch: AppDispatch = useDispatch();
   const navigate = useNavigate();
 
+  // Validate individual fields
   const validateField = (field: string, value: string) => {
     switch (field) {
       case 'username':
-        if (!value.trim()) return 'Username is required';
-        return '';
+        return !value.trim() ? 'Username is required' : '';
       case 'password':
-        if (value.length < 6)
-          return 'Password must be at least 6 characters long';
-        return '';
+        return value.length < 6
+          ? 'Password must be at least 6 characters long'
+          : '';
       case 'name':
-        if (!value.trim()) return 'Name is required';
-        return '';
+        return !value.trim() ? 'Name is required' : '';
       default:
         return '';
     }
   };
 
+  // Handle input changes and validation
   const handleChange = (field: string, value: string) => {
-    const error = validateField(field, value);
-    setErrors(prev => ({ ...prev, [field]: error }));
+    setErrors(prev => ({ ...prev, [field]: validateField(field, value) }));
     switch (field) {
       case 'username':
         setUsername(value);
@@ -56,8 +60,11 @@ const SignupForm = () => {
     }
   };
 
+  // Handle form submission
   const handleSignup = async (event: React.FormEvent) => {
     event.preventDefault();
+
+    // Validate all fields before submission
     const usernameError = validateField('username', username);
     const passwordError = validateField('password', password);
     const nameError = validateField('name', name);
@@ -68,18 +75,18 @@ const SignupForm = () => {
         password: passwordError,
         name: nameError,
       });
-      return; // prevent submission if errors
+      return; // Prevent submission if there are validation errors
     }
 
-    dispatch(registerUser({ username, password, name, avatar_url: avatarUrl }))
-      .unwrap()
-      .then(() => {
-        alert('Signup successful!');
-        navigate('/');
-      })
-      .catch(error => {
-        alert('Signup failed: ' + error.message);
-      });
+    try {
+      await dispatch(
+        registerUser({ username, password, name, avatar_url: avatarUrl }),
+      ).unwrap();
+      alert('Signup successful!');
+      navigate('/');
+    } catch (error: any) {
+      alert('Signup failed: ' + error.message);
+    }
   };
 
   return (
