@@ -24,7 +24,9 @@ import PollPagination from './Polls/PollPagination'; // Import PollPagination co
 const UserSettings: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
   const user = useSelector((state: RootState) => state.users.currentUser);
-  const polls = useSelector((state: RootState) => Object.values(state.poll.polls));
+  const polls = useSelector((state: RootState) =>
+    Object.values(state.poll.polls),
+  );
   const navigate = useNavigate();
 
   // State variables for form fields and validation errors
@@ -80,7 +82,9 @@ const UserSettings: React.FC = () => {
       return; // Prevent submission if there are errors
     }
 
-    dispatch(updateUser({ id: user?.id, name, password, avatar_url: avatarUrl }))
+    dispatch(
+      updateUser({ id: user?.id, name, password, avatar_url: avatarUrl }),
+    )
       .unwrap()
       .then(() => alert('Settings updated successfully!'))
       .catch(error => alert('Failed to update settings: ' + error.message));
@@ -88,7 +92,11 @@ const UserSettings: React.FC = () => {
 
   // Handle account deletion with confirmation
   const handleDeleteAccount = () => {
-    if (window.confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+    if (
+      window.confirm(
+        'Are you sure you want to delete your account? This action cannot be undone.',
+      )
+    ) {
       dispatch(deleteUser(user?.id || ''))
         .unwrap()
         .then(() => {
@@ -107,7 +115,10 @@ const UserSettings: React.FC = () => {
           Current User Details
         </Typography>
         <Box display="flex" alignItems="center" sx={{ mb: 3 }}>
-          <Avatar src={user?.avatar_url} sx={{ width: 100, height: 100, mr: 2 }} />
+          <Avatar
+            src={user?.avatar_url}
+            sx={{ width: 100, height: 100, mr: 2 }}
+          />
           <Box>
             <Typography variant="h6">{user?.name}</Typography>
             <Typography variant="body1">

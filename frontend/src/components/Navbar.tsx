@@ -20,12 +20,16 @@ import { useTheme } from '@mui/material/styles';
 
 const Navbar: React.FC = () => {
   const dispatch: AppDispatch = useDispatch();
-  const currentUser = useSelector((state: RootState) => state.users.currentUser);
+  const currentUser = useSelector(
+    (state: RootState) => state.users.currentUser,
+  );
   const navigate = useNavigate();
   const theme = useTheme();
 
-  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] = useState<null | HTMLElement>(null);
-  const [profileMenuAnchorEl, setProfileMenuAnchorEl] = useState<null | HTMLElement>(null);
+  const [mobileMenuAnchorEl, setMobileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
+  const [profileMenuAnchorEl, setProfileMenuAnchorEl] =
+    useState<null | HTMLElement>(null);
 
   const isMobileMenuOpen = Boolean(mobileMenuAnchorEl);
   const isProfileMenuOpen = Boolean(profileMenuAnchorEl);
@@ -77,13 +81,29 @@ const Navbar: React.FC = () => {
           style={{ height: '30px', marginRight: '10px' }}
         />
       </MenuItem>
-      <MenuItem component={RouterLink} to="/create" onClick={handleMobileMenuClose}>
-        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>
+      <MenuItem
+        component={RouterLink}
+        to="/create"
+        onClick={handleMobileMenuClose}
+      >
+        <MuiLink
+          color="textPrimary"
+          underline="none"
+          sx={{ color: theme.palette.text.secondary }}
+        >
           Create Poll
         </MuiLink>
       </MenuItem>
-      <MenuItem component={RouterLink} to="/leaderboard" onClick={handleMobileMenuClose}>
-        <MuiLink color="textPrimary" underline="none" sx={{ color: theme.palette.text.secondary }}>
+      <MenuItem
+        component={RouterLink}
+        to="/leaderboard"
+        onClick={handleMobileMenuClose}
+      >
+        <MuiLink
+          color="textPrimary"
+          underline="none"
+          sx={{ color: theme.palette.text.secondary }}
+        >
           Leaderboard
         </MuiLink>
       </MenuItem>
@@ -101,7 +121,11 @@ const Navbar: React.FC = () => {
       open={isProfileMenuOpen}
       onClose={handleProfileMenuClose}
     >
-      <MenuItem component={RouterLink} to="/settings" onClick={handleProfileMenuClose}>
+      <MenuItem
+        component={RouterLink}
+        to="/settings"
+        onClick={handleProfileMenuClose}
+      >
         Settings
       </MenuItem>
       <MenuItem onClick={handleLogout}>Logout</MenuItem>
@@ -109,7 +133,10 @@ const Navbar: React.FC = () => {
   );
 
   return (
-    <AppBar position="static" sx={{ backgroundColor: theme.palette.background.default }}>
+    <AppBar
+      position="static"
+      sx={{ backgroundColor: theme.palette.background.default }}
+    >
       <Container>
         <Toolbar>
           <IconButton
@@ -117,7 +144,11 @@ const Navbar: React.FC = () => {
             edge="start"
             color="inherit"
             aria-label="menu"
-            sx={{ mr: 2, display: { xs: 'block', md: 'none' }, color: theme.palette.text.primary }}
+            sx={{
+              mr: 2,
+              display: { xs: 'block', md: 'none' },
+              color: theme.palette.text.primary,
+            }}
             onClick={handleMobileMenuOpen}
           >
             <MenuIcon />
@@ -188,7 +219,11 @@ const Navbar: React.FC = () => {
           ) : (
             <Button
               onClick={handleLoginSignup}
-              sx={{ display: { xs: 'block', sm: 'block' }, ml: 'auto', color: theme.palette.text.secondary }}
+              sx={{
+                display: { xs: 'block', sm: 'block' },
+                ml: 'auto',
+                color: theme.palette.text.secondary,
+              }}
             >
               Login/Signup
             </Button>

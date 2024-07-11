@@ -18,11 +18,7 @@ const jwtSecret = process.env.JWT_SECRET || 'your_jwt_secret';
  * @param user The user object for which to create the token.
  * @returns The JWT token as a string.
  */
-function createToken(
-  user: User,
-  pollCount: number,
-  voteCount: number,
-): string {
+function createToken(user: User, pollCount: number, voteCount: number): string {
   const payload = {
     user: {
       id: user.id,
