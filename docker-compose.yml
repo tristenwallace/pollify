@@ -1,0 +1,51 @@
+version: '3.9'
+
+services:
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    image: tristenwallace/pollify-frontend:latest
+    ports:
+      - "3000:80"
+    env_file:
+      - ./environment/.env.development
+    depends_on:
+      - backend
+
+  backend:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: tristenwallace/pollify-backend:latest
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./environment/.env.development
+    depends_on:
+      - dev-db
+
+  migrations:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: tristenwallace/pollify-migrations:latest
+    entrypoint: ["sh", "-c", "npm run migrate:all"]
+    env_file:
+      - ./environment/.env.development
+    depends_on:
+      - dev-db
+
+  dev-db:
+    image: postgres
+    ports:
+      - '5432:5432'
+    env_file:
+      - ./environment/.env.development
+    volumes:
+      - dev-db-data:/var/lib/postgresql/data
+      - ./server/postgres-init:/docker-entrypoint-initdb.d
+
+volumes:
+  dev-db-data:
+  test-db-data:

@@ -10,7 +10,7 @@
     "start-server": "cd server && npm start",
     "build": "concurrently \"npm:build-client\" \"npm:build-server\"",
     "build-client": "cd frontend && npm run build",
-    "build-server": "cd server && npm run build",
+    "build-server": "cd server && npm run build && npm run zip",
     "test": "concurrently \"npm:test-client\" \"npm:test-server\" \"npm:test-e2e\"",
     "test-client": "cd frontend && npm test",
     "test-server": "cd server && npm test",
