@@ -46,16 +46,6 @@ services:
       - dev-db-data:/var/lib/postgresql/data
       - ./server/postgres-init:/docker-entrypoint-initdb.d
 
-  test-db:
-    image: postgres
-    ports:
-      - '5433:5433'  # Use a different port to avoid conflicts with the dev DB
-    env_file:
-      - ./environment/.env.test
-    volumes:
-      - test-db-data:/var/lib/postgresql/data
-      - ./server/postgres-init:/docker-entrypoint-initdb.d
-
 volumes:
   dev-db-data:
   test-db-data:
