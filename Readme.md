@@ -63,15 +63,9 @@ No additional setup steps are necessary, as Docker handles all service dependenc
 
 For more detailed information on setting up, running, and testing the application, refer to the following guides in our documentation:
 
-### Dependencies
-
-All necessary dependencies and their setup instructions are detailed in our dependencies guide. This includes software installations and environment setups.
-
-[View Dependencies Guide](docs/App_dependencies.md)
-
 ### API Documentation
 
-For more information about the API endpoints, see the [API Documentation](https://app.swaggerhub.com/apis-docs/INFO_646/pollify/1.0.0).
+For more information about the API endpoints, see the [API Documentation](https://api.pollify.dev/docs).
 
 ### Architecture
 
