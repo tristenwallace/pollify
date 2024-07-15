@@ -39,6 +39,8 @@ To install the Polling App, follow these steps:
 
 2.Navigate to the project directory: `cd pollify`
 
+3.Install Root Dependencies: npm install (Important for Husky Pre-Commit Hooks)
+
 ### Setup environment variables
 
 2.Navigate to environment folder: `cd environment`
