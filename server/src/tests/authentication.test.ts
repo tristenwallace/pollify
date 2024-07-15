@@ -39,12 +39,12 @@ describe('Authentication Middleware', () => {
   });
 
   it('should return 401 if token is invalid', () => {
-    (jwt.verify as jest.Mock).mockImplementation(() => {
-      throw new Error('Invalid token');
-    });
+    (jwt.verify as jest.Mock).mockReturnValue({});
 
     authenticate(req as Request, res as Response, next);
+
     expect(res.status).toHaveBeenCalledWith(401);
     expect(res.json).toHaveBeenCalledWith({ error: 'Invalid token' });
+    expect(next).not.toHaveBeenCalled();
   });
 });

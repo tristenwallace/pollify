@@ -89,7 +89,7 @@ describe('User Controller', () => {
       });
     });
 
-    it('should return 401 if login fails', async () => {
+    it('should return 401 if login fails due to credentials', async () => {
       (User.findOne as jest.Mock).mockResolvedValue(null);
 
       const response = await request(app)
@@ -98,6 +98,18 @@ describe('User Controller', () => {
 
       expect(response.status).toBe(401);
       expect(response.body).toEqual({ error: 'Invalid credentials' });
+    });
+
+    it('should return 500 if login fails due to server', async () => {
+      (User.findOne as jest.Mock).mockRejectedValue(new Error('Login failed'));
+
+      const response = await request(app).post('/user/login').send({
+        username: 'testuser',
+        password: 'password123',
+      });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Login failed' });
     });
   });
 
@@ -142,9 +154,11 @@ describe('User Controller', () => {
       });
       (jwt.sign as jest.Mock).mockReturnValue('token');
 
-      const response = await request(app)
-        .put('/user/1')
-        .send({ username: 'updateduser', name: 'Updated User' });
+      const response = await request(app).put('/user/1').send({
+        username: 'updateduser',
+        name: 'Updated User',
+        password: 'new_pass',
+      });
 
       expect(response.status).toBe(201);
       expect(response.body).toEqual({
