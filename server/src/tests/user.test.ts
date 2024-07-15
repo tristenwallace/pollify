@@ -1,152 +1,218 @@
+import { Request, Response, NextFunction } from 'express';
 import request from 'supertest';
-import { startRandomServer } from '../server';
-import User from '../database/models/user';
-import Poll from '../database/models/poll';
-import Vote from '../database/models/vote';
-import type { UserDTO } from '../controllers/userController';
+import app from '../../src/app';
+import { User } from '../../src/database/models/user';
+import { Poll } from '../../src/database/models/poll';
+import { Vote } from '../../src/database/models/vote';
+import jwt from 'jsonwebtoken';
+import bcrypt from 'bcrypt';
 
-describe('User API', () => {
-  let serverInstance: { server: import('http').Server; port: number };
-  let app: string;
-  const hashedPass =
-    '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2';
+// Mocking the models
+jest.mock('../../src/database/models/user');
+jest.mock('../../src/database/models/poll');
+jest.mock('../../src/database/models/vote');
 
-  beforeAll(async () => {
-    try {
-      serverInstance = await startRandomServer();
-      app = `http://localhost:${serverInstance.port}`;
+// Mocking jwt and bcrypt
+jest.mock('jsonwebtoken');
+jest.mock('bcrypt');
 
-      await User.bulkCreate([
-        {
-          username: 'user1',
-          password: hashedPass,
-          name: 'User One',
-          avatar_url: null,
-        },
-        {
-          username: 'user2',
-          password: hashedPass,
-          name: 'User Two',
-          avatar_url: null,
-        },
-      ]);
-      const user1 = await User.findOne({ where: { username: 'user1' } });
-      const user2 = await User.findOne({ where: { username: 'user2' } });
+// Mocking middleware
+jest.mock('../../src/middleware/authenticate', () => ({
+  authenticate: (req: Request, res: Response, next: NextFunction) => next(),
+}));
 
-      if (!user1 || !user2) {
-        throw new Error('Test setup failed, required users not found');
-      }
+describe('User Controller', () => {
+  const userPayload = {
+    id: '1',
+    username: 'testuser',
+    password: 'testpass',
+    name: 'Test User',
+  };
 
-      await Poll.create({
-        userId: user1.id,
-        optionOne: 'Option One',
-        optionTwo: 'Option Two',
-      });
-      const poll1 = await Poll.findOne({ where: { userId: user1.id } });
-
-      if (!poll1) {
-        throw new Error('Test setup failed, required poll not found');
-      }
-
-      await Vote.create({
-        pollId: poll1.id,
-        userId: user2.id,
-        chosenOption: 1,
-      });
-    } catch (error) {
-      console.error('Error inserting test user:', error);
-    }
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
-  afterAll(async () => {
-    try {
-      await User.destroy({ where: {} });
-      await Poll.destroy({ where: {} });
-      await Vote.destroy({ where: {} });
+  describe('POST /user/register', () => {
+    it('should register a new user', async () => {
+      (User.create as jest.Mock).mockResolvedValue(userPayload);
+      (jwt.sign as jest.Mock).mockReturnValue('token');
 
-      await serverInstance.server.close();
-    } catch (error) {
-      console.error('Error cleaning up test user:', error);
-    }
-  });
+      const response = await request(app).post('/user/register').send({
+        username: 'testuser',
+        password: 'testpass',
+        name: 'Test User',
+      });
 
-  describe('POST /register', () => {
-    it('should register a new user and return a token', async () => {
-      const res = await request(app)
-        .post('/user/register')
-        .send({
-          username: 'user3',
-          password: 'password123',
-          name: 'New User',
-          avatar_url: null,
-        })
-        .expect(201);
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual({
+        message: 'User registered successfully',
+        token: 'token',
+      });
+    });
 
-      expect(res.body).toEqual(
-        expect.objectContaining({
-          message: expect.any(String),
-          token: expect.any(String),
-        }),
+    it('should return 500 if registration fails', async () => {
+      (User.create as jest.Mock).mockRejectedValue(
+        new Error('Registration failed'),
       );
-    });
 
-    it('should handle missing username and return a 400 status', async () => {
-      const res = await request(app)
-        .post('/user/register')
-        .send({
-          password: 'password123',
-          name: 'New User',
-        })
-        .expect(400);
+      const response = await request(app).post('/user/register').send({
+        username: 'testuser',
+        password: 'testpass',
+        name: 'Test User',
+      });
 
-      expect(res.body).toHaveProperty('errors');
-      expect(res.body.errors).toBeInstanceOf(Array);
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'User registration failed' });
     });
   });
 
-  describe('POST /login', () => {
-    it('should authenticate existing user and return a token', async () => {
-      const res = await request(app)
-        .post('/user/login')
-        .send({
-          username: 'user1',
-          password: 'password123',
-        })
-        .expect(200);
+  describe('POST /user/login', () => {
+    it('should login a user', async () => {
+      (User.findOne as jest.Mock).mockResolvedValue({
+        ...userPayload,
+        password: 'hashedpass',
+      });
+      (jwt.sign as jest.Mock).mockReturnValue('token');
+      (bcrypt.compare as jest.Mock).mockResolvedValue(true);
+      (Poll.count as jest.Mock).mockResolvedValue(2);
+      (Vote.count as jest.Mock).mockResolvedValue(3);
 
-      expect(res.body).toEqual({
+      const response = await request(app)
+        .post('/user/login')
+        .send({ username: 'testuser', password: 'testpass' });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
         message: 'User logged in successfully',
-        token: expect.any(String),
+        token: 'token',
       });
     });
 
-    it('should return error for invalid password', async () => {
-      const res = await request(app)
-        .post('/user/login')
-        .send({
-          username: 'user1',
-          password: 'wrongpassword',
-        })
-        .expect(401);
+    it('should return 401 if login fails', async () => {
+      (User.findOne as jest.Mock).mockResolvedValue(null);
 
-      expect(res.body).toEqual({
-        error: 'Invalid credentials',
-      });
+      const response = await request(app)
+        .post('/user/login')
+        .send({ username: 'testuser', password: 'testpass' });
+
+      expect(response.status).toBe(401);
+      expect(response.body).toEqual({ error: 'Invalid credentials' });
     });
   });
 
   describe('GET /user/all', () => {
-    test('GET /users/all should fetch all users with their details', async () => {
-      const res = await request(app).get('/user/all').expect(200);
-      expect(res.body).toBeInstanceOf(Array);
-      expect(res.body.length).toBeGreaterThan(0);
-      res.body.forEach((user: UserDTO) => {
-        expect(user).toHaveProperty('id');
-        expect(user).toHaveProperty('username');
-        expect(user).toHaveProperty('name');
-        expect(user).toHaveProperty('pollCount');
-        expect(user).toHaveProperty('voteCount');
+    it('should fetch all users', async () => {
+      const users = [{ id: '1', username: 'testuser', name: 'Test User' }];
+      (User.findAll as jest.Mock).mockResolvedValue(users);
+      (Poll.count as jest.Mock).mockResolvedValue(2);
+      (Vote.count as jest.Mock).mockResolvedValue(3);
+
+      const response = await request(app).get('/user/all');
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual([
+        {
+          id: '1',
+          username: 'testuser',
+          name: 'Test User',
+          pollCount: 2,
+          voteCount: 3,
+        },
+      ]);
+    });
+
+    it('should return 500 if fetching users fails', async () => {
+      (User.findAll as jest.Mock).mockRejectedValue(
+        new Error('Error fetching users'),
+      );
+
+      const response = await request(app).get('/user/all');
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Error fetching users' });
+    });
+  });
+
+  describe('PUT /user/:id', () => {
+    it('should update a user', async () => {
+      (User.findByPk as jest.Mock).mockResolvedValue({
+        ...userPayload,
+        save: jest.fn().mockResolvedValue(true),
       });
+      (jwt.sign as jest.Mock).mockReturnValue('token');
+
+      const response = await request(app)
+        .put('/user/1')
+        .send({ username: 'updateduser', name: 'Updated User' });
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual({
+        message: 'User updated successfully',
+        token: 'token',
+      });
+    });
+
+    it('should return 404 if user is not found', async () => {
+      (User.findByPk as jest.Mock).mockResolvedValue(null);
+
+      const response = await request(app)
+        .put('/user/1')
+        .send({ username: 'updateduser', name: 'Updated User' });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({ error: 'User not found' });
+    });
+
+    it('should return 500 if updating user fails', async () => {
+      (User.findByPk as jest.Mock).mockResolvedValue({
+        ...userPayload,
+        save: jest.fn().mockRejectedValue(new Error('Failed to update user')),
+      });
+
+      const response = await request(app)
+        .put('/user/1')
+        .send({ username: 'updateduser', name: 'Updated User' });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to update user' });
+    });
+  });
+
+  describe('DELETE /user/:id', () => {
+    it('should delete a user', async () => {
+      (User.findByPk as jest.Mock).mockResolvedValue({
+        ...userPayload,
+        destroy: jest.fn().mockResolvedValue(true),
+      });
+      (Poll.update as jest.Mock).mockResolvedValue(true);
+
+      const response = await request(app).delete('/user/1');
+
+      expect(response.status).toBe(204);
+    });
+
+    it('should return 404 if user is not found', async () => {
+      (User.findByPk as jest.Mock).mockResolvedValue(null);
+
+      const response = await request(app).delete('/user/1');
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({ error: 'User not found' });
+    });
+
+    it('should return 500 if deleting user fails', async () => {
+      (User.findByPk as jest.Mock).mockResolvedValue({
+        ...userPayload,
+        destroy: jest
+          .fn()
+          .mockRejectedValue(new Error('Failed to delete user')),
+      });
+
+      const response = await request(app).delete('/user/1');
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Failed to delete user' });
     });
   });
 });
