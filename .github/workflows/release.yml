@@ -6,23 +6,16 @@ on:
       - main
 
 jobs:
-  release:
-    name: Release
+  main:
     runs-on: ubuntu-latest
-
+    environment:
+      name: Semver
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Node.js
-        uses: actions/setup-node@v2
+      - name: Checkout
+        uses: actions/checkout@v4
         with:
-          node-version: '20.12'
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run semantic-release
+          persist-credentials: false
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v4
         env:
-          GITHUB_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
-        run: npx semantic-release
+          GH_TOKEN: ${{ secrets.MY_GITHUB_TOKEN }}
