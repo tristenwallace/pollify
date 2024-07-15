@@ -47,6 +47,7 @@ jobs:
           name: Run Tests
           command: |
             npm run test-server
+            npm run test-client
             echo "Tests completed successfully."
       - run:
           name: Front-End Build
