@@ -42,7 +42,12 @@ jobs:
       - run:
           name: Lint
           command: |
-            npm run lint 
+            npm run lint
+      - run:
+          name: Run Tests
+          command: |
+            npm run test-server
+            echo "Tests completed successfully."
       - run:
           name: Front-End Build
           command: |
