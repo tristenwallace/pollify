@@ -1,29 +1,27 @@
-# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
-
 # dependencies
 /node_modules
-server/node_modules
-frontend/node_modules
+/server/node_modules
+/frontend/node_modules
 /.pnp
 .pnp.js
 
 # testing
-/coverage
+**/coverage/
 
 # production
-frontend/build
-server/dist
-server/dist.zip
+/frontend/build
+/server/dist
+/server/dist.zip
 
-# misc
-.DS_Store
-.env
-.env.development
-.env.test
-.env.production
+# environment variables
+.env*
 cypress.env.json
 .secrets
 
+# misc
+.DS_Store
+
+# logs
 npm-debug.log*
 yarn-debug.log*
 yarn-error.log*
