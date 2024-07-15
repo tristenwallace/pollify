@@ -39,7 +39,7 @@ export const authenticate = (
     }
   } catch (error) {
     // Handle any error related to token verification by sending a 401 Unauthorized status
-    console.error('Invalid token', error);
+    console.log('Invalid token: Return 401 response');
     res.status(401).json({ error: 'Invalid token' });
   }
 };
