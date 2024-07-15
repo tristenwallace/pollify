@@ -35,9 +35,30 @@ function createToken(user: User, pollCount: number, voteCount: number): string {
 }
 
 /**
- * Registers a new user in the database.
- * @param req The request object.
- * @param res The response object.
+ * @swagger
+ * /user/register:
+ *   post:
+ *     summary: Register a new user
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/User'
+ *     responses:
+ *       '201':
+ *         description: User registered successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *       '500':
+ *         description: User registration failed
  */
 export const register = async (req: Request, res: Response) => {
   try {
@@ -70,9 +91,37 @@ export const register = async (req: Request, res: Response) => {
 };
 
 /**
- * Authenticates a user and issues a JWT token.
- * @param req The request object.
- * @param res The response object.
+ * @swagger
+ * /user/login:
+ *   post:
+ *     summary: Authenticate a user and return a JWT
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       '200':
+ *         description: User logged in successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *       '401':
+ *         description: Invalid credentials
+ *       '500':
+ *         description: Login failed
  */
 export const login = async (req: Request, res: Response) => {
   try {
@@ -102,6 +151,34 @@ export const login = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /user/all:
+ *   get:
+ *     summary: Fetch all users
+ *     responses:
+ *       '200':
+ *         description: Array of all user objects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 type: object
+ *                 properties:
+ *                   id:
+ *                     type: string
+ *                   username:
+ *                     type: string
+ *                   name:
+ *                     type: string
+ *                   voteCount:
+ *                     type: integer
+ *                   pollCount:
+ *                     type: integer
+ *       '500':
+ *         description: Failed to fetch users
+ */
 export const getAllUsers = async (
   req: Request,
   res: Response,
@@ -134,6 +211,49 @@ export const getAllUsers = async (
   }
 };
 
+/**
+ * @swagger
+ * /user/{id}:
+ *   put:
+ *     summary: Update a user's details (authenticated users only)
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               username:
+ *                 type: string
+ *                 nullable: true
+ *               name:
+ *                 type: string
+ *                 nullable: true
+ *               avatar_url:
+ *                 type: string
+ *                 nullable: true
+ *     responses:
+ *       '201':
+ *         description: User updated successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                 token:
+ *                   type: string
+ *       '404':
+ *         description: User not found
+ *       '500':
+ *         description: Failed to update user
+ */
 export const updateUser = async (req: Request, res: Response) => {
   try {
     console.log('Update user controller triggered');
@@ -171,6 +291,25 @@ export const updateUser = async (req: Request, res: Response) => {
   }
 };
 
+/**
+ * @swagger
+ * /user/{id}:
+ *   delete:
+ *     summary: Delete a user (authenticated users only)
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     responses:
+ *       '204':
+ *         description: User deleted successfully
+ *       '404':
+ *         description: User not found
+ *       '500':
+ *         description: Failed to delete user
+ */
 export const deleteUser = async (req: Request, res: Response) => {
   try {
     console.log('Delete user controller triggered');

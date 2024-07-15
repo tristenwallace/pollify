@@ -3,6 +3,23 @@ import models from '../database/models';
 
 const { Poll, Vote } = models;
 
+/**
+ * @swagger
+ * /polls:
+ *   get:
+ *     summary: Fetch all polls
+ *     responses:
+ *       '200':
+ *         description: Array of all poll objects
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: array
+ *               items:
+ *                 $ref: '#/components/schemas/Poll'
+ *       '500':
+ *         description: Error fetching polls
+ */
 export const getPolls = async (req: Request, res: Response): Promise<void> => {
   try {
     const polls = await Poll.findAll({
@@ -10,7 +27,7 @@ export const getPolls = async (req: Request, res: Response): Promise<void> => {
         {
           model: Vote,
           as: 'votes',
-          attributes: ['userId', 'chosenOption'], // Include relevant vote details
+          attributes: ['userId', 'chosenOption'],
         },
       ],
     });
@@ -22,12 +39,51 @@ export const getPolls = async (req: Request, res: Response): Promise<void> => {
   }
 };
 
+/**
+ * @swagger
+ * /polls:
+ *   post:
+ *     summary: Create a new poll (authenticated users only)
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               optionOne:
+ *                 type: string
+ *               optionTwo:
+ *                 type: string
+ *               userId:
+ *                 type: string
+ *     responses:
+ *       '201':
+ *         description: Poll created successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 id:
+ *                   type: string
+ *                 optionOne:
+ *                   type: string
+ *                 optionTwo:
+ *                   type: string
+ *                 userId:
+ *                   type: string
+ *       '400':
+ *         description: Missing required poll details
+ *       '500':
+ *         description: Error creating poll
+ */
 export const createPoll = async (
   req: Request,
   res: Response,
 ): Promise<void> => {
   try {
-    const { optionOne, optionTwo, userId } = req.body; // Destructure the necessary fields from the request body
+    const { optionOne, optionTwo, userId } = req.body;
 
     if (!optionOne || !optionTwo) {
       res.status(400).json({ error: 'Missing required poll details' });
@@ -47,6 +103,61 @@ export const createPoll = async (
   }
 };
 
+/**
+ * @swagger
+ * /polls/{id}/vote:
+ *   post:
+ *     summary: Submit a vote on a poll option (authenticated users only)
+ *     parameters:
+ *       - name: id
+ *         in: path
+ *         required: true
+ *         schema:
+ *           type: string
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               userId:
+ *                 type: string
+ *               chosenOption:
+ *                 type: integer
+ *                 enum: [1, 2]
+ *     responses:
+ *       '200':
+ *         description: Vote recorded successfully
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Vote recorded successfully
+ *                 vote:
+ *                   type: object
+ *                   properties:
+ *                     id:
+ *                       type: string
+ *                     pollId:
+ *                       type: string
+ *                     userId:
+ *                       type: string
+ *                     chosenOption:
+ *                       type: integer
+ *                       enum: [1, 2]
+ *       '400':
+ *         description: Missing information
+ *       '404':
+ *         description: Poll not found
+ *       '409':
+ *         description: User has already voted on this poll
+ *       '500':
+ *         description: Error voting
+ */
 export const voteOnPoll = async (
   req: Request,
   res: Response,
