@@ -85,7 +85,7 @@ export const register = async (req: Request, res: Response) => {
     res.status(201).json({ message: 'User registered successfully', token });
   } catch (error) {
     // Handle errors and send a 500 Internal Server Error response
-    console.error('Registration failed:', error);
+    console.log('Failed to register user: Server Error 500');
     res.status(500).json({ error: 'User registration failed' });
   }
 };
@@ -147,6 +147,7 @@ export const login = async (req: Request, res: Response) => {
     res.json({ message: 'User logged in successfully', token });
   } catch (error) {
     // Handle errors and send a 500 Internal Server Error response
+    console.log('Failed to login: Server Error 500');
     res.status(500).json({ error: 'Login failed' });
   }
 };
@@ -206,7 +207,7 @@ export const getAllUsers = async (
 
     res.status(200).json(usersWithCounts);
   } catch (error) {
-    console.error('Failed to fetch users:', error);
+    console.log('Failed to get users: Server Error 500');
     res.status(500).json({ error: 'Error fetching users' });
   }
 };
@@ -286,7 +287,7 @@ export const updateUser = async (req: Request, res: Response) => {
     // Respond with success message and the user token
     res.status(201).json({ message: 'User updated successfully', token });
   } catch (error) {
-    console.error('Failed to update user:', error);
+    console.log('Failed to update user: Server Error 500');
     res.status(500).json({ error: 'Failed to update user' });
   }
 };
@@ -328,7 +329,7 @@ export const deleteUser = async (req: Request, res: Response) => {
     console.log('User deleted successfully');
     res.status(204).send();
   } catch (error) {
-    console.error('Failed to delete user:', error);
+    console.log('Failed to delete user: Server Error 500');
     res.status(500).json({ error: 'Failed to delete user' });
   }
 };

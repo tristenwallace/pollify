@@ -80,4 +80,102 @@ describe('Home Page', () => {
     expect(screen.queryByText('Show Answered Polls')).not.toBeInTheDocument();
     expect(screen.getByText('Show Unanswered Polls')).toBeInTheDocument();
   });
+
+  it('displays loading spinner when polls are loading', () => {
+    const store = mockStore({
+      users: {
+        currentUser: {
+          id: '123',
+          name: 'User',
+          username: 'User',
+          pollsCreated: 1,
+          pollsVotedOn: 0,
+        },
+        users: [],
+        status: 'succeeded',
+        error: null,
+      },
+      poll: {
+        polls: {},
+        status: 'loading',
+        error: null,
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <Router>
+          <Home />
+        </Router>
+      </Provider>,
+    );
+
+    expect(screen.getByRole('progressbar')).toBeInTheDocument();
+  });
+
+  it('displays error message when fetching polls fails', () => {
+    const store = mockStore({
+      users: {
+        currentUser: {
+          id: '123',
+          name: 'User',
+          username: 'User',
+          pollsCreated: 1,
+          pollsVotedOn: 0,
+        },
+        users: [],
+        status: 'succeeded',
+        error: null,
+      },
+      poll: {
+        polls: {},
+        status: 'failed',
+        error: 'Failed to fetch polls',
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <Router>
+          <Home />
+        </Router>
+      </Provider>,
+    );
+
+    expect(
+      screen.getByText('Error: Failed to fetch polls'),
+    ).toBeInTheDocument();
+  });
+
+  it('displays no polls available message when there are no polls', () => {
+    const store = mockStore({
+      users: {
+        currentUser: {
+          id: '123',
+          name: 'User',
+          username: 'User',
+          pollsCreated: 1,
+          pollsVotedOn: 0,
+        },
+        users: [],
+        status: 'succeeded',
+        error: null,
+      },
+      poll: {
+        polls: {},
+        status: 'succeeded',
+        error: null,
+      },
+    });
+
+    render(
+      <Provider store={store}>
+        <Router>
+          <Home />
+        </Router>
+      </Provider>,
+    );
+
+    expect(screen.getByText('No polls available.')).toBeInTheDocument();
+  });
 });

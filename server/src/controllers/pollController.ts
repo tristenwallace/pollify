@@ -34,7 +34,7 @@ export const getPolls = async (req: Request, res: Response): Promise<void> => {
 
     res.json({ polls: polls.map(poll => poll.toJSON()) });
   } catch (error) {
-    console.error('Failed to fetch polls:', error);
+    console.log('Failed to fetch polls: return 500 server error');
     res.status(500).json({ error: 'Error fetching polls' });
   }
 };
@@ -98,7 +98,7 @@ export const createPoll = async (
 
     res.status(201).json(poll);
   } catch (error) {
-    console.error('Failed to create poll:', error);
+    console.log('Failed to create poll: return 500 server error');
     res.status(500).json({ error: 'Error creating poll' });
   }
 };
@@ -199,7 +199,7 @@ export const voteOnPoll = async (
 
     res.json({ message: 'Vote recorded successfully', vote });
   } catch (error) {
-    console.error('Failed to vote:', error);
+    console.log('Failed to vote: return 500 server error');
     res.status(500).json({ error: 'Error voting' });
   }
 };

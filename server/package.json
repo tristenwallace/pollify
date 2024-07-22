@@ -10,7 +10,7 @@
     "migrate": "sequelize-cli db:migrate",
     "migrate:undo": "sequelize db:migrate:undo",
     "migrate:all": "npm run build && sequelize db:migrate",
-    "test": "cross-env NODE_ENV=test node -r dotenv/config ./node_modules/.bin/jest"
+    "test": "jest --coverage"
   },
   "dependencies": {
     "bcrypt": "^5.1.1",

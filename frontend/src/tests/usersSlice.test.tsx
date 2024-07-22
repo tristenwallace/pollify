@@ -1,6 +1,6 @@
 import { fetchUsers } from '../features/usersSlice';
 import { store } from '../store/store';
-import * as mockApi from '../tests/mocks/api';
+import * as mockApi from './mocks/api';
 
 const testUsers = [
   {

@@ -1,108 +1,218 @@
+import { Request, Response, NextFunction } from 'express';
 import request from 'supertest';
-import { startRandomServer } from '../server';
-import sequelize from '../config/sequelize';
+import app from '../app';
 import { Poll } from '../database/models/poll';
 import { Vote } from '../database/models/vote';
-import { User } from '../database/models/user';
 
-describe('Poll API', () => {
-  let serverInstance: { server: import('http').Server; port: number };
-  let app: string;
-  let userToken: string;
-  let testUser: User;
+// Mocking the models
+jest.mock('../../src/database/models/user');
+jest.mock('../../src/database/models/poll');
+jest.mock('../../src/database/models/vote');
 
-  beforeAll(async () => {
-    serverInstance = await startRandomServer();
-    app = `http://localhost:${serverInstance.port}`;
+// Mocking middleware
+jest.mock('../../src/middleware/authenticate', () => ({
+  authenticate: (req: Request, res: Response, next: NextFunction) => next(),
+}));
 
-    // Create a test user
-    testUser = await User.create({
-      username: `testuser_${Date.now()}`,
-      password: '$2b$10$Tmh5BMmRudQ/zs4OsK5DluEkPuuoFtxglMKUY8/ug3mE6atADF3y2',
-      name: 'Test User',
-    });
-
-    // Login to get a token
-    const loginResponse = await request(app).post('/user/login').send({
-      username: testUser.username,
-      password: 'password123',
-    });
-
-    if (loginResponse.status !== 200) {
-      console.error('Failed to login:', loginResponse.body);
-      throw new Error('Failed to login test user');
-    }
-
-    userToken = loginResponse.body.token;
-
-    // Clear existing data
-    await Poll.destroy({ where: {} });
-    await Vote.destroy({ where: {} });
+describe('Poll Controller', () => {
+  beforeEach(() => {
+    jest.clearAllMocks();
   });
 
-  afterAll(async () => {
-    // Cleanup users to avoid affecting other tests
-    await User.destroy({ where: { id: testUser.id } });
-    await sequelize.close();
-    await serverInstance.server.close();
+  describe('GET /polls', () => {
+    it('should fetch all polls', async () => {
+      const polls = [
+        {
+          id: '1',
+          optionOne: 'Option One',
+          optionTwo: 'Option Two',
+          votes: [{ userId: '1', chosenOption: 1 }],
+          toJSON: jest.fn().mockReturnValue({
+            id: '1',
+            optionOne: 'Option One',
+            optionTwo: 'Option Two',
+            votes: [{ userId: '1', chosenOption: 1 }],
+          }),
+        },
+      ];
+      /*
+      Poll.findAll returns plain JavaScript objects, not instances of Sequelize models. 
+      In Sequelize, toJSON() is a method available on model instances but not on plain objects. 
+      To resolve this, we structure polls to return model-like objects.
+      */
+      (Poll.findAll as jest.Mock).mockResolvedValue(polls);
+
+      const response = await request(app).get('/polls');
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        polls: polls.map(poll => poll.toJSON()),
+      });
+      expect(Poll.findAll).toHaveBeenCalledTimes(1);
+    });
+
+    it('should return 500 if fetching polls fails', async () => {
+      (Poll.findAll as jest.Mock).mockRejectedValue(
+        new Error('Failed to fetch polls'),
+      );
+
+      const response = await request(app).get('/polls');
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Error fetching polls' });
+      expect(Poll.findAll).toHaveBeenCalledTimes(1);
+    });
   });
 
   describe('POST /polls', () => {
     it('should create a new poll', async () => {
-      const res = await request(app)
-        .post('/polls')
-        .set('Authorization', `Bearer ${userToken}`)
-        .send({
-          optionOne: 'Option 1',
-          optionTwo: 'Option 2',
-          userId: testUser.id,
-        })
-        .expect(201);
-
-      expect(res.body).toEqual(
-        expect.objectContaining({
-          optionOne: 'Option 1',
-          optionTwo: 'Option 2',
-          userId: testUser.id,
+      const poll = {
+        id: '1',
+        optionOne: 'Option One',
+        optionTwo: 'Option Two',
+        userId: '1',
+        toJSON: jest.fn().mockReturnValue({
+          id: '1',
+          optionOne: 'Option One',
+          optionTwo: 'Option Two',
+          userId: '1',
         }),
-      );
+      };
+      (Poll.create as jest.Mock).mockResolvedValue(poll);
+
+      const response = await request(app).post('/polls').send({
+        optionOne: 'Option One',
+        optionTwo: 'Option Two',
+        userId: '1',
+      });
+
+      expect(response.status).toBe(201);
+      expect(response.body).toEqual(poll.toJSON());
+      expect(Poll.create).toHaveBeenCalledTimes(1);
+      expect(Poll.create).toHaveBeenCalledWith({
+        optionOne: 'Option One',
+        optionTwo: 'Option Two',
+        userId: '1',
+      });
     });
 
-    it('should return 400 for missing poll details', async () => {
-      const res = await request(app)
+    it('should return 400 if missing required poll details', async () => {
+      const response = await request(app)
         .post('/polls')
-        .set('Authorization', `Bearer ${userToken}`)
-        .send({})
-        .expect(400);
+        .send({ optionOne: 'Option One' });
 
-      expect(res.body).toHaveProperty('error');
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Missing required poll details' });
+      expect(Poll.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 if creating poll fails', async () => {
+      (Poll.create as jest.Mock).mockRejectedValue(
+        new Error('Failed to create poll'),
+      );
+
+      const response = await request(app).post('/polls').send({
+        optionOne: 'Option One',
+        optionTwo: 'Option Two',
+        userId: '1',
+      });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Error creating poll' });
+      expect(Poll.create).toHaveBeenCalledTimes(1);
     });
   });
 
   describe('POST /polls/:id/vote', () => {
-    let pollId: string;
+    it('should record a vote on a poll', async () => {
+      const pollId = '1';
+      const userId = '1';
+      const vote = { pollId, userId, chosenOption: 1 };
+      const poll = { id: pollId };
 
-    beforeAll(async () => {
-      const poll = await Poll.create({
-        userId: testUser.id,
-        optionOne: 'Option 1',
-        optionTwo: 'Option 2',
+      (Poll.findByPk as jest.Mock).mockResolvedValue(poll);
+      (Vote.findOne as jest.Mock).mockResolvedValue(null);
+      (Vote.create as jest.Mock).mockResolvedValue(vote);
+
+      const response = await request(app)
+        .post(`/polls/${pollId}/vote`)
+        .send({ userId, chosenOption: 1 });
+
+      expect(response.status).toBe(200);
+      expect(response.body).toEqual({
+        message: 'Vote recorded successfully',
+        vote,
       });
-      pollId = poll.id;
+      expect(Poll.findByPk).toHaveBeenCalledTimes(1);
+      expect(Poll.findByPk).toHaveBeenCalledWith(pollId);
+      expect(Vote.findOne).toHaveBeenCalledTimes(1);
+      expect(Vote.findOne).toHaveBeenCalledWith({ where: { pollId, userId } });
+      expect(Vote.create).toHaveBeenCalledTimes(1);
+      expect(Vote.create).toHaveBeenCalledWith(vote);
     });
 
-    it('should allow a user to vote on a poll', async () => {
-      const res = await request(app)
-        .post(`/polls/${pollId}/vote`)
-        .set('Authorization', `Bearer ${userToken}`)
-        .send({
-          pollId: pollId,
-          userId: testUser.id,
-          chosenOption: 1,
-        })
-        .expect(200);
+    it('should return 400 if missing vote information', async () => {
+      const response = await request(app)
+        .post('/polls/1/vote')
+        .send({ userId: '1' });
 
-      expect(res.body).toHaveProperty('message', 'Vote recorded successfully');
+      expect(response.status).toBe(400);
+      expect(response.body).toEqual({ error: 'Missing information' });
+      expect(Poll.findByPk).not.toHaveBeenCalled();
+      expect(Vote.findOne).not.toHaveBeenCalled();
+      expect(Vote.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 404 if poll is not found', async () => {
+      (Poll.findByPk as jest.Mock).mockResolvedValue(null);
+
+      const response = await request(app)
+        .post('/polls/1/vote')
+        .send({ userId: '1', chosenOption: 1 });
+
+      expect(response.status).toBe(404);
+      expect(response.body).toEqual({ error: 'Poll not found' });
+      expect(Poll.findByPk).toHaveBeenCalledTimes(1);
+      expect(Vote.findOne).not.toHaveBeenCalled();
+      expect(Vote.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 409 if user has already voted on this poll', async () => {
+      const pollId = '1';
+      const userId = '1';
+      const existingVote = { pollId, userId, chosenOption: 1 };
+
+      (Poll.findByPk as jest.Mock).mockResolvedValue({ id: pollId });
+      (Vote.findOne as jest.Mock).mockResolvedValue(existingVote);
+
+      const response = await request(app)
+        .post(`/polls/${pollId}/vote`)
+        .send({ userId, chosenOption: 1 });
+
+      expect(response.status).toBe(409);
+      expect(response.body).toEqual({
+        error: 'User has already voted on this poll',
+      });
+      expect(Poll.findByPk).toHaveBeenCalledTimes(1);
+      expect(Vote.findOne).toHaveBeenCalledTimes(1);
+      expect(Vote.create).not.toHaveBeenCalled();
+    });
+
+    it('should return 500 if voting fails', async () => {
+      const pollId = '1';
+      const userId = '1';
+
+      (Poll.findByPk as jest.Mock).mockResolvedValue({ id: pollId });
+      (Vote.findOne as jest.Mock).mockResolvedValue(null);
+      (Vote.create as jest.Mock).mockRejectedValue(new Error('Failed to vote'));
+
+      const response = await request(app)
+        .post(`/polls/${pollId}/vote`)
+        .send({ userId, chosenOption: 1 });
+
+      expect(response.status).toBe(500);
+      expect(response.body).toEqual({ error: 'Error voting' });
+      expect(Poll.findByPk).toHaveBeenCalledTimes(1);
+      expect(Vote.findOne).toHaveBeenCalledTimes(1);
+      expect(Vote.create).toHaveBeenCalledTimes(1);
     });
   });
 });
